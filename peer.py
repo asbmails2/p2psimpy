@@ -15,18 +15,25 @@ Resources e uma lista de recursos com a sua qualidade
 
 class Peer:
 
+    def start(self):
+        self.driver.send(1, 'hello')
 
     def handle_msgs (self, msg):
         print (msg)
 
-
-    def exec_1 (self):
+    def on_connect (self, address):
+        print('driver connected with address {}'.format(address))
         self.driver.advertise("Hello World")
+
+    def on_disconnect (self):
+        self.driver.advertise("Bye World")
 
     def __init__ (self,driver):
         self.driver = driver
         self.driver.register_handler(self.handle_msgs)
-        self.driver.register_handler(self.exec_1)
+        self.driver.register_handler(self.on_connect, 'on_connect')
+        self.driver.register_handler(self.on_disconnect, 'on_disconnect')
+        self.start()
         #self.exec()
 
 

@@ -10,7 +10,7 @@ Controll of peers, duration and others details.
 """
 
 NUM_PEERS = 5
-SIM_DURATION = 20
+SIM_DURATION = 200000
 
 
 # create env
@@ -27,8 +27,9 @@ for i in range (NUM_PEERS):
      dri = driver.Driver(net)
      new_peer = peer.Peer(dri)
      nodes.append(new_peer)
+     env.process(dri.connect())
 
-for a in nodes:
-    env.process(a.driver.test_run())
+# for a in nodes:
+#     env.process(a.driver.test_run())
 
 env.run(until=SIM_DURATION)
