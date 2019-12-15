@@ -24,7 +24,8 @@ class Driver:
         while True:
             event = yield self.async_events.get()
             for z in self.issue_event(event[0], event[1]):
-                yield z
+                if z is not None:
+                    yield z
             
     def connect(self):
         for z in  self.network.register(self):
@@ -49,11 +50,6 @@ class Driver:
 
     def register_handler (self, method, event='on_message'):
         self.methods[event].append(method)
-
-    def process_handler_msgs (self):
-        while True:
-            yield self.env.timeout(2)
-            print(self.buffer_in.get())
 
     def issue_event (self, event, value=None):
         print('issuing ' + event)

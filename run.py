@@ -27,7 +27,7 @@ nodes = []
 teste = env.timeout(2)
 
 for i in range (NUM_PEERS):
-     proc = processor.Processor(env, i, 10)
+     proc = processor.Processor(env, i, 30)
      dri = driver.Driver(net, proc)
      new_peer = peer.Peer(dri, i)
      nodes.append(new_peer)

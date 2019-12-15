@@ -14,13 +14,15 @@ class Processor:
         with self.processor.request() as rec:
             yield rec
             yield self.timeout(self.latency)
-            call = method(value)
-            try:
-                iter_call = iter(call)
-                for z in iter_call:
-                    yield z
-            except TypeError:
-                print('handle method is not iterable')
+            for z in method(value):
+                yield z
+            # try:
+            #     iter_call = iter(call)
+            #     for z in iter_call:
+            #         yield z
+            # except TypeError as err:
+            #     print(err)
+                #print('handle method is not iterable')
             
 
 

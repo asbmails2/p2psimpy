@@ -16,14 +16,14 @@ Resources e uma lista de recursos com a sua qualidade
 class Peer:
     def __init__(self, driver, id):
         self.driver = driver
-        self.driver.register_handler(self.handle_msgs)
+        self.driver.register_handler(self.on_message)
         self.driver.register_handler(self.on_connect, 'on_connect')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
 
-    def handle_msgs (self, msg):
+    def on_message (self, msg):
         print ('{} received msg: {}'.format(self.name, msg))
-        # yield None
+        yield None
 
     def on_connect (self, address):
         print('{} connected with address {}'.format(self.name, address))

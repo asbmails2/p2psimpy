@@ -36,8 +36,7 @@ class Network:
                 yield rec
                 node = self.node_map[to_addr]
                 if node is not None:
-                    for z in node.recieve(msg_envelope):
-                        yield z
+                    node.recieve(msg_envelope)
                     yield self.env.timeout(self.latency)
                 else:
                     print('{} address not found (msg from {})'.format(
