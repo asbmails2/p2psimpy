@@ -3,17 +3,24 @@ import random
 import simpy
 
 class Processor:
-    def __init__(self, env, latency):
+    def __init__(self, env, id, latency):
         self.timeout = env.timeout
         self.processor = simpy.Resource(env)
         self.latency = latency
+        self.name = 'proc_{}'.format(id)
 
     def process_message(self, method, value):
-        print('scheduling process of message')
+        print(self.name + ': scheduling process of message')
         with self.processor.request() as rec:
             yield rec
-            for z in method(value):
-                yield z
             yield self.timeout(self.latency)
+            call = method(value)
+            try:
+                iter_call = iter(call)
+                for z in iter_call:
+                    yield z
+            except TypeError:
+                print('handle method is not iterable')
+            
 
 

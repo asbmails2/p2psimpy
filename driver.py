@@ -4,8 +4,8 @@ import simpy
 
 class Driver:
 
-    def __init__(self,network, processor):
-        self.buffer_in = simpy.Store(network.env)
+    def __init__(self, network, processor):
+        self.async_events = simpy.Store(network.env)
         self.network = network
         self.env = network.env
         self.processor = processor
@@ -16,6 +16,16 @@ class Driver:
             'on_disconnect': []
             }
 
+    def run(self):
+        if self.address is None:
+            for z in self.connect():
+                yield z
+        
+        while True:
+            event = yield self.async_events.get()
+            for z in self.issue_event(event[0], event[1]):
+                yield z
+            
     def connect(self):
         for z in  self.network.register(self):
             yield z
@@ -31,7 +41,8 @@ class Driver:
         print('{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
-        return self.issue_event('on_message', msg_envelope)
+        event = ['on_message', msg_envelope]
+        self.async_events.put(event)
 
     def send (self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)

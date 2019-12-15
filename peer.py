@@ -14,19 +14,19 @@ Resources e uma lista de recursos com a sua qualidade
 # -*- coding: utf-8 -*-
 
 class Peer:
-    def __init__(self, driver):
+    def __init__(self, driver, id):
         self.driver = driver
         self.driver.register_handler(self.handle_msgs)
         self.driver.register_handler(self.on_connect, 'on_connect')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
-        self.name = None
+        self.name = 'peer_{}'.format(id)
 
     def handle_msgs (self, msg):
-        print ('peer received msg: {}'.format(msg))
+        print ('{} received msg: {}'.format(self.name, msg))
+        # yield None
 
     def on_connect (self, address):
-        print('Peer connection success. Address {}'.format(address))
-        self.name = 'Node {}'.format(address)
+        print('{} connected with address {}'.format(self.name, address))
         #self.driver.advertise("Hello World")
 
         for z in self.driver.send(1, 'hello'):
