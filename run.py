@@ -2,6 +2,7 @@ import simpy
 import peer
 import network
 import driver
+import processor
 
 """
 Run app.
@@ -10,7 +11,7 @@ Controll of peers, duration and others details.
 """
 
 NUM_PEERS = 5
-SIM_DURATION = 200000
+SIM_DURATION = 100
 
 
 # create env
@@ -23,13 +24,14 @@ net = network.Network(env,2)
 
 nodes = []
 
+teste = env.timeout(2)
+
 for i in range (NUM_PEERS):
-     dri = driver.Driver(net)
+     proc = processor.Processor(env, 10)
+     dri = driver.Driver(net, proc)
      new_peer = peer.Peer(dri)
      nodes.append(new_peer)
      env.process(dri.connect())
 
-# for a in nodes:
-#     env.process(a.driver.test_run())
 
 env.run(until=SIM_DURATION)
