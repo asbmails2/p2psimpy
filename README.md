@@ -1,17 +1,29 @@
 [![Build Status](https://travis-ci.org/lesunb/p2psimpy.svg?branch=master)](https://travis-ci.org/lesunb/p2psimpy)
 
-== Env Depencies ==
+Env Depencies
+=============
+python 3
 
 Used IDE: vscode, plugin python
 
-=== Instal pipenv
+Instal pipenv
+============= 
 
 pipenv easy the process of managing python dependencies
 
-PIP> $ pip install pyenv
-MACOS brew>  $ brew install pipenv 
+PIP
+```console
+$ pip install pyenv
+```
 
-== Install dependencies 
+MACOS brew
+```console
+$ brew install pipenv 
+```
+
+
+Install dependencies
+====================
 
 $ pyenv install 
 $ pipenv install
@@ -19,26 +31,44 @@ $ pipenv shell
 # (p2psimpy env) % pipenv install flake8 pytest pytest-cov
 (p2psimpy env) % pipenv install --dev
 
-==  Run 
+Run
+===
 
 Select the exec shel 
+
+```console
 $ pipenv shell
+```
 
 Execute Simulation
-$ python run.py
 
-== Test
+```console
+$ python run.py
+```
+
+Test
+====
  $ pytest -v --cov
 
 
-== Linter 
-
+Linter
+======
+```console
  $ flake8 --statistics
+```
 
-== Dependency
+Dependency
+==========
 
-=== Add New Dependency
+Add New Dependency
+------------------
+
+```console
 $ pipenv install [name]
+```
+Add New Dev Dependency
+----------------------
 
-=== Add New Dev Dependency
+```console
 $ pipenv install [name] --dev
+```
