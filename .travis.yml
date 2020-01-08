@@ -16,4 +16,6 @@ before_install:
       fi
 
 script:
-  - py.test my_project
+  - pipenv shell
+  - pip install flake8 pipenv shell
+  - pytest -v --cov
