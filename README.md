@@ -16,7 +16,7 @@ $ pyenv install
 $ pipenv install
 $ pipenv shell
 # (p2psimpy env) % pipenv install flake8 pytest pytest-cov
-(p2psimpy env) % pipenv install
+(p2psimpy env) % pipenv install --dev
 
 ==  Run 
 

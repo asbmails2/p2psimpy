@@ -16,5 +16,5 @@ before_install:
       fi
 
 script:
-  - pipenv install
+  - pipenv install --dev
   - pytest -v --cov
