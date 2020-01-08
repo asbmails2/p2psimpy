@@ -1,5 +1,4 @@
 language: python
-dist: trusty
 matrix:
   include:
     - python: '3.8.0'
