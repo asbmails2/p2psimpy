@@ -2,7 +2,7 @@
 
 Env Depencies
 =============
-python 3
+python 3, pip
 
 Used IDE: vscode, plugin python
 
@@ -16,7 +16,7 @@ PIP
 $ pip install pyenv
 ```
 
-MACOS brew
+Alternatively, macOS brew
 ```console
 $ brew install pipenv 
 ```
@@ -25,11 +25,13 @@ $ brew install pipenv
 Install dependencies
 ====================
 
+```console
 $ pyenv install 
 $ pipenv install
 $ pipenv shell
 # (p2psimpy env) % pipenv install flake8 pytest pytest-cov
 (p2psimpy env) % pipenv install --dev
+```
 
 Run
 ===
@@ -48,11 +50,16 @@ $ python run.py
 
 Test
 ====
- $ pytest -v --cov
 
+Tests should be put on /tests folder and are executed with the following command.
+
+```console
+ $ pytest -v --cov
+```
 
 Linter
 ======
+
 ```console
  $ flake8 --statistics
 ```
@@ -66,6 +73,7 @@ Add New Dependency
 ```console
 $ pipenv install [name]
 ```
+
 Add New Dev Dependency
 ----------------------
 
