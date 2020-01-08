@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/lesunb/p2psimpy.svg?branch=master)](https://travis-ci.org/lesunb/p2psimpy)
 
 == Env Depencies ==
 
