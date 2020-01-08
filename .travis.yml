@@ -20,3 +20,4 @@ before_install:
 script:
   - pipenv install --dev
   - pytest -v --cov .
+  - codecov
