@@ -54,7 +54,7 @@ Test
 Tests should be put on /tests folder and are executed with the following command.
 
 ```console
- $ pytest -v --cov
+ $ pytest -v --cov .
 ```
 
 Linter
