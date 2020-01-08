@@ -3,7 +3,6 @@ python:
   - '3.8.0'
 matrix:
   include:
-    - python: '3.8.0'
     - env: PYENV_VERSION=pypy3.8-7.1.1 PYENV_VERSION_STRING='PyPy 7.1.1'
 cache:
   - pip
