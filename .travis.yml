@@ -16,8 +16,12 @@ before_install:
         wget https://github.com/praekeltfoundation/travis-pyenv/releases/download/0.4.0/setup-pyenv.sh
         source setup-pyenv.sh
       fi
+install:
+  - pipenv install --dev
 
 script:
-  - pipenv install --dev
   - pytest -v --cov .
+
+after_success:
+  - pyenv shell
   - codecov
