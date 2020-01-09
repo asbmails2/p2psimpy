@@ -30,6 +30,7 @@ Inside the project folder (after clone)
 
 ```console
 $ pyenv install 3.8.0
+$ pip install pipenv
 $ pipenv install
 $ pipenv shell
 # (p2psimpy env) % pipenv install flake8 pytest pytest-cov
