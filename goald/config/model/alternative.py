@@ -9,7 +9,3 @@ class Alternative:
         self.contextConditions = []
         self.impl = None
         self.quality = None
-
-
-        
-
