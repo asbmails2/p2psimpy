@@ -29,7 +29,7 @@ Install dependencies
 Inside the project folder (after clone)
 
 ```console
-$ pyenv install 
+$ pyenv install 3.8.0
 $ pipenv install
 $ pipenv shell
 # (p2psimpy env) % pipenv install flake8 pytest pytest-cov
