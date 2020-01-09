@@ -26,6 +26,8 @@ $ brew install pipenv
 Install dependencies
 ====================
 
+Inside the project folder (after clone)
+
 ```console
 $ pyenv install 
 $ pipenv install
