@@ -47,7 +47,7 @@ def test_deployment():
     deployment = Deployment()
     assert deployment.componentStatus == []
 
-    component = Component('001')
+    component = Component(bundleUuid='001')
 
     deployment.add(Status.ACTIVE, component)
     assert not deployment.componentStatus == []

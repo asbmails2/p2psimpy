@@ -8,7 +8,8 @@ class VE:
                  alternatives,
                  chosenAlternative: Alternative,
                  isAchievable: bool,
-                 satisfy: Dependency):
+                 satisfy: Dependency, 
+                 restrictions):
 
         self.definition = definition
         self.parentAlt = parentAlt
@@ -16,3 +17,4 @@ class VE:
         self.chosenAlternative = chosenAlternative
         self.isAchievable = isAchievable
         self.satisfy = satisfy
+        self.restrictions = restrictions
