@@ -1,16 +1,16 @@
 from enum import Enum
-from .bundle import Bundle
+from .component import Component
 
 
 class Deployment:
 
     def __init__(self):
-        self.bundleStatus = []
+        self.componentStatus = []
 
-    def add(self, status, bundle):
-        self.bundleStatus.append(BundleStatus(status, bundle))
+    def add(self, status, component):
+        self.componentStatus.append(ComponentStatus(status, component))
 
-    def remove(self, bundle):
+    def remove(self, component):
         return None
 
     def queryAll(self, status):
@@ -25,7 +25,7 @@ class Status(Enum):
     ACTIVE = 5
 
 
-class BundleStatus:
-    def __init__(self, status: Status, bundle: Bundle):
+class ComponentStatus:
+    def __init__(self, status: Status, component: Component):
         self.status = status
-        self.bundle = bundle
+        self.component = component

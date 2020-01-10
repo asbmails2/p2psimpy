@@ -1,11 +1,12 @@
 from goald.config.model.alternative import Alternative
-from goald.config.model.bundle import Bundle
+from goald.config.model.component import Component
 from goald.config.model.context_change import ContextChange, OP
 from goald.config.model.context_conditions import ContextCondition
 from goald.config.model.dependency import Dependency
 from goald.config.model.deployment import Deployment, Status
 from goald.config.model.dependency_modifier import DependencyModifier, Type
 from goald.config.model.goal import Goal
+from goald.config.model.ve import VE
 
 
 def test_alternative():
@@ -44,12 +45,12 @@ def test_dependency():
 
 def test_deployment():
     deployment = Deployment()
-    assert deployment.bundleStatus == []
+    assert deployment.componentStatus == []
 
-    bundle = Bundle('001')
+    component = Component('001')
 
-    deployment.add(Status.ACTIVE, bundle)
-    assert not deployment.bundleStatus == []
+    deployment.add(Status.ACTIVE, component)
+    assert not deployment.componentStatus == []
 
 
 def test_goal():
