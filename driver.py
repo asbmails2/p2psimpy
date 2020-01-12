@@ -36,7 +36,7 @@ class Driver:
         #     yield z
 
     def advertise(self, msg):
-        self.network.send_broadcast(self.address, msg)
+        self.network.send_broadcast(self.address, msg, self.network.list_addr)
 
     def recieve (self, msg_envelope):
         print('{} received from {}: {}'.format(
