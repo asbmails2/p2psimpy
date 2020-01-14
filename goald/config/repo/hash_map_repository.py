@@ -12,9 +12,7 @@ class HashMapRepository(Repository):
     def add(self, bundle: Bundle):
         self.repoSize += 1
 
-    def put(self, goal, bundle):
-        bundleType = bundle.type
-
+    def put(self, bundleType: BundleType, goal, bundle):
         if(not self.index[bundleType][goal]):
             self.index[bundleType][goal] = []
         
