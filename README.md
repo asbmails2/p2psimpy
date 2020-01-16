@@ -33,23 +33,22 @@ $ pyenv install 3.8.0
 $ pip install pipenv
 $ pipenv install
 $ pipenv shell
-# (p2psimpy env) % pipenv install flake8 pytest pytest-cov
 (p2psimpy env) % pipenv install --dev
 ```
 
 Run
 ===
 
-Select the exec shel 
+Select the exec shell
 
 ```console
 $ pipenv shell
 ```
 
-Execute Simulation
+Then, Execute Simulation
 
 ```console
-$ python run.py
+$ python ./simulator/run.py
 ```
 
 Test
@@ -74,13 +73,19 @@ Dependency
 Add New Dependency
 ------------------
 
+To add new dependencies use the following command.
+
 ```console
 $ pipenv install [name]
 ```
 
+This command will add the dependency to the Pipfile and Pipfile.lock assuring that the execution can be reproduced in another environment (after dependencies are updated with `pipenv install` command )
+
 Add New Dev Dependency
 ----------------------
+Same as previous dependencies, but for development libraries such as the ones used for test.
 
 ```console
 $ pipenv install [name] --dev
 ```
+Note that other systems after pulling updates will need a reexecution of `pipenv install --dev`

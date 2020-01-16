@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/grodrigues/.pyenv/shims/python",
+    "python.pythonPath": "~/.pyenv/shims/python",
     "python.testing.pytestArgs": [
         "tests"
     ],
