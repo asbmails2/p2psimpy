@@ -42,13 +42,25 @@ class Network:
                     print('{} address not found (msg from {})'.format(
                         to_addr, from_addr))
 
-    def send_broadcast(self, from_addr, msg):
-        print('broadcast')
-        msg_envelope = [from_addr, None, msg]
-        with self.channel.request() as rec:
-            yield rec
-            yield self.env.timout(self.latency)
-            for to_addr in self.node_map:
-                node = self.node_map [to_addr]
-                node.recieve(msg_envelope)
+    def send_broadcast(self, from_addr, msg, list_addr):
 
+
+        print('broadcast')
+        
+        for to_addr in list_addr:
+            print('network sending unicast {} => {}'.format(from_addr, to_addr))
+            if(to_addr <= 0):
+                print('{} address not found (msg from {})'.format(
+                    to_addr, from_addr))
+                yield self.env.timeout(0)
+            else: 
+                msg_envelope = [from_addr, to_addr, msg]
+                with self.channel.request() as rec:
+                    yield rec
+                    node = self.node_map[to_addr]
+                    if node is not None:
+                        node.recieve(msg_envelope)
+                        yield self.env.timeout(self.latency)
+                    else:
+                        print('{} address not found (msg from {})'.format(
+                            to_addr, from_addr))
