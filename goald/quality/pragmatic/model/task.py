@@ -1,31 +1,40 @@
 from goald.quality.pragmatic.model.context import Context
 
 class Task():
-    def __init__(self, metric, contextValueMap):
-        self.providedQualityLevels[metric] = contextValueMap;
+    def __init__(self, metric, contextValueMap, lessIsMore):
+        self.providedQualityLevels[metric] = contextValueMap
+        self.lessIsMore = lessIsMore
     
     def __init__(self):
         self.providedQualityLevels = {}
+        self.lessIsMore = False
 
     def setProvidedQuality(self, context, metric, value):
         map = {}
 
-        #verificar se existe essa chave de metrica na providedQualityLevels
-        #se sim substituir o value com novo value nesse contexto
-        #senão criar novo quality level
-        map[context.getName()] = value;
-        self.providedQualityLevels[metric] = map;  
+        if metric in self.providedQualityLevels:
+            map = self.providedQualityLevels[metric]
+            map[context] = value
+            self.providedQualityLevels[metric] = map
+        else:
+            map[context] = value
+            self.providedQualityLevels[metric] = map 
 
-    def myProvidedQuality(self,metric, contextSet):
+    def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
         set = False
 
-        #se existir a metric no providedQualityLevels set = true
-        
+        if metric in self.providedQualityLevels and None in self.providedQualityLevels[metric]:
+            myQuality = self.providedQualityLevels[metric][context]
+            set = True
 
         for current in contextSet:
-            #se existir a metric no providedQualityLevels
-            # !set set = true 
-            myQuality = self.providedQualityLevels[metric][current.getName()]
+            if metric in self.providedQualityLevels:
+                if not set:
+                    myQuality = self.providedQualityLevels[metric][current]
+                    set = True
+                else:
+                    #Acessar o lessIsBetter da metrica para comparar e atribuir o correto ao myQuality
+                    myQuality = self.providedQualityLevels[metric][current]
 
         return myQuality
