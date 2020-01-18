@@ -1,5 +1,7 @@
 class QualityConstraint():
 
+    value: object
+
     def __init__(self, context, metric, value, comparison):
         self.aplicableContext = context
         self.metric = metric
@@ -49,3 +51,4 @@ class QualityConstraint():
                 return qualityConstraint
 
         return None
+
