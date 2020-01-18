@@ -24,9 +24,12 @@ class Task():
         myQuality = 0
         set = False
 
-        if metric in self.providedQualityLevels and None in self.providedQualityLevels[metric]:
-            myQuality = self.providedQualityLevels[metric][context]
-            set = True
+        if metric in self.providedQualityLevels:
+            QLContexts = self.providedQualityLevels[metric].keys()
+            for c in QLContexts:
+                if 'None' == c.label:
+                    myQuality = self.providedQualityLevels[metric][context]
+                    set = True
 
         for current in contextSet:
             if metric in self.providedQualityLevels:
@@ -34,7 +37,10 @@ class Task():
                     myQuality = self.providedQualityLevels[metric][current]
                     set = True
                 else:
-                    #Acessar o lessIsBetter da metrica para comparar e atribuir o correto ao myQuality
-                    myQuality = self.providedQualityLevels[metric][current]
-
+                    if metric.getLessIsBetter():
+                        if(myQuality > self.providedQualityLevels[metric][current]):
+                            myQuality = self.providedQualityLevels[metric][current]
+                    elif(myQuality < self.providedQualityLevels[metric][current]):
+                        myQuality = self.providedQualityLevels[metric][current]
+    
         return myQuality
