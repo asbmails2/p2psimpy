@@ -53,4 +53,3 @@ class QualityConstraint():
 
         return None
 
-    
