@@ -8,7 +8,7 @@ def test_interpretation():
     interp = Interpretation()
     context = Context("C1")
     commonMetrics = CommonMetrics()
-    qc =  QualityConstraint(context, commonMetrics.SECONDS, 15, 'LESS_THAN')
+    qc = QualityConstraint(context, commonMetrics.SECONDS, 15, 'LESS_THAN')
 
     interp.addQualityConstraint(qc)
     map = interp.getContextDependentInterpretation()

@@ -1,6 +1,7 @@
 from goald.quality.pragmatic.model.context import Context
+from goald.quality.pragmatic.model.refinement import Refinement
 
-class Task():
+class Task(Refinement):
     def __init__(self, metric, contextValueMap, lessIsMore):
         self.providedQualityLevels[metric] = contextValueMap
         self.lessIsMore = lessIsMore
@@ -8,6 +9,10 @@ class Task():
     def __init__(self):
         self.providedQualityLevels = {}
         self.lessIsMore = False
+
+    def myType(self):
+        refinement = Refinement()
+        return refinement.TASK
 
     def setProvidedQuality(self, context, metric, value):
         map = {}

@@ -6,6 +6,9 @@ class QualityConstraint():
         self.value = value
         self.comparison = comparison
 
+    def getApplicableContext(self):
+        return self.aplicableContext
+
     def abidesByQC(self, value, metric):
         #if metric in self.metric:
         if not self.compare(value):
@@ -49,3 +52,4 @@ class QualityConstraint():
                 return qualityConstraint
 
         return None
+
