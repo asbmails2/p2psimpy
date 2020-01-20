@@ -6,7 +6,9 @@ class Refinement():
         self.DELEGATION = 3
 
         self.applicableContext = []
+
         self.nonapplicableContexts = []
+
 
         self.isOrDecomposition = False
 
@@ -25,10 +27,13 @@ class Refinement():
     def addNonapplicableContext(self,context):
         self.nonapplicableContexts.append(context)
 
+    def addDependency(self, goal):
+        self.dependencies.append(goal)
+
     def addApplicableContext(self,context):
         self.applicableContext.append(context)
 
-    def getApplicableContext(self,context):
+    def getApplicableContext(self):
         return self.applicableContext
 
     def isApplicable(self,current):
@@ -52,11 +57,11 @@ class Refinement():
         return self.dependencies
 
     def getApplicableDependencies(self, context):
-        applicableDeps = Refinement()
+        applicableDeps = []
         for dep in self.dependencies:
             for cont in context:
                 if context in dep.getApplicableContext() or None in dep.getApplicableContext():
-                    applicableDeps.add(dep)
+                    applicableDeps.append(dep)
         return applicableDeps
 
     def  getIdentifier(self):

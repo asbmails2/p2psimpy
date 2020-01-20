@@ -1,12 +1,11 @@
-from goald.quality.pragmatic.model.task import Task
-
 class Plan:
     def __init__(self):
         self.tasks = []
-    
-    def __init__(self, task):
+
+    def __init__(self, *task):
         self.tasks = []
-        self.tasks.append(task)
+        if task:
+            self.tasks.append(task)
 
     def add(self, plan):
         for task in plan.getTasks():

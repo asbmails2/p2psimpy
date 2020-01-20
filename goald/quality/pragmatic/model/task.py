@@ -1,5 +1,5 @@
-from goald.quality.pragmatic.model.context import Context
 from goald.quality.pragmatic.model.refinement import Refinement
+from goald.quality.pragmatic.model.plan import Plan
 
 class Task(Refinement):
     def __init__(self, metric, contextValueMap, lessIsMore):
@@ -51,3 +51,33 @@ class Task(Refinement):
                         myQuality = self.providedQualityLevels[metric][current]
     
         return myQuality
+
+    def abidesByInterpretation(self, interp, current):
+        feasible = True
+        if interp == None:
+            return True
+
+        for qc in interp.getQualityConstraints(current):
+            try:
+                if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
+                    feasible = False
+            except:
+                print("MetricNotFoundException")
+        if interp.getQualityConstraints(None) != None:
+            for qc in interp.getQualityConstraints(None):
+                try:
+                    if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
+                        feasible = False
+                except:
+                    print("MetricNotFoundException")
+
+        return feasible
+
+    def isAchievable(self, current, interp):
+        if not self.isApplicable(current):
+            return None
+        if self.abidesByInterpretation(interp, current):
+            return Plan(self)
+        else:
+            return None
+
