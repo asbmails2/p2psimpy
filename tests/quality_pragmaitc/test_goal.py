@@ -24,11 +24,7 @@ def test_shouldBeAchievable():
 
     plan = root.isAchievable(current, None)
     assert plan != None
-
-    print(task1)
-    print(plan.getTasks())
-    print(task1 in plan.getTasks())
-
-    # assert task1 in plan.getTasks()
-    # assert task2 in plan.getTasks()
+    
+    assert task1 in plan.getTasks()
+    assert task2 in plan.getTasks()
 
