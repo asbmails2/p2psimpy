@@ -5,7 +5,7 @@ class Refinement():
         self.TASK = 2
         self.DELEGATION = 3
 
-        self.aplicableContext = []
+        self.applicableContext = []
         self.nonAplicableContexts = []
 
         self.isOrDecomposition = False
@@ -14,21 +14,24 @@ class Refinement():
 
         self.identifier = ""
 
-        self.aplicableContext.append(None)
+        self.applicableContext.append(None)
 
     def addApplicableContext(self,context):
-        if None in self.aplicableContext:
-            self.aplicableContext.remove(None)
+        if None in self.applicableContext:
+            self.applicableContext.remove(None)
         else:
-            self.aplicableContext.append(context)
+            self.applicableContext.append(context)
 
     def addNonAplicableContext(self,context):
         self.nonAplicableContexts.append(context)
 
-    def addApplicableContext(self,context):
-        self.aplicableContext.append(context)
+    def addDependency(self, goal):
+        self.dependencies.append(goal)
 
-    def getApplicableContext(self,context):
+    def addApplicableContext(self,context):
+        self.applicableContext.append(context)
+
+    def getApplicableContext(self):
         return self.applicableContext
 
     def isApplicable(self,current):
@@ -43,7 +46,7 @@ class Refinement():
         for context in self.nonAplicableContexts:
             if context in self.nonAplicableContexts:
                 return False
-            if context in self.aplicableContext:
+            if context in self.applicableContext:
                 returnValue = True
 
         return returnValue
@@ -52,11 +55,11 @@ class Refinement():
         return self.dependencies
 
     def getApplicableDependencies(self, context):
-        applicableDeps = Refinement()
+        applicableDeps = []
         for dep in self.dependencies:
             for cont in context:
                 if context in dep.getApplicableContext() or None in dep.getApplicableContext():
-                    applicableDeps.add(dep)
+                    applicableDeps.append(dep)
         return applicableDeps
 
     def  getIdentifier(self):
