@@ -132,3 +132,4 @@ Pipfile
 Pipfile.lock
 .vscode/
 .gitignore
+.vscode/settings.json
