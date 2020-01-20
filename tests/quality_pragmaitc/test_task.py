@@ -1,14 +1,18 @@
 from goald.quality.pragmatic.model.task import Task
 from goald.quality.pragmatic.model.context import Context
-from goald.quality.pragmatic.model.metric import Metrics
+from goald.quality.pragmatic.model.metric import CommonMetrics
 
 def test_shouldProvideCorrectValueForMetric():
 		task = Task()
 		currentContext = Context("C1")
-		metric =  Metrics(('METERS', False))
+		baseline = Context(None)
+		metric =  CommonMetrics()
 		fullContext = set()
+
 		fullContext.add(currentContext)
+		fullContext.add(baseline)
 
-		task.setProvidedQuality(currentContext, metric, 30.0)
+		task.setProvidedQuality(currentContext, metric.METERS, 30.0)
+		task.setProvidedQuality(baseline, metric.METERS, 50.0)
 
-		assert 30.0 == task.myProvidedQuality(metric, fullContext)
+		assert 50.0 == task.myProvidedQuality(metric.METERS, fullContext)
