@@ -5,8 +5,8 @@ class Refinement():
         self.TASK = 2
         self.DELEGATION = 3
 
-        self.aplicableContext = []
-        self.nonAplicableContexts = []
+        self.applicableContext = []
+        self.nonapplicableContexts = []
 
         self.isOrDecomposition = False
 
@@ -14,19 +14,19 @@ class Refinement():
 
         self.identifier = ""
 
-        self.aplicableContext.append(None)
+        self.applicableContext.append(None)
 
     def addApplicableContext(self,context):
-        if None in self.aplicableContext:
-            self.aplicableContext.remove(None)
+        if None in self.applicableContext:
+            self.applicableContext.remove(None)
         else:
-            self.aplicableContext.append(context)
+            self.applicableContext.append(context)
 
-    def addNonAplicableContext(self,context):
-        self.nonAplicableContexts.append(context)
+    def addNonapplicableContext(self,context):
+        self.nonapplicableContexts.append(context)
 
     def addApplicableContext(self,context):
-        self.aplicableContext.append(context)
+        self.applicableContext.append(context)
 
     def getApplicableContext(self,context):
         return self.applicableContext
@@ -37,13 +37,13 @@ class Refinement():
         if None in self.applicableContext:
             returnValue = True
 
-        if self.nonAplicableContexts is None:
+        if self.nonapplicableContexts is None:
              returnValue = True
 
-        for context in self.nonAplicableContexts:
-            if context in self.nonAplicableContexts:
+        for context in self.nonapplicableContexts:
+            if context in self.nonapplicableContexts:
                 return False
-            if context in self.aplicableContext:
+            if context in self.applicableContext:
                 returnValue = True
 
         return returnValue
