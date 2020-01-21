@@ -8,6 +8,7 @@ from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
 
 
+
 def test_refinement():
     refinement = Refinement()
     task = Task()
@@ -18,6 +19,13 @@ def test_refinement():
     assert delegation.myType() is refinement.DELEGATION
     assert goal.myType() is refinement.GOAL
 
+<<<<<<< HEAD
+=======
+    assert task.myType() == refinement.TASK
+    assert delegation.myType() == refinement.DELEGATION
+    #assert goal.myType() == refinement.GOAL
+
+>>>>>>> master
 
 def test_shouldBeApplicable():
     goal = Goal()
@@ -29,11 +37,19 @@ def test_shouldBeApplicable():
 
     fullContext.append(contextCurrent)
 
+<<<<<<< HEAD
     goal.addApplicableContext(contextCurrent)
     task.addApplicableContext(contextCurrent)
     delegation.addApplicableContext(contextCurrent)
 
     assert True is goal.isApplicable(fullContext)
+=======
+    # goal.addApplicableContext(contextCurrent)
+    task.addApplicableContext(contextCurrent)
+    delegation.addApplicableContext(contextCurrent)
+
+    #assert True == goal.isApplicable(fullContext)
+>>>>>>> master
     assert True is task.isApplicable(fullContext)
     assert True is delegation.isApplicable(fullContext)
 
@@ -45,14 +61,22 @@ def test_shouldBeApplicable():
         context = Context("C1")
 
         task.addApplicableContext(context)
+<<<<<<< HEAD
         goal.addApplicableContext(context)
+=======
+        # goal.addApplicableContext(context)
+>>>>>>> master
         delegation.addApplicableContext(context)
 
         wrongContext = Context("C2")
         fullContext = []
         fullContext.append(wrongContext)
 
+<<<<<<< HEAD
         assert False is goal.isApplicable(fullContext)
+=======
+        #assert False == goal.isApplicable(fullContext)
+>>>>>>> master
         assert False is task.isApplicable(fullContext)
         assert False is delegation.isApplicable(fullContext)
 
@@ -64,7 +88,11 @@ def test_shouldBeApplicable():
         fullContext.append(currentContext)
 
         qc = QualityConstraint(
+<<<<<<< HEAD
             currentContext, CommonMetrics.SECONDS, 15, 'LESS_OR_EQUAL_TO')
+=======
+            currentContext, commonMetrics.SECONDS, 15, 'LESS_OR_EQUAL_TO')
+>>>>>>> master
 
         task.addApplicableContext(currentContext)
         task.setProvidedQuality(currentContext, CommonMetrics.SECONDS, 12)
@@ -88,4 +116,45 @@ def test_shouldBeApplicable():
 
         task.addApplicableContext(set)
 
+<<<<<<< HEAD
         assert 2 == task.getApplicableContext().len() - originalSize
+=======
+        # null is always an applicable context
+        assert 2 is task.getApplicableContext().len() - originalSize
+
+    def aNonApplicableRootGoalIsNotAchievable():
+        goal = Goal(False)
+        current = Context("C1")
+        fullContext = {}
+
+        qc = QualityConstraint(current, Metric.SECONDS, 15, Comparison.LESS_OR_EQUAL_TO)
+        goal.addApplicableContext((new Context("C2")))
+
+        interp = Interpretation()
+        interp.addQualityConstraint(qc)
+
+        assert goal.isAchievable(fullContext, interp) is None
+
+    def aGoalWithATaskMayBeAchievable():
+		goal = Goal(False)
+
+		task = Task()
+
+		current = Context("C1")
+		fullContext = {}
+		fullContext.add(current)
+
+		qc = QualityConstraint(current, Metric.SECONDS, 15, Comparison.LESS_OR_EQUAL_TO)
+		interp = Interpretation()
+		interp.addQualityConstraint(qc)
+
+		task.addApplicableContext(current)
+		task.setProvidedQuality(current, Metric.SECONDS, 13)
+
+		goal.addDependency(task)
+		goal.setIdentifier("Root")
+		goal.addApplicableContext(current)
+
+		Plan plan = goal.isAchievable(fullContext, interp)
+		assert len(plan.getTasks()) == 1
+>>>>>>> master
