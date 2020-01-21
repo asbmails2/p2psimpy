@@ -25,3 +25,5 @@ script:
 after_success:
   - pyenv shell
   - codecov
+  - pip install codacy-coverage
+  - python-codacy-coverage -r coverage.xml
