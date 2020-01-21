@@ -1,13 +1,20 @@
 from goald.quality.pragmatic.model.context import Context
+from goald.quality.pragmatic.model.refinement import Refinement
 
-class Task():
+class Task(Refinement):
     def __init__(self, metric, contextValueMap, lessIsMore):
+        Refinement.__init__(self)
         self.providedQualityLevels[metric] = contextValueMap
         self.lessIsMore = lessIsMore
     
     def __init__(self):
+        Refinement.__init__(self)
         self.providedQualityLevels = {}
         self.lessIsMore = False
+
+    def myType(self):
+        refinement = Refinement()
+        return refinement.TASK
 
     def setProvidedQuality(self, context, metric, value):
         map = {}
@@ -24,9 +31,12 @@ class Task():
         myQuality = 0
         set = False
 
-        if metric in self.providedQualityLevels and None in self.providedQualityLevels[metric]:
-            myQuality = self.providedQualityLevels[metric][context]
-            set = True
+        if metric in self.providedQualityLevels:
+            QLContexts = self.providedQualityLevels[metric].keys()
+            for c in QLContexts:
+                if 'None' == c.label:
+                    myQuality = self.providedQualityLevels[metric][context]
+                    set = True
 
         for current in contextSet:
             if metric in self.providedQualityLevels:
@@ -34,7 +44,10 @@ class Task():
                     myQuality = self.providedQualityLevels[metric][current]
                     set = True
                 else:
-                    #Acessar o lessIsBetter da metrica para comparar e atribuir o correto ao myQuality
-                    myQuality = self.providedQualityLevels[metric][current]
-
+                    if metric.getLessIsBetter():
+                        if(myQuality > self.providedQualityLevels[metric][current]):
+                            myQuality = self.providedQualityLevels[metric][current]
+                    elif(myQuality < self.providedQualityLevels[metric][current]):
+                        myQuality = self.providedQualityLevels[metric][current]
+    
         return myQuality

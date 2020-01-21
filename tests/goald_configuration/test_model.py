@@ -5,8 +5,7 @@ from goald.config.model.context_conditions import ContextCondition
 from goald.config.model.dependency import Dependency
 from goald.config.model.deployment import Deployment, Status
 from goald.config.model.dependency_modifier import DependencyModifier, Type
-from goald.config.model.goal import Goal
-from goald.config.model.ve import VE
+from goald.quality.pragmatic.model.goal import Goal
 
 
 def test_alternative():
