@@ -1,23 +1,25 @@
 from goald.quality.pragmatic.quality_evaluator import PragmaticQualityEvaluator
 from goald.quality.pragmatic.model.context import Context
-from goald.quality.pragmatic.model.qualityConstraint import QualityConstraint
-from goald.quality.pragmatic.model.interpretation import Interpretation
-from goald.quality.pragmatic.model.metric import CommonMetrics
+from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
+from goald.quality.pragmatic.model.common_metrics import CommonMetrics
 from goald.quality.pragmatic.model.pragmatic import Pragmatic
+from goald.quality.pragmatic.model.comparison import Comparison
 
 pqe = PragmaticQualityEvaluator()
 
-def test_evaluate_empty():
-    quality = pqe.evaluateQuality("", {})
-    assert quality == None
+# def test_evaluate_empty():
+#    quality = pqe.evaluateQuality("", {})
+#    assert quality is None
+
 
 def test_shouldGetDifferentQualityConstraintsForDifferentContexts():
-    commonMetrics = CommonMetrics()
     aContext = Context("c1")
     anotherContext = Context("c2")
 
-    aQC = QualityConstraint(aContext, commonMetrics.METERS, 30, 'LESS_OR_EQUAL_TO')
-    anotherQC = QualityConstraint(anotherContext, commonMetrics.METERS, 60, 'LESS_OR_EQUAL_TO')
+    aQC = QualityConstraint(aContext, CommonMetrics.METERS,
+                            30, Comparison.LESS_OR_EQUAL_TO)
+    anotherQC = QualityConstraint(
+        anotherContext, CommonMetrics.METERS, 60, Comparison.LESS_OR_EQUAL_TO)
 
     goal = Pragmatic(False)
 
@@ -26,10 +28,11 @@ def test_shouldGetDifferentQualityConstraintsForDifferentContexts():
 
     fullContext = []
     fullContext.append(aContext)
-    
+
     assert aQC in goal.getInterpretation().getQualityConstraints(fullContext)
 
     anotherFullContext = []
-    anotherFullContext.append(anotherContext)    
+    anotherFullContext.append(anotherContext)
 
-    assert anotherQC in goal.getInterpretation().getQualityConstraints(anotherFullContext)
+    assert anotherQC in goal.getInterpretation(
+    ).getQualityConstraints(anotherFullContext)

@@ -1,3 +1,6 @@
+from goald.quality.pragmatic.model.comparison import Comparison
+
+
 class QualityConstraint():
 
     def __init__(self, context, metric, value, comparison):
@@ -10,34 +13,33 @@ class QualityConstraint():
         return self.aplicableContext
 
     def abidesByQC(self, value, metric):
-        #if metric in self.metric:
         if not self.compare(value):
             return False
 
         return True
 
     def compare(self, value):
-        if self.comparison == "GREATER_THAN":
+        if self.comparison == Comparison.GREATER_THAN:
             if value > self.value:
                 return True
             else:
                 return False
-        elif self.comparison == "GREATER_OR_EQUAL_TO":
+        elif self.comparison == Comparison.GREATER_OR_EQUAL_TO:
             if value >= self.value:
                 return True
             else:
                 return False
-        elif self.comparison == "EQUAL_TO":
+        elif self.comparison == Comparison.EQUAL_TO:
             if value == self.value:
                 return True
             else:
                 return False
-        elif self.comparison == "LESS_OR_EQUAL_TO":
+        elif self.comparison == Comparison.LESS_OR_EQUAL_TO:
             if value <= self.value:
                 return True
             else:
                 return False
-        elif self.comparison == "LESS_THAN":
+        elif self.comparison == Comparison.LESS_THAN:
             if value < self.value:
                 return True
             else:
@@ -45,11 +47,10 @@ class QualityConstraint():
         return False
 
     def stricterQC(self, qualityConstraint):
-        if self.comparison in qualityConstraint.comparison:
+        if self.comparison == qualityConstraint.comparison:
             if qualityConstraint.compare(self.value):
                 return self
             else:
                 return qualityConstraint
 
         return None
-

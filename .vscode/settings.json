@@ -7,5 +7,6 @@
     "python.testing.pytestEnabled": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,
     "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.pythonPath": "C:\\Users\\biach\\.virtualenvs\\p2psimpy-StZPkODM\\Scripts\\python.exe"
 }
