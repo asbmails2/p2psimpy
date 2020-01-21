@@ -9,7 +9,6 @@ class Refinement():
 
         self.nonapplicableContexts = []
 
-
         self.isOrDecomposition = False
 
         self.dependencies = []
@@ -18,32 +17,26 @@ class Refinement():
 
         self.applicableContext.append(None)
 
-    def addApplicableContext(self,context):
-        if None in self.applicableContext:
-            self.applicableContext.remove(None)
-        else:
-            self.applicableContext.append(context)
-
-    def addNonapplicableContext(self,context):
+    def addNonapplicableContext(self, context):
         self.nonapplicableContexts.append(context)
 
     def addDependency(self, goal):
         self.dependencies.append(goal)
 
-    def addApplicableContext(self,context):
+    def addApplicableContext(self, context):
         self.applicableContext.append(context)
 
     def getApplicableContext(self):
         return self.applicableContext
 
-    def isApplicable(self,current):
+    def isApplicable(self, current):
         returnValue = False
-        unapplicableContextsFound = 0
+
         if None in self.applicableContext:
             returnValue = True
 
         if self.nonapplicableContexts is None:
-             returnValue = True
+            returnValue = True
 
         for context in self.nonapplicableContexts:
             if context in self.nonapplicableContexts:
@@ -56,15 +49,16 @@ class Refinement():
     def getDependencies(self):
         return self.dependencies
 
-    def getApplicableDependencies(self, context):
+    def getApplicableDependencies(self, current):
         applicableDeps = []
         for dep in self.dependencies:
-            for cont in context:
-                if context in dep.getApplicableContext() or None in dep.getApplicableContext():
+            for context in current:
+                if context in dep.getApplicableContext() or \
+                        None in dep.getApplicableContext():
                     applicableDeps.append(dep)
         return applicableDeps
 
-    def  getIdentifier(self):
+    def getIdentifier(self):
         return self.identifier
 
     def setIdentifier(self, identifier):

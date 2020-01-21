@@ -1,7 +1,5 @@
 class Plan:
-    def __init__(self):
-        self.tasks = []
-
+    
     def __init__(self, task=None):
         self.tasks = []
         if task:

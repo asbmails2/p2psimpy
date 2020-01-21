@@ -1,6 +1,7 @@
 from goald.quality.pragmatic.model.goal import Goal
 from goald.quality.pragmatic.model.interpretation import Interpretation
 
+
 class Pragmatic(Goal):
 
     def __init__(self, isOrDecomposition=None):
@@ -12,9 +13,9 @@ class Pragmatic(Goal):
     def getInterpretation(self):
         return self.interp
 
-    def isAchievable(current, interp):
+    def isAchievable(self, current, interp):
         newInterp = Interpretation()
         newInterp.merge(self.interp)
         newInterp.merge(interp)
 
-        return Goal.isAchievable(current, newInterp)
+        return super().isAchievable(current, newInterp)
