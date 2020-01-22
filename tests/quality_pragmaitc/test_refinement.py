@@ -69,7 +69,7 @@ def test_aTaskShouldBeAchievable():
     fullContext.append(currentContext)
 
     qc = QualityConstraint(
-        currentContext, CommonMetrics.SECONDS, 15, 'LESS_OR_EQUAL_TO')
+        currentContext, CommonMetrics.SECONDS, 15, Comparison.LESS_OR_EQUAL_TO)
 
     task.addApplicableContext(currentContext)
     task.setProvidedQuality(currentContext, CommonMetrics.SECONDS, 12)
@@ -77,7 +77,7 @@ def test_aTaskShouldBeAchievable():
     interp = Interpretation()
     interp.addQualityConstraint(qc)
 
-    assert True is task in task.isAchievable(
+    assert task in task.isAchievable(
         fullContext, interp).getTasks()
 
 
@@ -86,7 +86,11 @@ def test_shouldAddSeveralContextsAtOnce():
     context2 = Context("C2")
 
     task = Task()
-    originalSize = len(task.getApplicableContext())
+    originalSize = 0
+
+    if None is task.getApplicableContext():
+        originalSize = len(task.getApplicableContext())
+
     set = []
 
     set.append(context1)

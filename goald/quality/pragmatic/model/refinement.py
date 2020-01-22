@@ -24,7 +24,12 @@ class Refinement():
         self.dependencies.append(goal)
 
     def addApplicableContext(self, context):
-        self.applicableContext.append(context)
+        if None in self.applicableContext:
+            self.applicableContext.remove(None)
+        if isinstance(context, list):
+            self.applicableContext.extend(context)
+        else:
+            self.applicableContext.append(context)
 
     def getApplicableContext(self):
         return self.applicableContext
@@ -35,10 +40,10 @@ class Refinement():
         if None in self.applicableContext:
             returnValue = True
 
-        if self.nonapplicableContexts is None:
+        if len(self.nonapplicableContexts) > 0:
             returnValue = True
 
-        for context in self.nonapplicableContexts:
+        for context in current:
             if context in self.nonapplicableContexts:
                 return False
             if context in self.applicableContext:
