@@ -55,19 +55,24 @@ class Task(Refinement):
         if interp is None:
             return True
 
+        interp.getQualityConstraints(current)
+
         for qc in interp.getQualityConstraints(current):
             try:
-                if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
+                if not qc.abidesByQC(self.myProvidedQuality(qc.metric, current), qc.metric):
                     feasible = False
             except:
-                print("MetricNotFoundException")
-        if interp.getQualityConstraints(None) != None:
+                print("MetricNotFoundException Metric: ", qc.metric)
+                raise
+
+        if interp.getQualityConstraints(None) is not None:
             for qc in interp.getQualityConstraints(None):
                 try:
-                    if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
+                    if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(),current), qc.getMetric()):
                         feasible = False
                 except:
                     print("MetricNotFoundException")
+                    raise
 
         return feasible
 

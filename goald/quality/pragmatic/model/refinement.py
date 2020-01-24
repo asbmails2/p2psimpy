@@ -14,8 +14,6 @@ class Refinement():
         self.dependencies = []
 
         self.identifier = ""
-        #comentar o append
-        self.applicableContext.append(None)
 
     def addNonapplicableContext(self, context):
         self.nonapplicableContexts.append(context)
@@ -24,8 +22,6 @@ class Refinement():
         self.dependencies.append(goal)
 
     def addApplicableContext(self, context):
-        if None in self.applicableContext:
-            self.applicableContext.remove(None)
         if isinstance(context, list):
             self.applicableContext.extend(context)
         else:
