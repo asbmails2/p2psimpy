@@ -9,7 +9,7 @@ class Pragmatic(Goal):
 
         self.isOrDecomposition = isOrDecomposition
         self.interp = Interpretation()
-    
+
     def getInterpretation(self):
         return self.interp
 

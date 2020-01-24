@@ -12,7 +12,7 @@ class Interpretation():
         context = constraint.getApplicableContext()
 
         if context in self.contextDependentInterpretation:
-            self.contextDependentInterpretation[context].update(constraint)
+            self.contextDependentInterpretation[context] = constraint
         else:
             constraintSet = []
             constraintSet.append(constraint)
@@ -21,9 +21,10 @@ class Interpretation():
     def getQualityConstraints(self, current):
         allQCs = []
 
-        if current:
+        if current is not None:
             for context in current:
                 if context in self.contextDependentInterpretation.keys():
+                    self.contextDependentInterpretation.get(context)
                     allQCs.extend(
                         self.contextDependentInterpretation.get(context))
         elif None in self.contextDependentInterpretation.keys():

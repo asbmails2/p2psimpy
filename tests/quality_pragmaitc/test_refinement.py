@@ -179,8 +179,6 @@ def test_aGoalAndDecomposedWithTwoTasksMayBeAchievable():
 def test_aGoalAndDecomposedWithTwoTasksMayNotBeAchievable():
     goal = Goal(Decomposition.AND)
 
-    assert not goal.decomposition
-
     task1 = Task()
     task2 = Task()
 
@@ -274,8 +272,8 @@ def test_aGoalOrDecomposedWithTwoTasksMayBeAchievableAtOnlyOneBranch():
     interp.addQualityConstraint(qc)
 
     plan = goal.isAchievable(fullContext, interp)
-    assert plan.getTasks().contains(task2)
-    assert plan.getTasks().contains(task1)
+    assert task2 in plan.getTasks()
+    assert task1 not in plan.getTasks()
 
 
 def test_aGoalOrDecomposedWithTwoTasksMayNotBeAchievable():
@@ -306,7 +304,7 @@ def test_aGoalOrDecomposedWithTwoTasksMayNotBeAchievable():
     interp.addQualityConstraint(qc)
 
     plan = goal.isAchievable(fullContext, interp)
-    assert goal.decomposition
+    assert goal.decomposition is Decomposition.OR
     assert plan is None
 
 
@@ -339,7 +337,7 @@ def test_ApplicableDeps():
     assert len(goal.isAchievable(current, interp).getTasks()) == 1
 
 
-def testGetApplicableQC():
+def test_getApplicableQC():
     goal = Pragmatic(Decomposition.AND)
 
     task = Task()
@@ -363,7 +361,7 @@ def testGetApplicableQC():
     interp.addQualityConstraint(qc)
 
     fullContext.append(context)
-    # assertEquals(null, goal.isAchievable(fullContext, interp))
+    assert goal.isAchievable(fullContext, interp) is None
 
     assert qc in goal.getInterpretation().getQualityConstraints(
         fullContext)
@@ -374,7 +372,7 @@ def testGetApplicableQC():
     assert stricter in goal.getInterpretation().getQualityConstraints(
         fullContext)
 
-    fullContext.pop(context)
+    fullContext.remove(context)
     assert qc not in goal.getInterpretation().getQualityConstraints(
         fullContext)
 
@@ -408,10 +406,11 @@ def shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
     assert qc in goal.getInterpretation().getQualityConstraints(fullContext)
 
     fullContext.append(anotherContext)
-    assert stricter in goal.getInterpretation().getQualityConstraints(fullContext)
+    assert stricter in \
+        goal.getInterpretation().getQualityConstraints(fullContext)
 
 
-def shouldIncludeNonApplicableContexts():
+def test_shouldIncludeNonApplicableContexts():
     goal = Pragmatic(False)
 
     task = Task()
@@ -427,19 +426,19 @@ def shouldIncludeNonApplicableContexts():
 
     goal.addDependency(task)
     goal.setIdentifier("Root")
-    #goal.addNonApplicableContext(wrongContext)
+    goal.addNonapplicableContext(wrongContext)
     goal.getInterpretation().addQualityConstraint(qc)
 
     interp = Interpretation()
     interp.addQualityConstraint(qc)
 
     current.append(wrongContext)
-    #assert goal.isAchievable(current, interp) is None
+    assert goal.isAchievable(current, interp) is None
 
     current.append(context)
     assert goal.isAchievable(current, interp) is None
 
-    current.pop(wrongContext)
+    current.remove(wrongContext)
     assert goal.isAchievable(current, interp) is not None
     assert goal.isAchievable(current, interp).getTasks() is not None
     assert 1 == len(goal.isAchievable(current, interp).getTasks())
