@@ -6,14 +6,14 @@ from goald.quality.pragmatic.model.decomposition import Decomposition
 
 
 def test_shouldBeAchievable():
-    root = Goal(Decomposition.AND)
+    root = Goal(Decomposition.AND, "root")
 
     context = Context("c1")
     current = []
     current.append(context)
 
-    task1 = Task()
-    task2 = Task()
+    task1 = Task("t1")
+    task2 = Task("t2")
 
     task1.addApplicableContext(context)
 

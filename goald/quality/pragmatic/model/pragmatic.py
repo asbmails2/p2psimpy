@@ -4,10 +4,9 @@ from goald.quality.pragmatic.model.interpretation import Interpretation
 
 class Pragmatic(Goal):
 
-    def __init__(self, isOrDecomposition=None):
-        Goal.__init__(self, isOrDecomposition)
+    def __init__(self, decomposition):
+        Goal.__init__(self, decomposition)
 
-        self.isOrDecomposition = isOrDecomposition
         self.interp = Interpretation()
 
     def getInterpretation(self):

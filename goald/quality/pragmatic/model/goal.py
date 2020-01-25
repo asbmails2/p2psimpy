@@ -1,10 +1,11 @@
 from goald.quality.pragmatic.model.refinement import Refinement
 from goald.quality.pragmatic.model.plan import Plan
+from goald.quality.pragmatic.model.decomposition import Decomposition
 
 
 class Goal(Refinement):
-    def __init__(self, decomposition=False):
-        Refinement.__init__(self)
+    def __init__(self, decomposition, identifier=""):
+        Refinement.__init__(self, identifier)
         self.decomposition = decomposition
 
     def myType(self):
@@ -14,15 +15,17 @@ class Goal(Refinement):
         if not self.isApplicable(current):
             return None
 
-        if self.decomposition:
-            for dep in self.getApplicableDependencies(current):
+        dependencies = self.getApplicableDependencies(current)
+
+        if self.decomposition == Decomposition.OR:
+            for dep in dependencies:
                 plan = dep.isAchievable(current, interp)
                 if plan is not None:
                     return plan
             return None
         else:
             complete = Plan()
-            for dep in self.getApplicableDependencies(current):
+            for dep in dependencies:
                 plan = dep.isAchievable(current, interp)
                 if plan is not None:
                     complete.add(plan)

@@ -1,6 +1,7 @@
 from goald.quality.pragmatic.model.refinement import Refinement
 from goald.quality.pragmatic.model.task import Task
 from goald.quality.pragmatic.model.delegation import Delegation
+from goald.quality.pragmatic.model.decomposition import Decomposition
 from goald.quality.pragmatic.model.context import Context
 from goald.quality.pragmatic.model.common_metrics import CommonMetrics
 from goald.quality.pragmatic.model.decomposition import Decomposition
@@ -15,7 +16,7 @@ def test_refinement():
     refinement = Refinement()
     task = Task()
     delegation = Delegation()
-    goal = Goal()
+    goal = Goal(Decomposition.AND)
 
     assert task.myType() is refinement.TASK
     assert delegation.myType() is refinement.DELEGATION
@@ -23,7 +24,7 @@ def test_refinement():
 
 
 def test_shouldBeApplicable():
-    goal = Goal()
+    goal = Goal(Decomposition.AND)
     task = Task()
     delegation = Delegation()
 
@@ -42,7 +43,7 @@ def test_shouldBeApplicable():
 
 
 def test_shouldBeNotApplicable():
-    goal = Goal()
+    goal = Goal(Decomposition.AND)
     task = Task()
     delegation = Delegation()
 
@@ -88,23 +89,16 @@ def test_shouldAddSeveralContextsAtOnce():
     context2 = Context("C2")
 
     task = Task()
-    originalSize = 0
 
-    if None is task.getApplicableContext():
-        originalSize = len(task.getApplicableContext())
+    assert task.applicableContext is None
 
-    set = []
+    task.addApplicableContext([context1, context2])
 
-    set.append(context1)
-    set.append(context2)
-
-    task.addApplicableContext(set)
-
-    assert 2 == len(task.getApplicableContext()) - originalSize
+    assert 2 == len(task.applicableContext)
 
 
 def test_aNonApplicableRootGoalIsNotAchievable():
-    goal = Goal(False)
+    goal = Goal(Decomposition.AND)
     current = Context("C1")
     fullContext = []
 
@@ -119,7 +113,7 @@ def test_aNonApplicableRootGoalIsNotAchievable():
 
 
 def test_aGoalWithATaskMayBeAchievable():
-    goal = Goal(False)
+    goal = Goal(Decomposition.AND)
 
     task = Task()
 
@@ -145,7 +139,6 @@ def test_aGoalWithATaskMayBeAchievable():
 
 def test_aGoalAndDecomposedWithTwoTasksMayBeAchievable():
     goal = Goal(Decomposition.AND)
-    assert not goal.isOrDecomposition
 
     task1 = Task()
     task2 = Task()
@@ -156,6 +149,9 @@ def test_aGoalAndDecomposedWithTwoTasksMayBeAchievable():
 
     qc = QualityConstraint(current, CommonMetrics.SECONDS,
                            15, Comparison.LESS_OR_EQUAL_TO)
+
+    interp = Interpretation()
+    interp.addQualityConstraint(qc)
 
     task1.addApplicableContext(current)
     task1.setProvidedQuality(current, CommonMetrics.SECONDS, 13)
@@ -168,9 +164,6 @@ def test_aGoalAndDecomposedWithTwoTasksMayBeAchievable():
 
     goal.setIdentifier("Root")
     goal.addApplicableContext(current)
-
-    interp = Interpretation()
-    interp.addQualityConstraint(qc)
 
     plan = goal.isAchievable(fullContext, interp)
     assert 2 == len(plan.getTasks())
@@ -314,7 +307,6 @@ def test_ApplicableDeps():
     task = Task()
     context = Context("C1")
     wrongContext = Context("C2")
-    current = []
 
     qc = QualityConstraint(context, CommonMetrics.SECONDS,
                            15, Comparison.LESS_OR_EQUAL_TO)
@@ -322,14 +314,14 @@ def test_ApplicableDeps():
     task.addApplicableContext(context)
     task.setProvidedQuality(context, CommonMetrics.SECONDS, 13)
 
-    goal.addDependency(task)
     goal.setIdentifier("Root")
+    goal.addDependency(task)
     goal.addApplicableContext(context)
     goal.getInterpretation().addQualityConstraint(qc)
 
     interp = Interpretation()
     interp.addQualityConstraint(qc)
-
+    current = []
     current.append(wrongContext)
     assert goal.isAchievable(current, interp) is None
 
@@ -443,18 +435,3 @@ def test_shouldIncludeNonApplicableContexts():
     assert goal.isAchievable(current, interp).getTasks() is not None
     assert 1 == len(goal.isAchievable(current, interp).getTasks())
 
-
-def shouldAddSeveralContextsAtOnce():
-    context1 = Context("C1")
-    context2 = Context("C2")
-
-    task = Task()
-    originalSize = len(task.getApplicableContext())
-    set = []
-
-    set.append(context1)
-    set.append(context2)
-
-    task.addApplicableContext(set)
-    # null is always an applicable context
-    assert 2 == (len(task.getApplicableContext()) - originalSize)
