@@ -302,7 +302,7 @@ def test_aGoalOrDecomposedWithTwoTasksMayNotBeAchievable():
 
 
 def test_ApplicableDeps():
-    goal = Pragmatic()
+    goal = Pragmatic(Decomposition.AND)
 
     task = Task()
     context = Context("C1")
@@ -342,6 +342,8 @@ def test_getApplicableQC():
                            15, Comparison.LESS_OR_EQUAL_TO)
     stricter = QualityConstraint(
         anotherContext, CommonMetrics.SECONDS, 10, Comparison.LESS_OR_EQUAL_TO)
+    
+    task.setProvidedQuality(context, CommonMetrics.SECONDS, 13)
 
     goal.addDependency(task)
     goal.setIdentifier("Root")
@@ -353,16 +355,21 @@ def test_getApplicableQC():
     interp.addQualityConstraint(qc)
 
     fullContext.append(context)
-    assert goal.isAchievable(fullContext, interp) is None
 
-    assert qc in goal.getInterpretation().getQualityConstraints(
+    assert stricter not in goal.getInterpretation().getQualityConstraints(
         fullContext)
+    
+    plan = goal.isAchievable(fullContext, interp)
+    assert len(plan.getTasks()) == 1
 
     fullContext.append(anotherContext)
     assert qc in goal.getInterpretation().getQualityConstraints(
         fullContext)
+
     assert stricter in goal.getInterpretation().getQualityConstraints(
         fullContext)
+
+    assert goal.isAchievable(fullContext, interp) is None
 
     fullContext.remove(context)
     assert qc not in goal.getInterpretation().getQualityConstraints(
@@ -372,7 +379,7 @@ def test_getApplicableQC():
         fullContext)
 
 
-def shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
+def test_shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
     goal = Pragmatic(Decomposition.AND)
 
     task = Task()

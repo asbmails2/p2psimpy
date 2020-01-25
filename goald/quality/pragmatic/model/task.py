@@ -40,16 +40,17 @@ class Task(Refinement):
             set = True
 
         for current in contextSet:
-            if metric in self.providedQualityLevels:
-                if not set:
-                    myQuality = metricQL[current]
-                    set = True
-                else:
-                    if metric.getLessIsBetter():
-                        if(myQuality > metricQL[current]):
-                            myQuality = metricQL[current]
-                    elif(myQuality < metricQL[current]):
+            if metricQL.get(current) is None:
+                continue            
+            if not set:
+                myQuality = metricQL.get(current)
+                set = True
+            else:
+                if metric.getLessIsBetter():
+                    if(myQuality > metricQL[current]):
                         myQuality = metricQL[current]
+                elif(myQuality < metricQL[current]):
+                    myQuality = metricQL[current]
 
         return myQuality
 
@@ -59,12 +60,10 @@ class Task(Refinement):
             return True
 
         for qc in interp.getQualityConstraints(current):
-            try:
-                if not qc.abidesByQC(self.myProvidedQuality(qc.metric, current), qc.metric):
-                    feasible = False
-            except:
-                print("MetricNotFoundException Metric: ", qc.metric)
-                raise
+            myQuality = self.myProvidedQuality(qc.metric, current)
+            if not qc.abidesByQC(myQuality, qc.metric):
+                feasible = False
+        
 
         if interp.getQualityConstraints(None) is not None:
             for qc in interp.getQualityConstraints(None):
