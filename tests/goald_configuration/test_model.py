@@ -51,9 +51,3 @@ def test_deployment():
     deployment.add(Status.ACTIVE, component)
     assert not deployment.componentStatus == []
 
-
-def test_goal():
-    goal = Goal(
-        identification='g1'
-    )
-    assert goal.identification == 'g1'

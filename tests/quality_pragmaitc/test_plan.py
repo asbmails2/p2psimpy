@@ -1,6 +1,7 @@
 from goald.quality.pragmatic.model.plan import Plan
 from goald.quality.pragmatic.model.task import Task
 
+
 def test_plan():
     task1 = Task()
     task2 = Task()

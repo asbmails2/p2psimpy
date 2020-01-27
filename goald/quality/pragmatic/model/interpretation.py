@@ -12,20 +12,34 @@ class Interpretation():
         context = constraint.getApplicableContext()
 
         if context in self.contextDependentInterpretation:
-            self.contextDependentInterpretation[context].update(constraint)
+            self.contextDependentInterpretation[context].append(constraint)
         else:
             constraintSet = []
             constraintSet.append(constraint)
             self.contextDependentInterpretation[context] = constraintSet
-        
-    def getQualityConstraints(self, current):
-        allQCs = {}
 
-        if current:
-            for context in current:
-                if self.contextDependentInterpretation.containsKey(context):
-                    allQCs.addAll(self.contextDependentInterpretation.get(context))
-        elif self.contextDependentInterpretation.containsKey(None):
-            allQCs.addAll(self.contextDependentInterpretation.get(None))
+    def getQualityConstraints(self, current):
+        allQCs = []
         
+        if current is not None:
+            if(isinstance(current, list)):
+                for context in current:
+                    if context in self.contextDependentInterpretation:
+                        allQCs.extend(
+                            self.contextDependentInterpretation[context])
+            elif current in self.contextDependentInterpretation:
+                allQCs.extend(self.contextDependentInterpretation[current])
+
+        elif None in self.contextDependentInterpretation.keys():
+            allQCs.append(self.contextDependentInterpretation.get(None))
+
         return allQCs
+
+    def merge(self, interp):
+        if interp is None:
+            return
+        for qc in interp.getAllQualityConstraints():
+            self.addQualityConstraint(qc)
+
+    def getAllQualityConstraints(self):
+        return self.qualityConstraints
