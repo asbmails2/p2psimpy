@@ -3,21 +3,17 @@ from goald.quality.pragmatic.model.goal import Goal
 from goald.quality.pragmatic.model.context import Context
 from goald.quality.pragmatic.model.delegation import Delegation
 from goald.quality.pragmatic.model.decomposition import Decomposition
-from goald.quality.pragmatic.model.common_metrics import CommonMetrics
-from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
-from goald.quality.pragmatic.model.interpretation import Interpretation
-from goald.quality.pragmatic.model.comparison import Comparison
 
 
 def test_shouldBeAchievable():
-    root = Goal(Decomposition.AND)
+    root = Goal(Decomposition.AND, "root")
 
     context = Context("c1")
     current = []
     current.append(context)
 
-    task1 = Task()
-    task2 = Task()
+    task1 = Task("t1")
+    task2 = Task("t2")
 
     task1.addApplicableContext(context)
 
@@ -52,4 +48,3 @@ def test_shouldGetApplicableDependencies():
 
     assert 1 == len(deps)
     assert task in deps
-

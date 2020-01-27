@@ -1,21 +1,17 @@
 class Refinement():
 
-    def __init__(self):
+    def __init__(self, identifier=""):
         self.GOAL = 1
         self.TASK = 2
         self.DELEGATION = 3
 
-        self.applicableContext = []
+        self.applicableContext = None
 
         self.nonapplicableContexts = []
 
-        self.isOrDecomposition = False
-
         self.dependencies = []
 
-        self.identifier = ""
-        #comentar o append
-        self.applicableContext.append(None)
+        self.identifier = identifier
 
     def addNonapplicableContext(self, context):
         self.nonapplicableContexts.append(context)
@@ -24,8 +20,8 @@ class Refinement():
         self.dependencies.append(goal)
 
     def addApplicableContext(self, context):
-        if None in self.applicableContext:
-            self.applicableContext.remove(None)
+        if self.applicableContext is None:
+            self.applicableContext = []
         if isinstance(context, list):
             self.applicableContext.extend(context)
         else:
@@ -37,7 +33,7 @@ class Refinement():
     def isApplicable(self, current):
         returnValue = False
 
-        if None in self.applicableContext:
+        if self.applicableContext is None:
             returnValue = True
 
         if len(self.nonapplicableContexts) > 0:
@@ -46,8 +42,9 @@ class Refinement():
         for context in current:
             if context in self.nonapplicableContexts:
                 return False
-            if context in self.applicableContext:
-                returnValue = True
+            if self.applicableContext is not None:
+                if context in self.applicableContext:
+                    returnValue = True
 
         return returnValue
 
@@ -55,12 +52,14 @@ class Refinement():
         return self.dependencies
 
     def getApplicableDependencies(self, current):
-        applicableDeps = []
+        applicableDeps = set()
         for dep in self.dependencies:
+            if dep.applicableContext is None:
+                applicableDeps.add(dep)
+                continue
             for context in current:
-                if context in dep.getApplicableContext() or \
-                        None in dep.getApplicableContext():
-                    applicableDeps.append(dep)
+                if context in dep.applicableContext:
+                    applicableDeps.add(dep)
         return applicableDeps
 
     def getIdentifier(self):

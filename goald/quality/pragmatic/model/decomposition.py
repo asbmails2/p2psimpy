@@ -1,3 +1,3 @@
 class Decomposition():
-    AND = False
-    OR = True
+    AND = 'AND'
+    OR = 'OR'
