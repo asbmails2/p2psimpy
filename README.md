@@ -6,13 +6,13 @@ GoalD P2P Sim
 =============
 
 Env Depencies
-_____________
+-------------
 python 3, pip
 
 Used IDE: vscode, plugin python
 
 Instal pipenv
-_____________ 
+------------- 
 
 pipenv easy the process of managing python dependencies
 
@@ -27,7 +27,7 @@ $ brew install pipenv
 ```
 
 Install dependencies
-____________________
+--------------------
 
 Inside the project folder (after clone)
 
@@ -40,7 +40,7 @@ $ pipenv shell
 ```
 
 Run
-___
+---
 
 Select the exec shell
 
@@ -55,7 +55,7 @@ $ python ./simulator/run.py
 ```
 
 Test
-____
+----
 
 Tests should be put on /tests folder and are executed with the following command.
 
@@ -64,14 +64,14 @@ Tests should be put on /tests folder and are executed with the following command
 ```
 
 Linter
-______
+------
 
 ```console
  $ flake8 --statistics
 ```
 
 Dependency
-__________
+----------
 
 Add New Dependency
 ------------------
