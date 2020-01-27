@@ -2,14 +2,17 @@
 [![Build Status](https://travis-ci.org/lesunb/p2psimpy.svg?branch=master)](https://travis-ci.org/lesunb/p2psimpy)
 [![codecov](https://codecov.io/gh/lesunb/p2psimpy/branch/master/graph/badge.svg)](https://codecov.io/gh/lesunb/p2psimpy)
 
-Env Depencies
+GoalD P2P Sim
 =============
+
+Env Depencies
+_____________
 python 3, pip
 
 Used IDE: vscode, plugin python
 
 Instal pipenv
-============= 
+_____________ 
 
 pipenv easy the process of managing python dependencies
 
@@ -23,9 +26,8 @@ Alternatively, macOS brew
 $ brew install pipenv 
 ```
 
-
 Install dependencies
-====================
+____________________
 
 Inside the project folder (after clone)
 
@@ -38,7 +40,7 @@ $ pipenv shell
 ```
 
 Run
-===
+___
 
 Select the exec shell
 
@@ -53,7 +55,7 @@ $ python ./simulator/run.py
 ```
 
 Test
-====
+____
 
 Tests should be put on /tests folder and are executed with the following command.
 
@@ -62,14 +64,14 @@ Tests should be put on /tests folder and are executed with the following command
 ```
 
 Linter
-======
+______
 
 ```console
  $ flake8 --statistics
 ```
 
 Dependency
-==========
+__________
 
 Add New Dependency
 ------------------
