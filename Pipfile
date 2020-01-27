@@ -8,6 +8,7 @@ pytest = "*"
 flake8 = "*"
 pytest-cov = "*"
 autopep8 = "*"
+codacy-coverage = "*"
 
 [packages]
 simpy = "*"
