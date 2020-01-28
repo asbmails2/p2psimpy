@@ -30,7 +30,7 @@ class Interpretation():
             elif current in self.contextDependentInterpretation:
                 allQCs.extend(self.contextDependentInterpretation[current])
 
-        elif None in self.contextDependentInterpretation.keys():
+        elif self.contextDependentInterpretation[None] is None:
             allQCs.append(self.contextDependentInterpretation.get(None))
 
         return allQCs

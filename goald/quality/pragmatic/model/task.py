@@ -41,7 +41,7 @@ class Task(Refinement):
 
         for current in contextSet:
             if metricQL.get(current) is None:
-                continue            
+                continue
             if not set:
                 myQuality = metricQL.get(current)
                 set = True
@@ -63,14 +63,14 @@ class Task(Refinement):
             myQuality = self.myProvidedQuality(qc.metric, current)
             if not qc.abidesByQC(myQuality, qc.metric):
                 feasible = False
-        
 
         if interp.getQualityConstraints(None) is not None:
             for qc in interp.getQualityConstraints(None):
                 try:
-                    if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
+                    myQC = self.myProvidedQuality(qc.metric, current)
+                    if not qc.abidesByQC(myQC, qc.metric):
                         feasible = False
-                except:
+                except MetricNotFoundException:
                     print("MetricNotFoundException")
                     raise
 

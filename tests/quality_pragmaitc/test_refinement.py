@@ -379,6 +379,26 @@ def test_getApplicableQC():
         fullContext)
 
 
+def test_shouldGetBaselineQC():
+    goal = Pragmatic(Decomposition.AND)
+
+    context = Context("C1")
+
+    qc = QualityConstraint(context, CommonMetrics.SECONDS,
+                           15, Comparison.LESS_OR_EQUAL_TO)
+    baselineQC = QualityConstraint(
+        None, CommonMetrics.SECONDS, 10, Comparison.LESS_OR_EQUAL_TO)
+    
+    goal.setIdentifier("Root")
+    goal.addApplicableContext(context)
+    goal.interp.addQualityConstraint(qc)
+    goal.interp.addQualityConstraint(baselineQC)
+
+    assert baselineQC in goal.interp.getQualityConstraints([])
+
+    
+
+
 def test_shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
     goal = Pragmatic(Decomposition.AND)
 
