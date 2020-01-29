@@ -4,10 +4,11 @@ from goald.quality.pragmatic.exceptions.metric_not_found import MetricNotFoundEx
 
 
 class Task(Refinement):
-    def __init__(self, metric=None, contextValueMap=None, lessIsMore=False, identifier=""):
+    def __init__(self, identifier="", metric=None, contextValueMap=None, lessIsMore=False):
         Refinement.__init__(self, identifier)
         self.providedQualityLevels = {}
         self.lessIsMore = lessIsMore
+        self.identifier = identifier
 
         if contextValueMap and metric:
             self.providedQualityLevels[metric] = contextValueMap
@@ -16,20 +17,21 @@ class Task(Refinement):
         return Refinement().TASK
 
     def setProvidedQuality(self, context, metric, value):
-        map = {}
+        metricMap = {}
 
         if metric in self.providedQualityLevels:
-            map = self.providedQualityLevels[metric]
-            map[context] = value
-            self.providedQualityLevels[metric] = map
+            metricMap = self.providedQualityLevels[metric]
+            metricMap[context] = value
+            self.providedQualityLevels[metric] = metricMap
         else:
-            map[context] = value
-            self.providedQualityLevels[metric] = map
+            metricMap[context] = value
+            self.providedQualityLevels[metric] = metricMap
 
     def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
         set = False
-        if metric not in self.providedQualityLevels:
+
+        if metric not in self.providedQualityLevels.keys():
             raise MetricNotFoundException("Metric: {0}".format(metric.name))
 
         metricQL = self.providedQualityLevels[metric]
@@ -64,8 +66,8 @@ class Task(Refinement):
             if not qc.abidesByQC(myQuality, qc.metric):
                 feasible = False
 
-        if interp.getQualityConstraints(None) is not None:
-            for qc in interp.getQualityConstraints(None):
+        if interp.getQualityConstraints([None]) is not None:
+            for qc in interp.getQualityConstraints([None]):
                 try:
                     myQC = self.myProvidedQuality(qc.metric, current)
                     if not qc.abidesByQC(myQC, qc.metric):

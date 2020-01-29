@@ -394,7 +394,7 @@ def test_shouldGetBaselineQC():
     goal.interp.addQualityConstraint(qc)
     goal.interp.addQualityConstraint(baselineQC)
 
-    assert baselineQC in goal.interp.getQualityConstraints([])
+    assert baselineQC in goal.interp.getQualityConstraints([None])
 
     
 

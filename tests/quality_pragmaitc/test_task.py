@@ -5,7 +5,7 @@ from goald.quality.pragmatic.exceptions.metric_not_found import MetricNotFoundEx
 
 
 def test_shouldProvideCorrectValueForMetric():
-    task = Task()
+    task = Task("T1")
     currentContext = Context("C1")
     baseline = Context(None)
     fullContext = set()

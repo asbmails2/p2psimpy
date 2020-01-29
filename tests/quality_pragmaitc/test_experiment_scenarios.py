@@ -17,7 +17,9 @@ class MpersMetrics:
     DISTANCE_ERROR = Metric('Distance', True)
 
 
-def test_contexts():
+def test_MPERS():
+
+    # Contexts
     c1 = Context("c1")
     c2 = Context("c2")
     c3 = Context("c3")
@@ -31,7 +33,7 @@ def test_contexts():
     c11 = Context("c11")
     c12 = Context("c12")
 
-    rootGoal = Goal(Decomposition.AND, "rootGoal")
+    # Goals
     respondToEmergencyGoal = Pragmatic(Decomposition.AND, "respondToEmergency")
     emergencyIsDetectedGoal = Pragmatic(
         Decomposition.OR, "emergencyIsDetected")
@@ -61,6 +63,7 @@ def test_contexts():
     ambulanceIsDispatchedToLocationGoal = Goal(
         Decomposition.AND, "ambulanceIsDispatchedToLocation")
 
+    # Tasks
     notifyCentralBySMSTask = Task("notifyCentralBySMS")
     notifyCentralByInternetTask = Task("notifyCentralByInternet")
     acceptEmergencyTask = Task("acceptEmergency")
@@ -84,8 +87,7 @@ def test_contexts():
     getInfoFromResponsibleTask = Task("getInfoFromResponsible")
     ambulanceDispatchDelegation = Task("ambulanceDispatchDelegation")
 
-    rootGoal = respondToEmergencyGoal
-
+    #Refinements
     respondToEmergencyGoal.addDependency(emergencyIsDetectedGoal)
     respondToEmergencyGoal.addDependency(isNotifiedAboutEmergencyGoal)
     respondToEmergencyGoal.addDependency(centralReceivesInfoGoal)
@@ -207,6 +209,38 @@ def test_contexts():
 
     ambulanceIsDispatchedToLocationGoal.addDependency(
         ambulanceDispatchDelegation)
+
+    # Applicable Contexts
+
+    notifyCentralBySMSTask.addApplicableContext(c2)
+
+    notifyCentralByInternetTask.addApplicableContext(c3)
+    notifyCentralByInternetTask.addApplicableContext(c4)
+
+    acceptEmergencyTask.addNonapplicableContext(c2)
+
+    confirmEmergencyByCallTask.addApplicableContext(c2)
+
+    notifyByMobileVibrationTask.addApplicableContext(c1)
+
+    notifyBySoundAlertTask.addApplicableContext(c6)
+
+    notifyByLightAlertTask.addApplicableContext(c7)
+
+    centralCallTask.addApplicableContext(c8)
+
+    sendInfoBySMSTask.addApplicableContext(c2)
+
+    sendInfoByInternetTask.addApplicableContext(c3)
+    sendInfoByInternetTask.addApplicableContext(c4)
+
+    identifyLocationByVoiceCallTask.addApplicableContext(c2)
+
+    accessLocationFromTriangulationTask.addApplicableContext(c2)
+
+    accessLocationFromGPSTask.addApplicableContext(c5)
+
+    # Goal Interpretations
 
     qc1 = QualityConstraint(None, MpersMetrics.TIME,
                             180, Comparison.LESS_THAN)
@@ -253,11 +287,14 @@ def test_contexts():
                             600, Comparison.LESS_THAN)
     infoIsPreparedGoal.interp.addQualityConstraint(qc1)
     infoIsPreparedGoal.interp.addQualityConstraint(qc2)
+
     qc1 = QualityConstraint(None, MpersMetrics.NOISE, 10, Comparison.LESS_THAN)
     qc2 = QualityConstraint(c1, MpersMetrics.NOISE, 3, Comparison.LESS_THAN)
     isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(qc1)
     isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(qc2)
 
+    # Provided Task QoS
+    
     notifyCentralBySMSTask.setProvidedQuality(
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 10)
 
@@ -331,6 +368,10 @@ def test_contexts():
 
     ambulanceDispatchDelegation.setProvidedQuality(
         None, MpersMetrics.TIME, 30)
+
+    rootGoal = Goal(Decomposition.AND, "rootGoal")
+    rootGoal = respondToEmergencyGoal
+
 
     generator = ContextGenerator(
         [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12])

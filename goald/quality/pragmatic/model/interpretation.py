@@ -22,15 +22,12 @@ class Interpretation():
         allQCs = []
         
         if current is not None:
-            if(isinstance(current, list)):
-                for context in current:
-                    if context in self.contextDependentInterpretation:
-                        allQCs.extend(
-                            self.contextDependentInterpretation[context])
-            elif current in self.contextDependentInterpretation:
-                allQCs.extend(self.contextDependentInterpretation[current])
+            for context in current:
+                if context in self.contextDependentInterpretation:
+                    allQCs.extend(
+                        self.contextDependentInterpretation[context])
 
-        elif self.contextDependentInterpretation[None] is None:
+        elif None in self.contextDependentInterpretation:
             allQCs.append(self.contextDependentInterpretation.get(None))
 
         return allQCs
