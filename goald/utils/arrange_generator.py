@@ -19,6 +19,6 @@ class ArrangeGenerator:
         for _ in range(0, self.arrangeSize):
             element = tempValue % 2
             tempValue = tempValue >> 1
-            arrange.insert(0, element)
+            arrange.append(element)
 
         return arrange

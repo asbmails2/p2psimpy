@@ -6,7 +6,10 @@ from goald.quality.pragmatic.model.task import Task
 from goald.quality.pragmatic.model.metric import Metric
 from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
 from goald.quality.pragmatic.model.comparison import Comparison
+from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.utils.context_generator import ContextGenerator
+from goald.utils.print import print_context
+from tests.utils.assert_util import assertPlan
 
 
 class MpersMetrics:
@@ -87,68 +90,7 @@ def test_MPERS():
     getInfoFromResponsibleTask = Task("getInfoFromResponsible")
     ambulanceDispatchDelegation = Task("ambulanceDispatchDelegation")
 
-    #Refinements
-    respondToEmergencyGoal.addDependency(emergencyIsDetectedGoal)
-    respondToEmergencyGoal.addDependency(isNotifiedAboutEmergencyGoal)
-    respondToEmergencyGoal.addDependency(centralReceivesInfoGoal)
-    respondToEmergencyGoal.addDependency(medicalCareReachesGoal)
-
-    emergencyIsDetectedGoal.addDependency(callForHelpIsAcceptedGoal)
-    emergencyIsDetectedGoal.addDependency(situationsAreIdentifiedGoal)
-
-    callForHelpIsAcceptedGoal.addDependency(
-        receivesEmergencyButtonCallGoal)
-    callForHelpIsAcceptedGoal.addDependency(falseAlarmIsCheckedGoal)
-
-    receivesEmergencyButtonCallGoal.addDependency(notifyCentralBySMSTask)
-    receivesEmergencyButtonCallGoal.addDependency(
-        notifyCentralByInternetTask)
-
-    falseAlarmIsCheckedGoal.addDependency(acceptEmergencyTask)
-    falseAlarmIsCheckedGoal.addDependency(pIsContactedGoal)
-
-    pIsContactedGoal.addDependency(confirmEmergencyByCallTask)
-
-    situationsAreIdentifiedGoal.addDependency(processDataFromSensorsTask)
-    situationsAreIdentifiedGoal.addDependency(vitalSignsAreMonitoredGoal)
-    situationsAreIdentifiedGoal.addDependency(identifySituationTask)
-
-    vitalSignsAreMonitoredGoal.addDependency(collectDataFromSensorsTask)
-    vitalSignsAreMonitoredGoal.addDependency(persistDataToDatabaseTask)
-
-    isNotifiedAboutEmergencyGoal.addDependency(notifyByMobileVibrationTask)
-    isNotifiedAboutEmergencyGoal.addDependency(notifyBySoundAlertTask)
-    isNotifiedAboutEmergencyGoal.addDependency(notifyByLightAlertTask)
-    isNotifiedAboutEmergencyGoal.addDependency(centralCallTask)
-
-    centralReceivesInfoGoal.addDependency(infoIsSentToEmergencyGoal)
-    centralReceivesInfoGoal.addDependency(infoIsPreparedGoal)
-
-    infoIsSentToEmergencyGoal.addDependency(sendInfoBySMSTask)
-    infoIsSentToEmergencyGoal.addDependency(sendInfoByInternetTask)
-
-    infoIsPreparedGoal.addDependency(setupAutomatedInfoGoal)
-    infoIsPreparedGoal.addDependency(contactResponsibleGoal)
-
-    setupAutomatedInfoGoal.addDependency(locationIsIdentifiedGoal)
-    setupAutomatedInfoGoal.addDependency(situationDataIsRecoveredGoal)
-
-    locationIsIdentifiedGoal.addDependency(considerLastKnownLocationTask)
-    locationIsIdentifiedGoal.addDependency(identifyLocationByVoiceCallTask)
-    locationIsIdentifiedGoal.addDependency(accessLocationFromGPSTask)
-    locationIsIdentifiedGoal.addDependency(
-        accessLocationFromTriangulationTask)
-
-    situationDataIsRecoveredGoal.addDependency(accessDataFromDatabaseTask)
-
-    contactResponsibleGoal.addDependency(getInfoFromResponsibleTask)
-
-    medicalCareReachesGoal.addDependency(
-        ambulanceIsDispatchedToLocationGoal)
-
-    ambulanceIsDispatchedToLocationGoal.addDependency(
-        ambulanceDispatchDelegation)
-
+    # Refinements
     respondToEmergencyGoal.addDependency(emergencyIsDetectedGoal)
     respondToEmergencyGoal.addDependency(isNotifiedAboutEmergencyGoal)
     respondToEmergencyGoal.addDependency(centralReceivesInfoGoal)
@@ -294,7 +236,7 @@ def test_MPERS():
     isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(qc2)
 
     # Provided Task QoS
-    
+
     notifyCentralBySMSTask.setProvidedQuality(
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 10)
 
@@ -372,6 +314,18 @@ def test_MPERS():
     rootGoal = Goal(Decomposition.AND, "rootGoal")
     rootGoal = respondToEmergencyGoal
 
+    # tasks = [
+    #     notifyCentralByInternetTask,
+    #     acceptEmergencyTask,
+    #     notifyByLightAlertTask,
+    #     accessLocationFromGPSTask,
+    #     accessDataFromDatabaseTask,
+    #     sendInfoByInternetTask
+    # ]
+
+    # plan = rootGoal.isAchievable([c4, c8, c11], None)
+
+    # assertPlan(plan, tasks)
 
     generator = ContextGenerator(
         [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12])
@@ -381,12 +335,16 @@ def test_MPERS():
 
     for context in generatorIter:
         counter = counter + 1
+        print("INIT IN TEST FOR CONTEXT: ", counter)
+        print_context(context)
         if rootGoal.isAchievable(context, None) is not None:
             print("Achievable")
             print("[")
-            for task in rootGoal.isAchievable(context, None):
+            for task in rootGoal.isAchievable(context, None).getTasks():
                 print(task.identifier + " ")
 
             print("]")
         else:
             print("Not achievable")
+
+        print("END: ", counter)

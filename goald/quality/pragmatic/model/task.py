@@ -4,14 +4,10 @@ from goald.quality.pragmatic.exceptions.metric_not_found import MetricNotFoundEx
 
 
 class Task(Refinement):
-    def __init__(self, identifier="", metric=None, contextValueMap=None, lessIsMore=False):
+    def __init__(self, identifier=""):
         Refinement.__init__(self, identifier)
         self.providedQualityLevels = {}
-        self.lessIsMore = lessIsMore
         self.identifier = identifier
-
-        if contextValueMap and metric:
-            self.providedQualityLevels[metric] = contextValueMap
 
     def myType(self):
         return Refinement().TASK
@@ -32,7 +28,8 @@ class Task(Refinement):
         set = False
 
         if metric not in self.providedQualityLevels.keys():
-            raise MetricNotFoundException("Metric: {0}".format(metric.name))
+            message = "Metric: {0}".format(metric.name)
+            raise MetricNotFoundException(message)
 
         metricQL = self.providedQualityLevels[metric]
 
@@ -62,21 +59,25 @@ class Task(Refinement):
             return True
 
         for qc in interp.getQualityConstraints(current):
-            myQuality = self.myProvidedQuality(qc.metric, current)
-            if not qc.abidesByQC(myQuality, qc.metric):
-                feasible = False
+            feasible = self.checkQualityConstraint(qc, current)
 
         if interp.getQualityConstraints([None]) is not None:
             for qc in interp.getQualityConstraints([None]):
-                try:
-                    myQC = self.myProvidedQuality(qc.metric, current)
-                    if not qc.abidesByQC(myQC, qc.metric):
-                        feasible = False
-                except MetricNotFoundException:
-                    print("MetricNotFoundException")
-                    raise
+                feasible = self.checkQualityConstraint(qc, current)
 
         return feasible
+
+    def checkQualityConstraint(self, qc, current):
+        try:
+            myQC = self.myProvidedQuality(qc.metric, current)
+            if not qc.abidesByQC(myQC, qc.metric):
+                return False
+        except MetricNotFoundException:
+            # if metric not defined, ignore
+            pass
+
+        return True
+
 
     def isAchievable(self, current, interp):
         if not self.isApplicable(current):
