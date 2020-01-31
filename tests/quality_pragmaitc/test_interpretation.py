@@ -34,5 +34,7 @@ def test_getQC():
     interp.addQualityConstraint(qc1)
     interp.addQualityConstraint(qc2)
 
-    assert qc1 in interp.getQualityConstraints(context)
-    assert qc2 in interp.getQualityConstraints(context)
+    listContext = [context]
+
+    assert qc1 in interp.getQualityConstraints(listContext)
+    assert qc2 in interp.getQualityConstraints(listContext)

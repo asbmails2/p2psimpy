@@ -13,8 +13,10 @@ class QualityConstraint():
         return self.aplicableContext
 
     def abidesByQC(self, value, metric):
-        if not self.compare(value):
-            return False
+        if metric is self.metric:
+            self.compare(value)
+            if self.compare(value) is False:
+                return False
 
         return True
 
