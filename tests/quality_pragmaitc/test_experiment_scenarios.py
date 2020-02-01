@@ -399,3 +399,258 @@ def test_C1():
             found = 1
 
         assert found == 0
+
+def test_C2():
+    print("=========== Test C2 ================")
+    fullContext = createFullContext(1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "acceptEmergency":
+            found = 1
+        if task.getIdentifier() is "notifyBySoundAlert":
+            found = 1
+
+        assert found == 0        
+
+def test_C3():
+    print("=========== Test C3 ================")
+    fullContext = createFullContext(1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "acceptEmergency":
+            found = 1
+
+        assert found == 0        
+
+def test_C4():
+    print("=========== Test C4 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        if task.getIdentifier() is "notifyBySoundAlert":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        if task.getIdentifier() is "identifyLocationByVoiceCall":
+            found = 1
+        if task.getIdentifier() is "accessLocationFromTriangulation":
+            found = 1
+        
+        assert found == 0        
+
+def test_C5():
+    print("=========== Test C5 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "notifyBySoundAlert":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        
+        assert found == 0 
+
+
+def test_C6():
+    print("=========== Test C6 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        
+        assert found == 0 
+
+def test_C7():
+    print("=========== Test C7 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        if task.getIdentifier() is "notifyBySoundAlert":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        if task.getIdentifier() is "identifyLocationByVoiceCall":
+            found = 1
+        if task.getIdentifier() is "accessLocationFromTriangulation":
+            found = 1
+        if task.getIdentifier() is "accessLocationFromGPS":
+            found = 1
+        
+        assert found == 0
+
+
+def test_C8():
+    print("=========== Test C8 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        if task.getIdentifier() is "notifyBySoundAlert":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        if task.getIdentifier() is "identifyLocationByVoiceCall":
+            found = 1
+        if task.getIdentifier() is "accessLocationFromTriangulation":
+            found = 1
+        
+        assert found == 0
+
+    
+def test_C9():
+    print("=========== Test C9 ================")
+    fullContext = createFullContext(1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyByLightAlert":
+            found = 1
+        if task.getIdentifier() is "acceptsEmergency":
+            found = 1
+        
+        assert found == 0
+
+
+def test_C10():
+    print("=========== Test C10 ================")
+    fullContext = createFullContext(1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyByLightAlert":
+            found = 1
+        if task.getIdentifier() is "acceptEmergency":
+            found = 1
+        
+        assert found == 0
+
+
+def test_C11():
+    print("=========== Test C11 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        if task.getIdentifier() is "notifyByLightAlert":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        
+        assert found == 0
+
+
+def test_C12():
+    print("=========== Test C12 ================")
+    fullContext = createFullContext(1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "notifyCentralBySMS":
+            found = 1
+        if task.getIdentifier() is "confirmEmergencyByCall":
+            found = 1
+        if task.getIdentifier() is "sendInfoBySMS":
+            found = 1
+        
+        assert found == 0
+
+
+def test_All():
+    print("=========== Test ALL ================")
+    fullContext = createFullContext(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is not None
+
+    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+        found = 0
+
+        if task.getIdentifier() is "acceptEmergency":
+            found = 1
+
+        assert found == 0
+
+
+def test_None():
+    print("=========== Test None ================")
+    fullContext = createFullContext(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    tasks = rootGoal.isAchievable(fullContext, None)
+
+    assert tasks is None
+
+

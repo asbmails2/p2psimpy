@@ -19,6 +19,18 @@ def test_shouldProvideCorrectValueForMetric():
     assert 50.0 == task.myProvidedQuality(CommonMetrics.METERS, fullContext)
 
 
+def text_shouldProvideMetricForBaseline():
+    task = Task("t1")
+
+    current = Context("C1")
+    fullContext = []
+    fullContext.append(current)
+
+    task.setProvidedQuality(None, CommonMetrics.METERS, 30.0)
+
+    assert 30.0 == task.myProvidedQuality(CommonMetrics.METERS, fullContext)
+
+
 def test_metricNotFound():
     task = Task()
     currentContext = Context("C1")
@@ -61,5 +73,3 @@ def test_shouldProvideSpecificContextMetric():
     task.setProvidedQuality(baseline, CommonMetrics.METERS, 30.0)
 
     assert 50.0 == task.myProvidedQuality(CommonMetrics.METERS, fullContext)
-
-

@@ -84,6 +84,24 @@ def test_aTaskShouldBeAchievable():
         fullContext, interp).getTasks()
 
 
+def aTaskMayNotBeAchievable():
+    task = Task("T1")
+
+    current = Context("C1")
+    fullContext = []
+    fullContext.append(current)
+
+    qc = QualityConstraint(current, CommonMetrics.SECONDS, 15, Comparison.LESS_OR_EQUAL_TO)
+
+    task.addApplicableContext(current)
+    task.setProvidedQuality(current, CommonMetrics.SECONDS, 16)
+
+    interp = Interpretation()
+    interp.addQualityConstraint(qc)
+
+    assert task.isAchievable(fullContext, interp) is None
+
+
 def test_shouldAddSeveralContextsAtOnce():
     context1 = Context("C1")
     context2 = Context("C2")
@@ -342,7 +360,7 @@ def test_getApplicableQC():
                            15, Comparison.LESS_OR_EQUAL_TO)
     stricter = QualityConstraint(
         anotherContext, CommonMetrics.SECONDS, 10, Comparison.LESS_OR_EQUAL_TO)
-    
+
     task.setProvidedQuality(context, CommonMetrics.SECONDS, 13)
 
     goal.addDependency(task)
@@ -358,7 +376,7 @@ def test_getApplicableQC():
 
     assert stricter not in goal.getInterpretation().getQualityConstraints(
         fullContext)
-    
+
     plan = goal.isAchievable(fullContext, interp)
     assert len(plan.getTasks()) == 1
 
@@ -388,15 +406,13 @@ def test_shouldGetBaselineQC():
                            15, Comparison.LESS_OR_EQUAL_TO)
     baselineQC = QualityConstraint(
         None, CommonMetrics.SECONDS, 10, Comparison.LESS_OR_EQUAL_TO)
-    
+
     goal.setIdentifier("Root")
     goal.addApplicableContext(context)
     goal.interp.addQualityConstraint(qc)
     goal.interp.addQualityConstraint(baselineQC)
 
     assert baselineQC in goal.interp.getQualityConstraints([None])
-
-    
 
 
 def test_shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
@@ -461,4 +477,3 @@ def test_shouldIncludeNonApplicableContexts():
     assert goal.isAchievable(current, interp) is not None
     assert goal.isAchievable(current, interp).getTasks() is not None
     assert 1 == len(goal.isAchievable(current, interp).getTasks())
-
