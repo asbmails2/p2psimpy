@@ -42,7 +42,7 @@ class Refinement():
         for context in current:
             if context in self.nonapplicableContexts:
                 return False
-            if self.applicableContext is not None:
+            if self.applicableContext:
                 if context in self.applicableContext:
                     returnValue = True
 

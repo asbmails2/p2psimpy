@@ -35,7 +35,7 @@ class Network:
             with self.channel.request() as rec:
                 yield rec
                 node = self.node_map[to_addr]
-                if node is not None:
+                if node:
                     node.recieve(msg_envelope)
                     yield self.env.timeout(self.latency)
                 else:
@@ -58,7 +58,7 @@ class Network:
                 with self.channel.request() as rec:
                     yield rec
                     node = self.node_map[to_addr]
-                    if node is not None:
+                    if node:
                         node.recieve(msg_envelope)
                         yield self.env.timeout(self.latency)
                     else:

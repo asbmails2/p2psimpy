@@ -61,7 +61,7 @@ class Task(Refinement):
         for qc in interp.getQualityConstraints(current):
             feasible = self.checkQualityConstraint(qc, current)
 
-        if interp.getQualityConstraints([None]) is not None:
+        if interp.getQualityConstraints([None]):
             for qc in interp.getQualityConstraints([None]):
                 feasible = self.checkQualityConstraint(qc, current)
 
