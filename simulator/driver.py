@@ -24,7 +24,7 @@ class Driver:
         while True:
             event = yield self.async_events.get()
             for z in self.issue_event(event[0], event[1]):
-                if z is not None:
+                if z:
                     yield z
             
     def connect(self):

@@ -41,7 +41,7 @@ def test_shouldBeAchievable():
     root.addDependency(task2)
 
     plan = root.isAchievable(current, None)
-    assert plan is not None
+    assert plan
 
     assert task2 in plan.getTasks()
 

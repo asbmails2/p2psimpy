@@ -474,6 +474,6 @@ def test_shouldIncludeNonApplicableContexts():
     assert goal.isAchievable(current, interp) is None
 
     current.remove(wrongContext)
-    assert goal.isAchievable(current, interp) is not None
-    assert goal.isAchievable(current, interp).getTasks() is not None
+    assert goal.isAchievable(current, interp)
+    assert goal.isAchievable(current, interp).getTasks()
     assert 1 == len(goal.isAchievable(current, interp).getTasks())

@@ -393,9 +393,9 @@ def test_C1():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "accessLocationFromGPS":
+        if task.getIdentifier() == "accessLocationFromGPS":
             found = 1
-        if task.getIdentifier() is "centralCallsP":
+        if task.getIdentifier() == "centralCallsP":
             found = 1
 
         assert found == 0
@@ -410,9 +410,9 @@ def test_C2():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "acceptEmergency":
+        if task.getIdentifier() == "acceptEmergency":
             found = 1
-        if task.getIdentifier() is "notifyBySoundAlert":
+        if task.getIdentifier() == "notifyBySoundAlert":
             found = 1
 
         assert found == 0        
@@ -427,7 +427,7 @@ def test_C3():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "acceptEmergency":
+        if task.getIdentifier() == "acceptEmergency":
             found = 1
 
         assert found == 0        
@@ -442,17 +442,17 @@ def test_C4():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
-        if task.getIdentifier() is "notifyBySoundAlert":
+        if task.getIdentifier() == "notifyBySoundAlert":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
-        if task.getIdentifier() is "identifyLocationByVoiceCall":
+        if task.getIdentifier() == "identifyLocationByVoiceCall":
             found = 1
-        if task.getIdentifier() is "accessLocationFromTriangulation":
+        if task.getIdentifier() == "accessLocationFromTriangulation":
             found = 1
         
         assert found == 0        
@@ -467,13 +467,13 @@ def test_C5():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "notifyBySoundAlert":
+        if task.getIdentifier() == "notifyBySoundAlert":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
         
         assert found == 0 
@@ -489,11 +489,11 @@ def test_C6():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
         
         assert found == 0 
@@ -508,19 +508,19 @@ def test_C7():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
-        if task.getIdentifier() is "notifyBySoundAlert":
+        if task.getIdentifier() == "notifyBySoundAlert":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
-        if task.getIdentifier() is "identifyLocationByVoiceCall":
+        if task.getIdentifier() == "identifyLocationByVoiceCall":
             found = 1
-        if task.getIdentifier() is "accessLocationFromTriangulation":
+        if task.getIdentifier() == "accessLocationFromTriangulation":
             found = 1
-        if task.getIdentifier() is "accessLocationFromGPS":
+        if task.getIdentifier() == "accessLocationFromGPS":
             found = 1
         
         assert found == 0
@@ -536,17 +536,17 @@ def test_C8():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
-        if task.getIdentifier() is "notifyBySoundAlert":
+        if task.getIdentifier() == "notifyBySoundAlert":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
-        if task.getIdentifier() is "identifyLocationByVoiceCall":
+        if task.getIdentifier() == "identifyLocationByVoiceCall":
             found = 1
-        if task.getIdentifier() is "accessLocationFromTriangulation":
+        if task.getIdentifier() == "accessLocationFromTriangulation":
             found = 1
         
         assert found == 0
@@ -562,9 +562,9 @@ def test_C9():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyByLightAlert":
+        if task.getIdentifier() == "notifyByLightAlert":
             found = 1
-        if task.getIdentifier() is "acceptsEmergency":
+        if task.getIdentifier() == "acceptsEmergency":
             found = 1
         
         assert found == 0
@@ -580,9 +580,9 @@ def test_C10():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyByLightAlert":
+        if task.getIdentifier() == "notifyByLightAlert":
             found = 1
-        if task.getIdentifier() is "acceptEmergency":
+        if task.getIdentifier() == "acceptEmergency":
             found = 1
         
         assert found == 0
@@ -598,13 +598,13 @@ def test_C11():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
-        if task.getIdentifier() is "notifyByLightAlert":
+        if task.getIdentifier() == "notifyByLightAlert":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
         
         assert found == 0
@@ -620,11 +620,11 @@ def test_C12():
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "notifyCentralBySMS":
+        if task.getIdentifier() == "notifyCentralBySMS":
             found = 1
-        if task.getIdentifier() is "confirmEmergencyByCall":
+        if task.getIdentifier() == "confirmEmergencyByCall":
             found = 1
-        if task.getIdentifier() is "sendInfoBySMS":
+        if task.getIdentifier() == "sendInfoBySMS":
             found = 1
         
         assert found == 0
@@ -635,12 +635,12 @@ def test_All():
     fullContext = createFullContext(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
     tasks = rootGoal.isAchievable(fullContext, None)
 
-    assert tasks is not None
+    assert tasks
 
     for task in rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
-        if task.getIdentifier() is "acceptEmergency":
+        if task.getIdentifier() == "acceptEmergency":
             found = 1
 
         assert found == 0

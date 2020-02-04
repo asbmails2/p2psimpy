@@ -20,14 +20,14 @@ class Goal(Refinement):
         if self.decomposition == Decomposition.OR:
             for dep in dependencies:
                 plan = dep.isAchievable(current, interp)
-                if plan is not None:
+                if plan:
                     return plan
             return None
         else:
             complete = Plan()
             for dep in dependencies:
                 plan = dep.isAchievable(current, interp)
-                if plan is not None:
+                if plan:
                     complete.add(plan)
                 else:
                     return None
