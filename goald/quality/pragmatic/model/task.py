@@ -4,33 +4,32 @@ from goald.quality.pragmatic.exceptions.metric_not_found import MetricNotFoundEx
 
 
 class Task(Refinement):
-    def __init__(self, metric=None, contextValueMap=None, lessIsMore=False, identifier=""):
+    def __init__(self, identifier=""):
         Refinement.__init__(self, identifier)
         self.providedQualityLevels = {}
-        self.lessIsMore = lessIsMore
-
-        if contextValueMap and metric:
-            self.providedQualityLevels[metric] = contextValueMap
+        self.identifier = identifier
 
     def myType(self):
         return Refinement().TASK
 
     def setProvidedQuality(self, context, metric, value):
-        map = {}
+        metricMap = {}
 
         if metric in self.providedQualityLevels:
-            map = self.providedQualityLevels[metric]
-            map[context] = value
-            self.providedQualityLevels[metric] = map
+            metricMap = self.providedQualityLevels[metric]
+            metricMap[context] = value
+            self.providedQualityLevels[metric] = metricMap
         else:
-            map[context] = value
-            self.providedQualityLevels[metric] = map
+            metricMap[context] = value
+            self.providedQualityLevels[metric] = metricMap
 
     def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
         set = False
-        if metric not in self.providedQualityLevels:
-            raise MetricNotFoundException("Metric: {0}".format(metric.name))
+
+        if metric not in self.providedQualityLevels.keys():
+            message = "Metric: {0}".format(metric.name)
+            raise MetricNotFoundException(message)
 
         metricQL = self.providedQualityLevels[metric]
 
@@ -41,7 +40,7 @@ class Task(Refinement):
 
         for current in contextSet:
             if metricQL.get(current) is None:
-                continue            
+                continue
             if not set:
                 myQuality = metricQL.get(current)
                 set = True
@@ -60,21 +59,25 @@ class Task(Refinement):
             return True
 
         for qc in interp.getQualityConstraints(current):
-            myQuality = self.myProvidedQuality(qc.metric, current)
-            if not qc.abidesByQC(myQuality, qc.metric):
-                feasible = False
-        
+            feasible = self.checkQualityConstraint(qc, current)
 
-        if interp.getQualityConstraints(None) is not None:
-            for qc in interp.getQualityConstraints(None):
-                try:
-                    if not qc.abidesByQC(self.myProvidedQuality(qc.getMetric(), current), qc.getMetric()):
-                        feasible = False
-                except:
-                    print("MetricNotFoundException")
-                    raise
+        if interp.getQualityConstraints([None]) is not None:
+            for qc in interp.getQualityConstraints([None]):
+                feasible = self.checkQualityConstraint(qc, current)
 
         return feasible
+
+    def checkQualityConstraint(self, qc, current):
+        try:
+            myQC = self.myProvidedQuality(qc.metric, current)
+            if not qc.abidesByQC(myQC, qc.metric):
+                return False
+        except MetricNotFoundException:
+            # if metric not defined, ignore
+            pass
+
+        return True
+
 
     def isAchievable(self, current, interp):
         if not self.isApplicable(current):

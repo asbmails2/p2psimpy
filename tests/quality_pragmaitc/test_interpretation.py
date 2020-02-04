@@ -2,6 +2,10 @@ from goald.quality.pragmatic.model.common_metrics import CommonMetrics
 from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.quality.pragmatic.model.context import Context
 from goald.quality.pragmatic.model.comparison import Comparison
+from goald.quality.pragmatic.model.goal import Goal
+from goald.quality.pragmatic.model.task import Task
+from goald.quality.pragmatic.model.delegation import Delegation
+from goald.quality.pragmatic.model.decomposition import Decomposition
 from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
 
 
@@ -34,5 +38,8 @@ def test_getQC():
     interp.addQualityConstraint(qc1)
     interp.addQualityConstraint(qc2)
 
-    assert qc1 in interp.getQualityConstraints(context)
-    assert qc2 in interp.getQualityConstraints(context)
+    listContext = [context]
+
+    assert qc1 in interp.getQualityConstraints(listContext)
+    assert qc2 in interp.getQualityConstraints(listContext)
+
