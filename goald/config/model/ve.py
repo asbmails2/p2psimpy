@@ -1,14 +1,10 @@
-from .component import Component
-from .alternative import Alternative
-from .dependency import Dependency
-
 class VE:
-    def __init__(self, definition: Component,
-                 parentAlt: Alternative,
+    def __init__(self, definition,
+                 parentAlt,
                  alternatives,
-                 chosenAlternative: Alternative,
-                 isAchievable: bool,
-                 satisfy: Dependency, 
+                 chosenAlternative,
+                 isAchievable,
+                 satisfy,
                  restrictions):
 
         self.definition = definition

@@ -1,5 +1,4 @@
 from enum import Enum
-from .component import Component
 
 
 class Deployment:
@@ -26,6 +25,6 @@ class Status(Enum):
 
 
 class ComponentStatus:
-    def __init__(self, status: Status, component: Component):
+    def __init__(self, status, component):
         self.status = status
         self.component = component

@@ -1,6 +1,10 @@
+from enum import Enum
+
+
 class DeploymentPlan:
-    def __init(self, commands = []):
+    def __init(self, commands=[]):
         self.commands = commands
+
 
 class DeployOp(Enum):
     INSTALL = 1
@@ -13,7 +17,7 @@ class DeployOp(Enum):
 
 
 class Command:
-    def __init__(self, op: DeployOp = DeployOp.INSTALL, bundle, component=None):
+    def __init__(self, bundle, op, component=None):
         self.op = op
         self.bundle = bundle
         self.component = component

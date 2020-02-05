@@ -8,7 +8,7 @@ class OP(Enum):
 
 
 class ContextChange:
-    def __init__(self, op: OP, label: str, time):
+    def __init__(self, op, label, time):
         self.op = op
         self.label = label
         self.time = time
