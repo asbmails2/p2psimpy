@@ -3,5 +3,5 @@ def print_context(contexts):
 
     for context in contexts:
         listContext.append(context.label)
-    
+
     print(listContext)

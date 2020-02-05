@@ -3,9 +3,11 @@ from enum import Enum
 
 from goald.config.model.bundle import Bundle
 
+
 class BundleType(Enum):
     DEFINITION = 0
     IMPLEMENTATION = 1
+
 
 class Repository(ABC):
 
@@ -18,13 +20,13 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def queryForDefinition(String identification):
+    def queryForDefinition(identification):
         pass
 
     @abstractmethod
-    def queryForImplementations(String identification):
+    def queryForImplementations(identification):
         pass
 
     @abstractmethod
-    def queryForDefinitions(String identification):
+    def queryForDefinitions(identification):
         pass

@@ -2,6 +2,7 @@
 from goald.config.repo.repository import BundleType, Repository
 from goald.config.model.bundle import Bundle
 
+
 class HashMapRepository(Repository):
     def __init__(self):
         self.repoSize = 0
@@ -15,6 +16,6 @@ class HashMapRepository(Repository):
     def put(self, bundleType: BundleType, goal, bundle):
         if(not self.index[bundleType][goal]):
             self.index[bundleType][goal] = []
-        
+
         ref = self.index[bundleType][goal]
         ref.append()
