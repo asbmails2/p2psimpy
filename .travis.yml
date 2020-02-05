@@ -27,3 +27,4 @@ after_success:
   - codecov
   - pip install codacy-coverage
   - python-codacy-coverage -r coverage.xml
+  - py.test --cov-report=xml --cov=myproj tests/
