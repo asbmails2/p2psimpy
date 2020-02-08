@@ -1,9 +1,10 @@
+from goald.config.model.deployment import Deployment, Status
 from goald.config.model.alternative import Alternative
 from goald.config.model.component import Component
 from goald.config.model.context_change import ContextChange, OP
 from goald.config.model.context_conditions import ContextCondition
-from goald.config.model.dependency import Dependency, DependencyType, DependencyModifier
-from goald.config.model.deployment import Deployment, Status
+from goald.config.model.dependency import \
+    Dependency, DependencyType, DependencyModifier
 
 
 def test_alternative():
@@ -48,4 +49,3 @@ def test_deployment():
 
     deployment.add(Status.ACTIVE, component)
     assert not deployment.componentStatus == []
-

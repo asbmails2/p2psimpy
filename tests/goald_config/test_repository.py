@@ -46,5 +46,3 @@ def test_invalid_attr():
         assert False
     except KeyError:
         assert True
-
-

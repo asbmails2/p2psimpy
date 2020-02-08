@@ -1,7 +1,6 @@
 
 
 from goald.config.utils.repository_builder import RepositoryBuilder
-from goald.config.model.bundle import BundleType
 from goald.config.planning.dvm_builder import DVMBuilder
 
 import pytest
