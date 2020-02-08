@@ -1,15 +1,8 @@
-from goald.quality.pragmatic.quality_evaluator import PragmaticQualityEvaluator
 from goald.quality.pragmatic.model.context import Context
 from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
 from goald.quality.pragmatic.model.common_metrics import CommonMetrics
 from goald.quality.pragmatic.model.pragmatic import Pragmatic
 from goald.quality.pragmatic.model.comparison import Comparison
-
-pqe = PragmaticQualityEvaluator()
-
-# def test_evaluate_empty():
-#    quality = pqe.evaluateQuality("", {})
-#    assert quality is None
 
 
 def test_shouldGetDifferentQualityConstraintsForDifferentContexts():

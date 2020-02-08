@@ -1,4 +1,5 @@
 from enum import Enum
+from goald.config.model.bundle import Bundle
 
 
 class DeploymentPlan:
@@ -17,7 +18,7 @@ class DeployOp(Enum):
 
 
 class Command:
-    def __init__(self, bundle, op, component=None):
+    def __init__(self, bundle: Bundle, op: DeployOp, component=None):
         self.op = op
         self.bundle = bundle
         self.component = component

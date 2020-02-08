@@ -1,15 +1,11 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-
 from goald.config.model.bundle import Bundle
 
 
-class BundleType(Enum):
-    DEFINITION = 0
-    IMPLEMENTATION = 1
-
-
 class Repository(ABC):
+    @abstractmethod
+    def createIndex(attribute: str, isMany: bool):
+        pass
 
     @abstractmethod
     def add(bundle: Bundle):
@@ -20,13 +16,13 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def queryForDefinition(identification):
+    def queryForDefinition(self, identification: str):
         pass
 
     @abstractmethod
-    def queryForImplementations(identification):
+    def queryForImplementations(self, identification: str):
         pass
 
     @abstractmethod
-    def queryForDefinitions(identification):
+    def query(self, attr: any, value: str):
         pass

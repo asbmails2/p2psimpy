@@ -1,4 +1,5 @@
-# from typing import Any, Dict
+from typing import List
+from goald.config.model.dependency import Dependency
 
 
 class Alternative:
@@ -9,7 +10,7 @@ class Alternative:
                  quality=None,
                  resolved=False):
         self.parentVE = parentVE
-        self.dependencies = dependencies
+        self.dependencies: List[Dependency] = dependencies
         self.contextConditions = contextConditions
         self.implementaion = implementaion
         self.quality = quality

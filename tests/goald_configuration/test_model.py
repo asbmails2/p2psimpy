@@ -2,10 +2,8 @@ from goald.config.model.alternative import Alternative
 from goald.config.model.component import Component
 from goald.config.model.context_change import ContextChange, OP
 from goald.config.model.context_conditions import ContextCondition
-from goald.config.model.dependency import Dependency
+from goald.config.model.dependency import Dependency, DependencyType, DependencyModifier
 from goald.config.model.deployment import Deployment, Status
-from goald.config.model.dependency_modifier import DependencyModifier, Type
-from goald.quality.pragmatic.model.goal import Goal
 
 
 def test_alternative():
@@ -28,18 +26,18 @@ def test_context_conditions():
 
 def test_dependency_modifier():
     dependency_modifier = DependencyModifier(
-        type=Type.ONE,
+        type=DependencyType.ONE,
         groupId='group 1')
-    assert dependency_modifier.type == Type.ONE
+    assert dependency_modifier.type == DependencyType.ONE
 
 
 def test_dependency():
     dependency = Dependency(
         identification='001',
-        modifierType=Type.ONE,
+        modifierType=DependencyType.ONE,
         modifierGroupId='group 1')
     assert dependency.identification == '001'
-    assert dependency.modifier.type == Type.ONE
+    assert dependency.modifier.type == DependencyType.ONE
 
 
 def test_deployment():
