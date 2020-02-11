@@ -31,7 +31,7 @@ def text_shouldProvideMetricForBaseline():
     assert 30.0 == task.myProvidedQuality(CommonMetrics.METERS, fullContext)
 
 
-def test_metricNotFound():
+def metricNotFound():
     task = Task()
     currentContext = Context("C1")
     fullContext = set()

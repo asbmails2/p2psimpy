@@ -24,11 +24,12 @@ class Interpretation():
         if current:
             for context in current:
                 if context in self.contextDependentInterpretation:
-                    allQCs.extend(
-                        self.contextDependentInterpretation[context])
+                    constrains = self.contextDependentInterpretation[context]
+                    allQCs.extend(constrains)
 
         elif None in self.contextDependentInterpretation:
-            allQCs.append(self.contextDependentInterpretation.get(None))
+            baselineConstrains = self.contextDependentInterpretation.get(None)
+            allQCs.extend(baselineConstrains)
 
         return allQCs
 
