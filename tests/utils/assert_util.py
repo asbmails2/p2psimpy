@@ -1,20 +1,36 @@
 def assertPlan(plan, tasks):
-
+    
     if tasks is None:
-        #assert plan is None
-        return
+        if plan is None:
+            return True
+        else:
+            return False
 
-    for task in plan.getTasks():
-        print(task.identifier + " ")
+    if plan is None:
+        return False
+
+    planTasks = plan.getTasks()
+
+    print("======== Tasks ========")
+
+    for a in tasks:
+        print(a.identifier)
+
+    print("======== Plan Tasks ========")
+
+    for b in planTasks:
+        print(b.identifier)
+
+    success = True
 
     for task in tasks:
-        if task not in plan.getTasks():
-            print("NOT: ", task.identifier)
-        else:
-            print("TASK: ", task.identifier)
+        if task not in planTasks:
+            success = False
+            print(f"Task {task.identifier} should be in Plan")                
+        
+    for pTask in planTasks:
+        if pTask not in tasks:
+            success = False
+            print(f"Task {pTask.identifier} should not be in Plan")
 
-           
-
-        #assert task in plan.getTasks()
-
-    #assert len(plan.getTasks()) == len(tasks)
+    return success
