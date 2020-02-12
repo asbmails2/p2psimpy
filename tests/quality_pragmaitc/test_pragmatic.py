@@ -23,16 +23,15 @@ def test_shouldGetDifferentQualityConstraintsForDifferentContexts():
 
     goal = Pragmatic(False)
 
-    goal.getInterpretation().addQualityConstraint(aQC)
-    goal.getInterpretation().addQualityConstraint(anotherQC)
+    goal.interp.addQualityConstraint(aQC)
+    goal.interp.addQualityConstraint(anotherQC)
 
     fullContext = []
     fullContext.append(aContext)
 
-    assert aQC in goal.getInterpretation().getQualityConstraints(fullContext)
+    assert aQC in goal.interp.getQualityConstraints(fullContext)
 
     anotherFullContext = []
     anotherFullContext.append(anotherContext)
 
-    assert anotherQC in goal.getInterpretation(
-    ).getQualityConstraints(anotherFullContext)
+    assert anotherQC in goal.interp.getQualityConstraints(anotherFullContext)

@@ -335,7 +335,7 @@ def test_ApplicableDeps():
     goal.setIdentifier("Root")
     goal.addDependency(task)
     goal.addApplicableContext(context)
-    goal.getInterpretation().addQualityConstraint(qc)
+    goal.interp.addQualityConstraint(qc)
 
     interp = Interpretation()
     interp.addQualityConstraint(qc)
@@ -366,34 +366,34 @@ def test_getApplicableQC():
     goal.addDependency(task)
     goal.setIdentifier("Root")
     goal.addApplicableContext(context)
-    goal.getInterpretation().addQualityConstraint(qc)
-    goal.getInterpretation().addQualityConstraint(stricter)
+    goal.interp.addQualityConstraint(qc)
+    goal.interp.addQualityConstraint(stricter)
 
     interp = Interpretation()
     interp.addQualityConstraint(qc)
 
     fullContext.append(context)
 
-    assert stricter not in goal.getInterpretation().getQualityConstraints(
+    assert stricter not in goal.interp.getQualityConstraints(
         fullContext)
 
     plan = goal.isAchievable(fullContext, interp)
     assert len(plan.getTasks()) == 1
 
     fullContext.append(anotherContext)
-    assert qc in goal.getInterpretation().getQualityConstraints(
+    assert qc in goal.interp.getQualityConstraints(
         fullContext)
 
-    assert stricter in goal.getInterpretation().getQualityConstraints(
+    assert stricter in goal.interp.getQualityConstraints(
         fullContext)
 
     assert goal.isAchievable(fullContext, interp) is None
 
     fullContext.remove(context)
-    assert qc not in goal.getInterpretation().getQualityConstraints(
+    assert qc not in goal.interp.getQualityConstraints(
         fullContext)
 
-    assert stricter in goal.getInterpretation().getQualityConstraints(
+    assert stricter in goal.interp.getQualityConstraints(
         fullContext)
 
 
@@ -432,17 +432,17 @@ def test_shouldThereBeMoreThanOneApplicableQCreturnTheStricterOne():
     goal.addDependency(task)
     goal.setIdentifier("Root")
     goal.addApplicableContext(context)
-    goal.getInterpretation().addQualityConstraint(qc)
-    goal.getInterpretation().addQualityConstraint(stricter)
+    goal.interp.addQualityConstraint(qc)
+    goal.interp.addQualityConstraint(stricter)
 
     assert stricter == qc.stricterQC(stricter)
 
     fullContext.append(context)
-    assert qc in goal.getInterpretation().getQualityConstraints(fullContext)
+    assert qc in goal.interp.getQualityConstraints(fullContext)
 
     fullContext.append(anotherContext)
     assert stricter in \
-        goal.getInterpretation().getQualityConstraints(fullContext)
+        goal.interp.getQualityConstraints(fullContext)
 
 
 def test_shouldIncludeNonApplicableContexts():
@@ -462,7 +462,7 @@ def test_shouldIncludeNonApplicableContexts():
     goal.addDependency(task)
     goal.setIdentifier("Root")
     goal.addNonapplicableContext(wrongContext)
-    goal.getInterpretation().addQualityConstraint(qc)
+    goal.interp.addQualityConstraint(qc)
 
     interp = Interpretation()
     interp.addQualityConstraint(qc)

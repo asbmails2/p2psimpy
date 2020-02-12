@@ -10,15 +10,9 @@ from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.utils.context_generator import ContextGenerator
 from goald.utils.print import print_context
 from tests.utils.assert_util import assertPlan
+from tests.test_data.mpers_metric import MpersMetrics
+
 import pytest
-
-
-class MpersMetrics:
-    FALSE_NEGATIVE_PERCENTAGE = Metric("False Negative", True)
-    NOISE = Metric('Noise', True)
-    SECONDS = Metric('Seconds', True)
-    ERROR = Metric('Error', True)
-    DISTANCE_ERROR = Metric('Distance', True)
 
 
 # Contexts
@@ -94,30 +88,6 @@ def rootGoal():
     medicalCareReachesGoal = Goal(Decomposition.AND, "medicalCareReachesGoal")
     ambulanceIsDispatchedToLocationGoal = Goal(
         Decomposition.AND, "ambulanceIsDispatchedToLocationGoal")
-
-    # Tasks
-    notifyCentralBySMSTask = Task("notifyCentralBySMSTask")
-    notifyCentralByInternetTask = Task("notifyCentralByInternetTask")
-    acceptEmergencyTask = Task("acceptEmergencyTask")
-    confirmEmergencyByCallTask = Task("confirmEmergencyByCallTask")
-    processDataFromSensorsTask = Task("processDataFromSensorsTask")
-    identifySituationTask = Task("identifySituationTask")
-    collectDataFromSensorsTask = Task("collectDataFromSensorsTask")
-    persistDataToDatabaseTask = Task("persistDataToDatabaseTask")
-    notifyByMobileVibrationTask = Task("notifyByMobileVibrationTask")
-    notifyBySoundAlertTask = Task("notifyBySoundAlertTask")
-    notifyByLightAlertTask = Task("notifyByLightAlertTask")
-    centralCallTask = Task("centralCallsPTask")
-    sendInfoBySMSTask = Task("sendInfoBySMSTask")
-    sendInfoByInternetTask = Task("sendInfoByInternetTask")
-    considerLastKnownLocationTask = Task("considerLastKnownLocationTask")
-    identifyLocationByVoiceCallTask = Task("identifyLocationByVoiceCallTask")
-    accessLocationFromTriangulationTask = Task(
-        "accessLocationFromTriangulationTask")
-    accessLocationFromGPSTask = Task("accessLocationFromGPSTask")
-    accessDataFromDatabaseTask = Task("accessDataFromDatabaseTask")
-    getInfoFromResponsibleTask = Task("getInfoFromResponsibleTask")
-    ambulanceDispatchDelegationTask = Task("ambulanceDispatchDelegationTask")
 
     # Refinements
 
@@ -420,4 +390,19 @@ def test_ContextSet4(rootGoal):
         getInfoFromResponsibleTask,
         sendInfoByInternetTask,
         confirmEmergencyByCallTask,
+        ambulanceDispatchDelegationTask])
+
+def test_ContextMeprs(rootGoal):
+    fullContext = [c4, c5, c6, c7, c10, c11]
+
+    plan = rootGoal.isAchievable(fullContext, None)
+
+    assertPlan(
+        plan,
+        [notifyCentralByInternetTask,
+        acceptEmergencyTask,
+        notifyByLightAlertTask,
+        accessLocationFromGPSTask,
+        accessDataFromDatabaseTask,
+        sendInfoByInternetTask,
         ambulanceDispatchDelegationTask])
