@@ -1,5 +1,9 @@
-from typing import List
+
+from typing import List, Type, TypeVar, Generic
+
 from goald.config.model.dependency import Dependency
+
+T = TypeVar('T')
 
 
 class Alternative:
@@ -11,7 +15,15 @@ class Alternative:
                  resolved=False):
         self.parentVE = parentVE
         self.dependencies: List[Dependency] = dependencies
-        self.contextConditions = contextConditions
         self.implementaion = implementaion
-        self.quality = quality
-        self.resolved = resolved
+        self.propertiesMap = {}
+
+    def setProperty(self, propId: str, prop: Type[T]):
+        self.propertiesMap[propId] = prop
+
+    def getProperty(self, propId: str, propType: Type[T] = None) -> T:
+        prop = self.propertiesMap[propId]
+        if propType is None or isinstance(prop, propType):
+            return prop
+        else:
+            raise TypeError(f'{propId} -> value, not instance of {propType}')

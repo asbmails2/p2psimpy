@@ -6,11 +6,11 @@ from goald.config.model.dependency import Dependency, DependencyType
 from goald.config.model.bundle import Bundle, BundleType
 
 
-class DVMBuilder:
+class GCVMBuilder:
     def __init__(self, repo: Repository):
         self._repo = repo
 
-    def resolveRootGoal(self, identification: str):
+    def resolveRootGoal(self, identification: str) -> VE:
         rootDependency = Dependency(identification, DependencyType.ONE)
         rootVe = self.resolveVEforDependency(rootDependency)
         return rootVe
