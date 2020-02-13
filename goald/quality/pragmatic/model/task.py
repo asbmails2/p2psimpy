@@ -25,7 +25,7 @@ class Task(Refinement):
 
     def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
-        baseline = False
+        initQuality = False
 
         if metric not in self.providedQualityLevels.keys():
             message = "Metric: {0} not found".format(metric.name)
@@ -37,14 +37,14 @@ class Task(Refinement):
         # getting baseline
         if None in metricQL:
             myQuality = metricQL[None]
-            baseline = True
+            initQuality = True
 
         for current in contextSet:
             if metricQL.get(current) is None:
                 continue
-            if not baseline:
+            if not initQuality:
                 myQuality = metricQL.get(current)
-                baseline = True
+                initQuality = True
             else:
                 if metric.getLessIsBetter():
                     if(myQuality > metricQL[current]):
@@ -60,25 +60,25 @@ class Task(Refinement):
             return True
 
         currentQcs = interp.getQualityConstraints(current)
+                
+        for qc in currentQcs:
+            try:
+                myQC = self.myProvidedQuality(qc.metric, current)
+                if not qc.abidesByQC(myQC, qc.metric):
+                    feasible = False
+            except:
+                pass
 
         if interp.getQualityConstraints([None]):
             for qc in interp.getQualityConstraints([None]):
-                feasible = self.checkQualityConstraint(qc, current)
-                
-        for qc in currentQcs:
-            feasible = self.checkQualityConstraint(qc, current)
+                try:
+                    myQC = self.myProvidedQuality(qc.metric, current)
+                    if not qc.abidesByQC(myQC, qc.metric):
+                        feasible = False
+                except:
+                    pass
 
         return feasible
-
-    def checkQualityConstraint(self, qc, current):
-        myQC = self.myProvidedQuality(qc.metric, current)
-        if myQC is None:
-            return True
-        if not qc.abidesByQC(myQC, qc.metric):
-            return False
-    
-        return True
-
 
     def isAchievable(self, current, interp):
         if not self.isApplicable(current):

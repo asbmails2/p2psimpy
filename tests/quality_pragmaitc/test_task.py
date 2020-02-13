@@ -65,11 +65,9 @@ def isNotifiedAboutEmergencyGoal():
 def test_shouldProvideCorrectValueForMetric():
     task = Task("T1")
     currentContext = Context("C1")
-    baseline = None
     fullContext = set()
 
     fullContext.add(currentContext)
-    fullContext.add(baseline)
 
     task.setProvidedQuality(currentContext, MpersMetrics.METERS, 30)
 
@@ -216,8 +214,6 @@ def locationIsIdentifiedGoal():
     locationIsIdentifiedGoal.addDependency(accessLocationFromGPSTask)
     locationIsIdentifiedGoal.addDependency(accessLocationFromTriangulationTask)
 
-
-
     return locationIsIdentifiedGoal
 
 
@@ -230,3 +226,4 @@ def test_qualityTask(locationIsIdentifiedGoal):
     context.append(c11)
     result = accessLocationFromTriangulationTask.myProvidedQuality(MpersMetrics.DISTANCE_ERROR, context)
     assert result == 10
+
