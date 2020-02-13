@@ -9,9 +9,6 @@ class Pragmatic(Goal):
 
         self.interp = Interpretation()
 
-    def getInterpretation(self):
-        return self.interp
-
     def isAchievable(self, current, interp):
         newInterp = Interpretation()
         newInterp.merge(self.interp)

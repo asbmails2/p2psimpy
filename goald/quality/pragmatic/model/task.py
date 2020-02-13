@@ -25,7 +25,7 @@ class Task(Refinement):
 
     def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
-        set = False
+        baseline = False
 
         if metric not in self.providedQualityLevels.keys():
             message = "Metric: {0} not found".format(metric.name)
@@ -37,14 +37,14 @@ class Task(Refinement):
         # getting baseline
         if None in metricQL:
             myQuality = metricQL[None]
-            set = True
+            baseline = True
 
         for current in contextSet:
             if metricQL.get(current) is None:
                 continue
-            if not set:
+            if not baseline:
                 myQuality = metricQL.get(current)
-                set = True
+                baseline = True
             else:
                 if metric.getLessIsBetter():
                     if(myQuality > metricQL[current]):
@@ -61,12 +61,12 @@ class Task(Refinement):
 
         currentQcs = interp.getQualityConstraints(current)
 
-        for qc in currentQcs:
-            feasible = self.checkQualityConstraint(qc, current)
-
         if interp.getQualityConstraints([None]):
             for qc in interp.getQualityConstraints([None]):
                 feasible = self.checkQualityConstraint(qc, current)
+                
+        for qc in currentQcs:
+            feasible = self.checkQualityConstraint(qc, current)
 
         return feasible
 
