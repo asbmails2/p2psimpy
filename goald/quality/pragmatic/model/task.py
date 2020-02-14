@@ -64,8 +64,9 @@ class Task(Refinement):
         for qc in currentQcs:
             try:
                 myQC = self.myProvidedQuality(qc.metric, current)
-                if not qc.abidesByQC(myQC, qc.metric):
-                    feasible = False
+                if myQC is not None:
+                    if not qc.abidesByQC(myQC, qc.metric):
+                        feasible = False
             except:
                 pass
 
@@ -73,8 +74,9 @@ class Task(Refinement):
             for qc in interp.getQualityConstraints([None]):
                 try:
                     myQC = self.myProvidedQuality(qc.metric, current)
-                    if not qc.abidesByQC(myQC, qc.metric):
-                        feasible = False
+                    if myQC is not None:
+                        if not qc.abidesByQC(myQC, qc.metric):
+                            feasible = False
                 except:
                     pass
 

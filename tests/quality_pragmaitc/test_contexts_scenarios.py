@@ -10,16 +10,9 @@ from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.utils.context_generator import ContextGenerator
 from goald.utils.print import print_context
 from tests.utils.assert_util import assertPlan
+from tests.test_data.mpers_metric import MpersMetrics
+
 import pytest
-
-
-class MpersMetrics:
-    FALSE_NEGATIVE_PERCENTAGE = Metric("False Negative", True)
-    NOISE = Metric('Noise', True)
-    TIME = Metric('Time', True)
-    ERROR = Metric('Error', True)
-    DISTANCE_ERROR = Metric('Distance', True)
-
 
 # Contexts
 c1 = Context("c1")
@@ -187,11 +180,11 @@ def rootGoal():
 
     # Goal Interpretations
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
                             180, Comparison.LESS_THAN)
     qc2 = QualityConstraint(
-        c10, MpersMetrics.TIME, 90, Comparison.LESS_THAN)
-    qc3 = QualityConstraint(c9, MpersMetrics.TIME,
+        c10, MpersMetrics.SECONDS, 90, Comparison.LESS_THAN)
+    qc3 = QualityConstraint(c9, MpersMetrics.SECONDS,
                             240, Comparison.LESS_THAN)
     respondToEmergencyGoal.interp.addQualityConstraint(qc1)
     respondToEmergencyGoal.interp.addQualityConstraint(qc2)
@@ -207,7 +200,7 @@ def rootGoal():
     emergencyIsDetectedGoal.interp.addQualityConstraint(qc2)
     emergencyIsDetectedGoal.interp.addQualityConstraint(qc3)
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME, 60, Comparison.LESS_THAN)
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 60, Comparison.LESS_THAN)
     centralReceivesInfoGoal.interp.addQualityConstraint(qc1)
 
     qc4 = QualityConstraint(None, MpersMetrics.DISTANCE_ERROR,
@@ -216,10 +209,10 @@ def rootGoal():
         c5, MpersMetrics.DISTANCE_ERROR, 20, Comparison.LESS_THAN)
     qc5 = QualityConstraint(
         c10, MpersMetrics.DISTANCE_ERROR, 200, Comparison.LESS_THAN)
-    qc1 = QualityConstraint(None, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
                             120, Comparison.LESS_THAN)
-    qc3 = QualityConstraint(c9, MpersMetrics.TIME, 240, Comparison.LESS_THAN)
-    qc2 = QualityConstraint(c10, MpersMetrics.TIME, 20, Comparison.LESS_THAN)
+    qc3 = QualityConstraint(c9, MpersMetrics.SECONDS, 240, Comparison.LESS_THAN)
+    qc2 = QualityConstraint(c10, MpersMetrics.SECONDS, 20, Comparison.LESS_THAN)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc1)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc2)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc3)
@@ -227,8 +220,8 @@ def rootGoal():
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc5)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc6)
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME, 900, Comparison.LESS_THAN)
-    qc2 = QualityConstraint(c10, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 900, Comparison.LESS_THAN)
+    qc2 = QualityConstraint(c10, MpersMetrics.SECONDS,
                             600, Comparison.LESS_THAN)
     infoIsPreparedGoal.interp.addQualityConstraint(qc1)
     infoIsPreparedGoal.interp.addQualityConstraint(qc2)
@@ -256,12 +249,12 @@ def rootGoal():
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 15)
 
     collectDataFromSensorsTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 120)
+        None, MpersMetrics.SECONDS, 120)
     collectDataFromSensorsTask.setProvidedQuality(
-        c3, MpersMetrics.TIME, 60)
+        c3, MpersMetrics.SECONDS, 60)
 
     persistDataToDatabaseTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 5)
+        None, MpersMetrics.SECONDS, 5)
 
     identifySituationTask.setProvidedQuality(
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 20)
@@ -272,47 +265,47 @@ def rootGoal():
     notifyByLightAlertTask.setProvidedQuality(None, MpersMetrics.NOISE, 0)
     centralCallTask.setProvidedQuality(None, MpersMetrics.NOISE, 7)
 
-    sendInfoBySMSTask.setProvidedQuality(None, MpersMetrics.TIME, 65)
-    sendInfoBySMSTask.setProvidedQuality(c8, MpersMetrics.TIME, 45)
+    sendInfoBySMSTask.setProvidedQuality(None, MpersMetrics.SECONDS, 65)
+    sendInfoBySMSTask.setProvidedQuality(c8, MpersMetrics.SECONDS, 45)
 
-    sendInfoByInternetTask.setProvidedQuality(None, MpersMetrics.TIME, 40)
+    sendInfoByInternetTask.setProvidedQuality(None, MpersMetrics.SECONDS, 40)
 
     considerLastKnownLocationTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 900)
     considerLastKnownLocationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 15)
+        None, MpersMetrics.SECONDS, 15)
 
     identifyLocationByVoiceCallTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 100)
     identifyLocationByVoiceCallTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 300)
     identifyLocationByVoiceCallTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 45)
+        None, MpersMetrics.SECONDS, 45)
 
     accessLocationFromTriangulationTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 40)
     accessLocationFromTriangulationTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 400)
     accessLocationFromTriangulationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 30)
+        None, MpersMetrics.SECONDS, 30)
 
     accessLocationFromGPSTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 20)
     accessLocationFromGPSTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 30)
     accessLocationFromGPSTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 50)
+        None, MpersMetrics.SECONDS, 50)
 
     accessDataFromDatabaseTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 20)
+        None, MpersMetrics.SECONDS, 20)
 
     getInfoFromResponsibleTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 25)
+        None, MpersMetrics.SECONDS, 25)
     getInfoFromResponsibleTask.setProvidedQuality(
-        c11, MpersMetrics.TIME, 50)
+        c11, MpersMetrics.SECONDS, 50)
 
     ambulanceDispatchDelegationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 30)
+        None, MpersMetrics.SECONDS, 30)
 
     rootGoal = Goal(Decomposition.AND, "rootGoal")
     rootGoal = respondToEmergencyGoal
