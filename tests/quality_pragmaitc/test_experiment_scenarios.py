@@ -11,6 +11,7 @@ from goald.utils.context_generator import ContextGenerator
 from goald.utils.print import print_context
 from tests.utils.assert_util import assertPlan
 from tests.test_data.mpers_metric import MpersMetrics
+from tests.test_data.mpers_model import MpersModel
 
 import pytest
 
@@ -347,11 +348,11 @@ def test_ContextSet1(rootGoal):
     assert assertPlan(
         plan,
         [ambulanceDispatchDelegationTask,
-        notifyCentralByInternetTask,
-        confirmEmergencyByCallTask,
-        getInfoFromResponsibleTask,
-        notifyByLightAlertTask,
-        sendInfoByInternetTask])
+         notifyCentralByInternetTask,
+         confirmEmergencyByCallTask,
+         getInfoFromResponsibleTask,
+         notifyByLightAlertTask,
+         sendInfoByInternetTask])
 
 
 def test_ContextSet2(rootGoal):
@@ -370,39 +371,57 @@ def test_ContextSet3(rootGoal):
     assert assertPlan(
         plan,
         [ambulanceDispatchDelegationTask,
-        acceptEmergencyTask,
-        centralCallTask,
-        considerLastKnownLocationTask,
-        accessDataFromDatabaseTask,
-        sendInfoByInternetTask,
-        notifyCentralByInternetTask])
+         acceptEmergencyTask,
+         centralCallTask,
+         considerLastKnownLocationTask,
+         accessDataFromDatabaseTask,
+         sendInfoByInternetTask,
+         notifyCentralByInternetTask])
 
 
-def test_ContextSet4(rootGoal):
-    fullContext = [c1, c2, c3, c6, c7]
+def test_ContextSet4():
+    model = MpersModel()
 
-    plan = rootGoal.isAchievable(fullContext, None)
+    fullContext = [model.contexts.get("c1"),
+                   model.contexts.get("c2"),
+                   model.contexts.get("c3"),
+                   model.contexts.get("c6"),
+                   model.contexts.get("c7")]
+
+    plan = model.rootGoal.isAchievable(fullContext, None)
 
     assert assertPlan(
         plan,
-        [notifyCentralBySMSTask,
-        notifyByLightAlertTask,
-        getInfoFromResponsibleTask,
-        sendInfoByInternetTask,
-        confirmEmergencyByCallTask,
-        ambulanceDispatchDelegationTask])
+        [model.tasks.get("notifyCentralBySMSTask"),
+         model.tasks.get("notifyByLightAlertTask"),
+         model.tasks.get("getInfoFromResponsibleTask"),
+         model.tasks.get("sendInfoByInternetTask"),
+         model.tasks.get("confirmEmergencyByCallTask"),
+         model.tasks.get("ambulanceDispatchDelegationTask")])
 
-def test_ContextMeprs(rootGoal):
+
+def test_ContextMeprs():
     fullContext = [c4, c5, c6, c7, c10, c11]
+    model = MpersModel()
 
-    plan = rootGoal.isAchievable(fullContext, None)
+    plan = model.rootGoal.isAchievable(fullContext, None)
 
-    assertPlan(
+    assert assertPlan(
         plan,
-        [notifyCentralByInternetTask,
-        acceptEmergencyTask,
-        notifyByLightAlertTask,
-        accessLocationFromGPSTask,
-        accessDataFromDatabaseTask,
-        sendInfoByInternetTask,
-        ambulanceDispatchDelegationTask])
+        [model.tasks.get("notifyCentralByInternetTask"),
+         model.tasks.get("acceptEmergencyTask"),
+         model.tasks.get("notifyByLightAlertTask"),
+         model.tasks.get("accessLocationFromGPSTask"),
+         model.tasks.get("accessDataFromDatabaseTask"),
+         model.tasks.get("sendInfoByInternetTask"),
+         model.tasks.get("ambulanceDispatchDelegationTask")])
+
+
+def test_mpersModel():
+    model = MpersModel()
+
+    c1 = model.contexts.get("c1")
+    notifyCentralBySMS = model.tasks.get("notifyCentralBySMSTask")
+
+    assert c1.label == "c1"
+    assert notifyCentralBySMS.identifier == "notifyCentralBySMSTask"

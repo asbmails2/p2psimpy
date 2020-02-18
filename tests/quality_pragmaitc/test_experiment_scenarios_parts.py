@@ -11,6 +11,7 @@ from goald.utils.context_generator import ContextGenerator
 from goald.utils.print import print_context
 from tests.utils.assert_util import assertPlan
 from tests.test_data.mpers_metric import MpersMetrics
+from tests.test_data.mpers_model import MpersModel
 
 import pytest
 
@@ -60,7 +61,7 @@ def rootGoal():
     # Goals
     respondToEmergencyGoal = Pragmatic(
         Decomposition.AND, "respondToEmergencyGoal")
-        
+
     emergencyIsDetectedGoal = Pragmatic(
         Decomposition.OR, "emergencyIsDetectedGoal")
     centralReceivesInfoGoal = Pragmatic(
@@ -318,6 +319,7 @@ def rootGoal():
 
     return rootGoal
 
+
 def test_ContextSet1_emergencyIsDetected(rootGoal):
     fullContext = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10]
 
@@ -326,7 +328,8 @@ def test_ContextSet1_emergencyIsDetected(rootGoal):
     assert assertPlan(
         plan,
         [notifyCentralByInternetTask,
-        confirmEmergencyByCallTask])
+         confirmEmergencyByCallTask])
+
 
 def test_ContextSet1_isNotifiedAboutEmergencyGoal(rootGoal):
     fullContext = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10]
@@ -346,7 +349,7 @@ def test_ContextSet1_centralReceivesInfoGoal(rootGoal):
     assert assertPlan(
         plan,
         [getInfoFromResponsibleTask,
-        sendInfoByInternetTask])
+         sendInfoByInternetTask])
 
 
 def test_ContextSet1_medicalCareReachesGoal(rootGoal):
@@ -358,7 +361,9 @@ def test_ContextSet1_medicalCareReachesGoal(rootGoal):
         plan,
         [ambulanceDispatchDelegationTask])
 
+
 def test_ContextSet3_emergencyIsDetectedGoal(rootGoal):
+
     fullContext = [c4, c8, c11]
 
     plan = rootGoal[0].isAchievable(fullContext, None)
@@ -366,28 +371,39 @@ def test_ContextSet3_emergencyIsDetectedGoal(rootGoal):
     assert assertPlan(
         plan,
         [notifyCentralByInternetTask,
-        acceptEmergencyTask])
-
-def test_ContextSet3_isNotifiedAboutEmergencyGoal(rootGoal):
-    fullContext = [c4, c8, c11]
-
-    plan = rootGoal[1].isAchievable(fullContext, None)
-
-    assert assertPlan(
-        plan,
-        [centralCallTask])
+         acceptEmergencyTask])
 
 
-def test_ContextSet3_centralReceivesInfoGoal(rootGoal):
-    fullContext = [c4, c8, c11]
+def test_ContextSet3_isNotifiedAboutEmergencyGoal():
+    model = MpersModel()
 
-    plan = rootGoal[2].isAchievable(fullContext, None)
+    fullContext = [model.contexts.get("c4"),
+                   model.contexts.get("c8"),
+                   model.contexts.get("c11")]
+
+    plan = model.goals.get(
+        "isNotifiedAboutEmergencyGoal").isAchievable(fullContext, None)
 
     assert assertPlan(
         plan,
-        [considerLastKnownLocationTask,
-        accessDataFromDatabaseTask,
-        sendInfoByInternetTask])
+        [model.tasks.get("centralCallTask")])
+
+
+def test_ContextSet3_centralReceivesInfoGoal():
+    model = MpersModel()
+
+    fullContext = [model.contexts.get("c4"),
+                   model.contexts.get("c8"),
+                   model.contexts.get("c11")]
+
+    plan = model.goals.get(
+        "isNotifiedAboutEmergencyGoal").isAchievable(fullContext, None)
+
+    assert assertPlan(
+        plan,
+        [model.tasks.get("considerLastKnownLocationTask"),
+         model.tasks.get("accessDataFromDatabaseTask"),
+         model.tasks.get("sendInfoByInternetTask")])
 
 
 def test_ContextSet1_medicalCareReachesGoal(rootGoal):
@@ -399,6 +415,7 @@ def test_ContextSet1_medicalCareReachesGoal(rootGoal):
         plan,
         [ambulanceDispatchDelegationTask])
 
+
 def test_ContextSet4_emergencyIsDetectedGoal(rootGoal):
     fullContext = [c1, c2, c3, c6, c7]
 
@@ -407,7 +424,7 @@ def test_ContextSet4_emergencyIsDetectedGoal(rootGoal):
     assert assertPlan(
         plan,
         [notifyCentralBySMSTask,
-        confirmEmergencyByCallTask])
+         confirmEmergencyByCallTask])
 
 
 def test_ContextSet4_isNotifiedAboutEmergencyGoal(rootGoal):
@@ -428,7 +445,7 @@ def test_ContextSet4_centralReceivesInfoGoal(rootGoal):
     assert assertPlan(
         plan,
         [getInfoFromResponsibleTask,
-        sendInfoByInternetTask])
+         sendInfoByInternetTask])
 
 
 def test_ContextSet4_medicalCareReachesGoal(rootGoal):
@@ -439,5 +456,3 @@ def test_ContextSet4_medicalCareReachesGoal(rootGoal):
     assert assertPlan(
         plan,
         [ambulanceDispatchDelegationTask])
-
-
