@@ -3,368 +3,389 @@ from goald.quality.pragmatic.model.pragmatic import Pragmatic
 from goald.quality.pragmatic.model.goal import Goal
 from goald.quality.pragmatic.model.decomposition import Decomposition
 from goald.quality.pragmatic.model.task import Task
-from goald.quality.pragmatic.model.metric import Metric
 from goald.quality.pragmatic.model.quality_constraint import QualityConstraint
 from goald.quality.pragmatic.model.comparison import Comparison
-from goald.quality.pragmatic.model.interpretation import Interpretation
-from goald.utils.context_generator import ContextGenerator
-from goald.utils.print import print_context
-from tests.utils.assert_util import assertPlan
 from tests.test_data.mpers_metric import MpersMetrics
+
+
+class MpersContexts():
+
+    # Contexts
+    c1 = Context("c1")
+    c2 = Context("c2")
+    c3 = Context("c3")
+    c4 = Context("c4")
+    c5 = Context("c5")
+    c6 = Context("c6")
+    c7 = Context("c7")
+    c8 = Context("c8")
+    c9 = Context("c9")
+    c10 = Context("c10")
+    c11 = Context("c11")
+    c12 = Context("c12")
+
+
+class MpersTasks():
+    def __init__(self):
+
+        # Tasks
+        self.notifyCentralBySMSTask = Task("notifyCentralBySMSTask")
+        self.notifyCentralByInternetTask = Task("notifyCentralByInternetTask")
+        self.acceptEmergencyTask = Task("acceptEmergencyTask")
+        self.confirmEmergencyByCallTask = Task("confirmEmergencyByCallTask")
+        self.processDataFromSensorsTask = Task("processDataFromSensorsTask")
+        self.identifySituationTask = Task("identifySituationTask")
+        self.collectDataFromSensorsTask = Task("collectDataFromSensorsTask")
+        self.persistDataToDatabaseTask = Task("persistDataToDatabaseTask")
+        self.notifyByMobileVibrationTask = Task("notifyByMobileVibrationTask")
+        self.notifyBySoundAlertTask = Task("notifyBySoundAlertTask")
+        self.notifyByLightAlertTask = Task("notifyByLightAlertTask")
+        self.centralCallTask = Task("centralCallsPTask")
+        self.sendInfoBySMSTask = Task("sendInfoBySMSTask")
+        self.sendInfoByInternetTask = Task("sendInfoByInternetTask")
+        self.considerLastKnownLocationTask = Task(
+            "considerLastKnownLocationTask")
+        self.identifyLocationByVoiceCallTask = Task(
+            "identifyLocationByVoiceCallTask")
+        self.accessLocationFromTriangulationTask = Task(
+            "accessLocationFromTriangulationTask")
+        self.accessLocationFromGPSTask = Task("accessLocationFromGPSTask")
+        self.accessDataFromDatabaseTask = Task("accessDataFromDatabaseTask")
+        self.getInfoFromResponsibleTask = Task("getInfoFromResponsibleTask")
+        self.ambulanceDispatchDelegationTask = Task(
+            "ambulanceDispatchDelegationTask")
+
+
+class MpersGoals():
+
+    def __init__(self):
+        # Goals
+        self.respondToEmergencyGoal = Pragmatic(
+            Decomposition.AND, "respondToEmergencyGoal")
+        self.emergencyIsDetectedGoal = Pragmatic(
+            Decomposition.OR, "emergencyIsDetectedGoal")
+        self.centralReceivesInfoGoal = Pragmatic(
+            Decomposition.AND, "centralReceivesInfoGoal")
+        self.locationIsIdentifiedGoal = Pragmatic(
+            Decomposition.OR, "locationIsIdentifiedGoal")
+        self.infoIsPreparedGoal = Pragmatic(
+            Decomposition.OR, "infoIsPreparedGoal")
+        self.isNotifiedAboutEmergencyGoal = Pragmatic(
+            Decomposition.OR, "isNotifiedAboutEmergencyGoal")
+        self.callForHelpIsAcceptedGoal = Goal(
+            Decomposition.AND, "callForHelpIsAcceptedGoal")
+        self.falseAlarmIsCheckedGoal = Goal(
+            Decomposition.OR, "falseAlarmIsCheckedGoal")
+        self.pIsContacted = Goal(Decomposition.AND, "pIsContacted")
+        self.receivesEmergencyButtonCallGoal = Goal(
+            Decomposition.OR, "receivesEmergencyButtonCallGoal")
+        self.situationsAreIdentifiedGoal = Goal(
+            Decomposition.AND, "situationsAreIdentifiedGoal")
+        self.vitalSignsAreMonitoredGoal = Goal(
+            Decomposition.AND, "vitalSignsAreMonitoredGoal")
+        self.infoIsSentToEmergencyGoal = Goal(
+            Decomposition.OR, "infoIsSentToEmergencyGoal")
+        self.setupAutomatedInfoGoal = Goal(
+            Decomposition.AND, "setupAutomatedInfoGoal")
+        self.situationDataIsRecoveredGoal = Goal(
+            Decomposition.AND, "situationDataIsRecoveredGoal")
+        self.contactResponsibleGoal = Goal(
+            Decomposition.AND, "contactResponsibleGoal")
+        self.medicalCareReachesGoal = Goal(
+            Decomposition.AND, "medicalCareReachesGoal")
+        self.ambulanceIsDispatchedToLocationGoal = Goal(
+            Decomposition.AND, "ambulanceIsDispatchedToLocationGoal")
 
 
 class MpersModel():
 
+    contexts = MpersContexts()
+
     def __init__(self):
 
-        # Contexts
-        c1 = Context("c1")
-        c2 = Context("c2")
-        c3 = Context("c3")
-        c4 = Context("c4")
-        c5 = Context("c5")
-        c6 = Context("c6")
-        c7 = Context("c7")
-        c8 = Context("c8")
-        c9 = Context("c9")
-        c10 = Context("c10")
-        c11 = Context("c11")
-        c12 = Context("c12")
-
-        self.contexts = {"c1": c1,
-                         "c2": c2,
-                         "c3": c3,
-                         "c4": c4,
-                         "c5": c5,
-                         "c6": c6,
-                         "c7": c7,
-                         "c8": c8,
-                         "c9": c9,
-                         "c10": c10,
-                         "c11": c11,
-                         "c12": c12
-                         }
-
-        # Tasks
-        notifyCentralBySMSTask = Task("notifyCentralBySMSTask")
-        notifyCentralByInternetTask = Task("notifyCentralByInternetTask")
-        acceptEmergencyTask = Task("acceptEmergencyTask")
-        confirmEmergencyByCallTask = Task("confirmEmergencyByCallTask")
-        processDataFromSensorsTask = Task("processDataFromSensorsTask")
-        identifySituationTask = Task("identifySituationTask")
-        collectDataFromSensorsTask = Task("collectDataFromSensorsTask")
-        persistDataToDatabaseTask = Task("persistDataToDatabaseTask")
-        notifyByMobileVibrationTask = Task("notifyByMobileVibrationTask")
-        notifyBySoundAlertTask = Task("notifyBySoundAlertTask")
-        notifyByLightAlertTask = Task("notifyByLightAlertTask")
-        centralCallTask = Task("centralCallsPTask")
-        sendInfoBySMSTask = Task("sendInfoBySMSTask")
-        sendInfoByInternetTask = Task("sendInfoByInternetTask")
-        considerLastKnownLocationTask = Task("considerLastKnownLocationTask")
-        identifyLocationByVoiceCallTask = Task(
-            "identifyLocationByVoiceCallTask")
-        accessLocationFromTriangulationTask = Task(
-            "accessLocationFromTriangulationTask")
-        accessLocationFromGPSTask = Task("accessLocationFromGPSTask")
-        accessDataFromDatabaseTask = Task("accessDataFromDatabaseTask")
-        getInfoFromResponsibleTask = Task("getInfoFromResponsibleTask")
-        ambulanceDispatchDelegationTask = Task(
-            "ambulanceDispatchDelegationTask")
-
-        self.tasks = {"notifyCentralBySMSTask": notifyCentralBySMSTask,
-                      "notifyCentralByInternetTask": notifyCentralByInternetTask,
-                      "acceptEmergencyTask": acceptEmergencyTask,
-                      "confirmEmergencyByCallTask": confirmEmergencyByCallTask,
-                      "processDataFromSensorsTask": processDataFromSensorsTask,
-                      "identifySituationTask": identifySituationTask,
-                      "collectDataFromSensorsTask": collectDataFromSensorsTask,
-                      "persistDataToDatabaseTask": persistDataToDatabaseTask,
-                      "notifyByMobileVibrationTask": notifyByMobileVibrationTask,
-                      "notifyBySoundAlertTask": notifyBySoundAlertTask,
-                      "notifyByLightAlertTask": notifyByLightAlertTask,
-                      "centralCallTask": centralCallTask,
-                      "sendInfoBySMSTask": sendInfoBySMSTask,
-                      "considerLastKnownLocationTask": considerLastKnownLocationTask,
-                      "identifyLocationByVoiceCallTask": identifyLocationByVoiceCallTask,
-                      "accessLocationFromTriangulationTask": accessLocationFromTriangulationTask,
-                      "accessDataFromDatabaseTask": accessDataFromDatabaseTask,
-                      "getInfoFromResponsibleTask": getInfoFromResponsibleTask,
-                      "ambulanceDispatchDelegationTask": ambulanceDispatchDelegationTask
-                      }
-
-        # Goals
-        respondToEmergencyGoal = Pragmatic(
-            Decomposition.AND, "respondToEmergencyGoal")
-        emergencyIsDetectedGoal = Pragmatic(
-            Decomposition.OR, "emergencyIsDetectedGoal")
-        centralReceivesInfoGoal = Pragmatic(
-            Decomposition.AND, "centralReceivesInfoGoal")
-        locationIsIdentifiedGoal = Pragmatic(
-            Decomposition.OR, "locationIsIdentifiedGoal")
-        infoIsPreparedGoal = Pragmatic(Decomposition.OR, "infoIsPreparedGoal")
-        isNotifiedAboutEmergencyGoal = Pragmatic(
-            Decomposition.OR, "isNotifiedAboutEmergencyGoal")
-        callForHelpIsAcceptedGoal = Goal(
-            Decomposition.AND, "callForHelpIsAcceptedGoal")
-        falseAlarmIsCheckedGoal = Goal(
-            Decomposition.OR, "falseAlarmIsCheckedGoal")
-        pIsContacted = Goal(Decomposition.AND, "pIsContacted")
-        receivesEmergencyButtonCallGoal = Goal(
-            Decomposition.OR, "receivesEmergencyButtonCallGoal")
-        situationsAreIdentifiedGoal = Goal(
-            Decomposition.AND, "situationsAreIdentifiedGoal")
-        vitalSignsAreMonitoredGoal = Goal(
-            Decomposition.AND, "vitalSignsAreMonitoredGoal")
-        infoIsSentToEmergencyGoal = Goal(
-            Decomposition.OR, "infoIsSentToEmergencyGoal")
-        setupAutomatedInfoGoal = Goal(
-            Decomposition.AND, "setupAutomatedInfoGoal")
-        situationDataIsRecoveredGoal = Goal(
-            Decomposition.AND, "situationDataIsRecoveredGoal")
-        contactResponsibleGoal = Goal(
-            Decomposition.AND, "contactResponsibleGoal")
-        medicalCareReachesGoal = Goal(
-            Decomposition.AND, "medicalCareReachesGoal")
-        ambulanceIsDispatchedToLocationGoal = Goal(
-            Decomposition.AND, "ambulanceIsDispatchedToLocationGoal")
-
-        self.goals = {
-            "respondToEmergencyGoal": respondToEmergencyGoal,
-            "emergencyIsDetectedGoal": emergencyIsDetectedGoal,
-            "isNotifiedAboutEmergencyGoal": isNotifiedAboutEmergencyGoal,
-            "centralReceivesInfoGoal": centralReceivesInfoGoal,
-            "medicalCareReachesGoal": medicalCareReachesGoal,
-            "locationIsIdentifiedGoal": locationIsIdentifiedGoal,
-            "infoIsPreparedGoal": infoIsPreparedGoal
-        }
+        self.tasks = MpersTasks()
+        self.goals = MpersGoals()
 
         # Refinements
 
-        respondToEmergencyGoal.addDependency(emergencyIsDetectedGoal)
-        respondToEmergencyGoal.addDependency(isNotifiedAboutEmergencyGoal)
-        respondToEmergencyGoal.addDependency(centralReceivesInfoGoal)
-        respondToEmergencyGoal.addDependency(medicalCareReachesGoal)
+        self.goals.respondToEmergencyGoal.addDependency(
+            self.goals.emergencyIsDetectedGoal)
+        self.goals.respondToEmergencyGoal.addDependency(
+            self.goals.isNotifiedAboutEmergencyGoal)
+        self.goals.respondToEmergencyGoal.addDependency(
+            self.goals.centralReceivesInfoGoal)
+        self.goals.respondToEmergencyGoal.addDependency(
+            self.goals.medicalCareReachesGoal)
 
-        emergencyIsDetectedGoal.addDependency(callForHelpIsAcceptedGoal)
-        emergencyIsDetectedGoal.addDependency(situationsAreIdentifiedGoal)
+        self.goals.emergencyIsDetectedGoal.addDependency(
+            self.goals.callForHelpIsAcceptedGoal)
+        self.goals.emergencyIsDetectedGoal.addDependency(
+            self.goals.situationsAreIdentifiedGoal)
 
-        callForHelpIsAcceptedGoal.addDependency(
-            receivesEmergencyButtonCallGoal)
-        callForHelpIsAcceptedGoal.addDependency(falseAlarmIsCheckedGoal)
+        self.goals.callForHelpIsAcceptedGoal.addDependency(
+            self.goals.receivesEmergencyButtonCallGoal)
+        self.goals.callForHelpIsAcceptedGoal.addDependency(
+            self.goals.falseAlarmIsCheckedGoal)
 
-        receivesEmergencyButtonCallGoal.addDependency(notifyCentralBySMSTask)
-        receivesEmergencyButtonCallGoal.addDependency(
-            notifyCentralByInternetTask)
+        self.goals.receivesEmergencyButtonCallGoal.addDependency(
+            self.tasks.notifyCentralBySMSTask)
+        self.goals.receivesEmergencyButtonCallGoal.addDependency(
+            self.tasks.notifyCentralByInternetTask)
 
-        falseAlarmIsCheckedGoal.addDependency(acceptEmergencyTask)
-        falseAlarmIsCheckedGoal.addDependency(pIsContacted)
+        self.goals.falseAlarmIsCheckedGoal.addDependency(
+            self.tasks.acceptEmergencyTask)
+        self.goals.falseAlarmIsCheckedGoal.addDependency(
+            self.goals.pIsContacted)
 
-        pIsContacted.addDependency(confirmEmergencyByCallTask)
+        self.goals.pIsContacted.addDependency(
+            self.tasks.confirmEmergencyByCallTask)
 
-        situationsAreIdentifiedGoal.addDependency(processDataFromSensorsTask)
-        situationsAreIdentifiedGoal.addDependency(vitalSignsAreMonitoredGoal)
-        situationsAreIdentifiedGoal.addDependency(identifySituationTask)
+        self.goals.situationsAreIdentifiedGoal.addDependency(
+            self.tasks.processDataFromSensorsTask)
+        self.goals.situationsAreIdentifiedGoal.addDependency(
+            self.goals.vitalSignsAreMonitoredGoal)
+        self.goals.situationsAreIdentifiedGoal.addDependency(
+            self.tasks.identifySituationTask)
 
-        vitalSignsAreMonitoredGoal.addDependency(collectDataFromSensorsTask)
-        vitalSignsAreMonitoredGoal.addDependency(persistDataToDatabaseTask)
+        self.goals.vitalSignsAreMonitoredGoal.addDependency(
+            self.tasks.collectDataFromSensorsTask)
+        self.goals.vitalSignsAreMonitoredGoal.addDependency(
+            self.tasks.persistDataToDatabaseTask)
 
-        isNotifiedAboutEmergencyGoal.addDependency(notifyByMobileVibrationTask)
-        isNotifiedAboutEmergencyGoal.addDependency(notifyBySoundAlertTask)
-        isNotifiedAboutEmergencyGoal.addDependency(notifyByLightAlertTask)
-        isNotifiedAboutEmergencyGoal.addDependency(centralCallTask)
+        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
+            self.tasks.notifyByMobileVibrationTask)
+        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
+            self.tasks.notifyBySoundAlertTask)
+        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
+            self.tasks.notifyByLightAlertTask)
+        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
+            self.tasks.centralCallTask)
 
-        centralReceivesInfoGoal.addDependency(infoIsSentToEmergencyGoal)
-        centralReceivesInfoGoal.addDependency(infoIsPreparedGoal)
+        self.goals.centralReceivesInfoGoal.addDependency(
+            self.goals.infoIsSentToEmergencyGoal)
+        self.goals.centralReceivesInfoGoal.addDependency(
+            self.goals.infoIsPreparedGoal)
 
-        infoIsSentToEmergencyGoal.addDependency(sendInfoBySMSTask)
-        infoIsSentToEmergencyGoal.addDependency(sendInfoByInternetTask)
+        self.goals.infoIsSentToEmergencyGoal.addDependency(
+            self.tasks.sendInfoBySMSTask)
+        self.goals.infoIsSentToEmergencyGoal.addDependency(
+            self.tasks.sendInfoByInternetTask)
 
-        infoIsPreparedGoal.addDependency(setupAutomatedInfoGoal)
-        infoIsPreparedGoal.addDependency(contactResponsibleGoal)
+        self.goals.infoIsPreparedGoal.addDependency(
+            self.goals.setupAutomatedInfoGoal)
+        self.goals.infoIsPreparedGoal.addDependency(
+            self.goals.contactResponsibleGoal)
 
-        setupAutomatedInfoGoal.addDependency(locationIsIdentifiedGoal)
-        setupAutomatedInfoGoal.addDependency(situationDataIsRecoveredGoal)
+        self.goals.setupAutomatedInfoGoal.addDependency(
+            self.goals.locationIsIdentifiedGoal)
+        self.goals.setupAutomatedInfoGoal.addDependency(
+            self.goals.situationDataIsRecoveredGoal)
 
-        locationIsIdentifiedGoal.addDependency(considerLastKnownLocationTask)
-        locationIsIdentifiedGoal.addDependency(identifyLocationByVoiceCallTask)
-        locationIsIdentifiedGoal.addDependency(accessLocationFromGPSTask)
-        locationIsIdentifiedGoal.addDependency(
-            accessLocationFromTriangulationTask)
+        self.goals.locationIsIdentifiedGoal.addDependency(
+            self.tasks.considerLastKnownLocationTask)
+        self.goals.locationIsIdentifiedGoal.addDependency(
+            self.tasks.identifyLocationByVoiceCallTask)
+        self.goals.locationIsIdentifiedGoal.addDependency(
+            self.tasks.accessLocationFromGPSTask)
+        self.goals.locationIsIdentifiedGoal.addDependency(
+            self.tasks.accessLocationFromTriangulationTask)
 
-        situationDataIsRecoveredGoal.addDependency(accessDataFromDatabaseTask)
+        self.goals.situationDataIsRecoveredGoal.addDependency(
+            self.tasks.accessDataFromDatabaseTask)
 
-        contactResponsibleGoal.addDependency(getInfoFromResponsibleTask)
+        self.goals.contactResponsibleGoal.addDependency(
+            self.tasks.getInfoFromResponsibleTask)
 
-        medicalCareReachesGoal.addDependency(
-            ambulanceIsDispatchedToLocationGoal)
+        self.goals.medicalCareReachesGoal.addDependency(
+            self.goals.ambulanceIsDispatchedToLocationGoal)
 
-        ambulanceIsDispatchedToLocationGoal.addDependency(
-            ambulanceDispatchDelegationTask)
+        self.goals.ambulanceIsDispatchedToLocationGoal.addDependency(
+            self.tasks.ambulanceDispatchDelegationTask)
 
         # Applicable Contexts
 
-        notifyCentralBySMSTask.addApplicableContext(c2)
+        self.tasks.notifyCentralBySMSTask.addApplicableContext(
+            self.contexts.c2)
 
-        notifyCentralByInternetTask.addApplicableContext(c3)
-        notifyCentralByInternetTask.addApplicableContext(c4)
+        self.tasks.notifyCentralByInternetTask.addApplicableContext(
+            self.contexts.c3)
+        self.tasks.notifyCentralByInternetTask.addApplicableContext(
+            self.contexts.c4)
 
-        acceptEmergencyTask.addNonapplicableContext(c2)
+        self.tasks.acceptEmergencyTask.addNonapplicableContext(
+            self.contexts.c2)
 
-        confirmEmergencyByCallTask.addApplicableContext(c2)
+        self.tasks.confirmEmergencyByCallTask.addApplicableContext(
+            self.contexts.c2)
 
-        notifyByMobileVibrationTask.addApplicableContext(c1)
+        self.tasks.notifyByMobileVibrationTask.addApplicableContext(
+            self.contexts.c1)
 
-        notifyBySoundAlertTask.addApplicableContext(c6)
+        self.tasks.notifyBySoundAlertTask.addApplicableContext(
+            self.contexts.c6)
 
-        notifyByLightAlertTask.addApplicableContext(c7)
+        self.tasks.notifyByLightAlertTask.addApplicableContext(
+            self.contexts.c7)
 
-        centralCallTask.addApplicableContext(c8)
+        self.tasks.centralCallTask.addApplicableContext(self.contexts.c8)
 
-        sendInfoBySMSTask.addApplicableContext(c2)
+        self.tasks.sendInfoBySMSTask.addApplicableContext(self.contexts.c2)
 
-        sendInfoByInternetTask.addApplicableContext(c3)
-        sendInfoByInternetTask.addApplicableContext(c4)
+        self.tasks.sendInfoByInternetTask.addApplicableContext(
+            self.contexts.c3)
+        self.tasks.sendInfoByInternetTask.addApplicableContext(
+            self.contexts.c4)
 
-        identifyLocationByVoiceCallTask.addApplicableContext(c2)
+        self.tasks.identifyLocationByVoiceCallTask.addApplicableContext(
+            self.contexts.c2)
 
-        accessLocationFromTriangulationTask.addApplicableContext(c2)
+        self.tasks.accessLocationFromTriangulationTask.addApplicableContext(
+            self.contexts.c2)
 
-        accessLocationFromGPSTask.addApplicableContext(c5)
+        self.tasks.accessLocationFromGPSTask.addApplicableContext(
+            self.contexts.c5)
 
         # Goal Interpretation
 
         qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 180,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc2 = QualityConstraint(c10, MpersMetrics.SECONDS, 90,
+        qc2 = QualityConstraint(self.contexts.c10, MpersMetrics.SECONDS, 90,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc3 = QualityConstraint(c9, MpersMetrics.SECONDS, 240,
+        qc3 = QualityConstraint(self.contexts.c9, MpersMetrics.SECONDS, 240,
                                 Comparison.LESS_OR_EQUAL_TO)
-        respondToEmergencyGoal.interp.addQualityConstraint(qc1)
-        respondToEmergencyGoal.interp.addQualityConstraint(qc2)
-        respondToEmergencyGoal.interp.addQualityConstraint(qc3)
+        self.goals.respondToEmergencyGoal.interp.addQualityConstraint(qc1)
+        self.goals.respondToEmergencyGoal.interp.addQualityConstraint(qc2)
+        self.goals.respondToEmergencyGoal.interp.addQualityConstraint(qc3)
 
-        qc1 = QualityConstraint(None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 30,
-                                Comparison.LESS_OR_EQUAL_TO)
-        qc2 = QualityConstraint(c3, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 10,
-                                Comparison.LESS_OR_EQUAL_TO)
-        qc3 = QualityConstraint(c9, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 5,
-                                Comparison.LESS_OR_EQUAL_TO)
-        emergencyIsDetectedGoal.interp.addQualityConstraint(qc1)
-        emergencyIsDetectedGoal.interp.addQualityConstraint(qc2)
-        emergencyIsDetectedGoal.interp.addQualityConstraint(qc3)
+        qc1 = QualityConstraint(
+            None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 30, Comparison.LESS_OR_EQUAL_TO)
+        qc2 = QualityConstraint(
+            self.contexts.c3, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 10, Comparison.LESS_OR_EQUAL_TO)
+        qc3 = QualityConstraint(
+            self.contexts.c9, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 5, Comparison.LESS_OR_EQUAL_TO)
+        self.goals.emergencyIsDetectedGoal.interp.addQualityConstraint(qc1)
+        self.goals.emergencyIsDetectedGoal.interp.addQualityConstraint(qc2)
+        self.goals.emergencyIsDetectedGoal.interp.addQualityConstraint(qc3)
 
         qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 60,
                                 Comparison.LESS_OR_EQUAL_TO)
-        centralReceivesInfoGoal.interp.addQualityConstraint(qc1)
+        self.goals.centralReceivesInfoGoal.interp.addQualityConstraint(qc1)
 
         qc4 = QualityConstraint(None, MpersMetrics.DISTANCE_ERROR, 1000,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc6 = QualityConstraint(c5, MpersMetrics.DISTANCE_ERROR,
+        qc6 = QualityConstraint(self.contexts.c5, MpersMetrics.DISTANCE_ERROR,
                                 20, Comparison.LESS_OR_EQUAL_TO)
-        qc5 = QualityConstraint(c10, MpersMetrics.DISTANCE_ERROR,
+        qc5 = QualityConstraint(self.contexts.c10, MpersMetrics.DISTANCE_ERROR,
                                 200, Comparison.LESS_OR_EQUAL_TO)
         qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 120,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc3 = QualityConstraint(c9, MpersMetrics.SECONDS, 240,
+        qc3 = QualityConstraint(self.contexts.c9, MpersMetrics.SECONDS, 240,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc2 = QualityConstraint(c10, MpersMetrics.SECONDS, 20,
+        qc2 = QualityConstraint(self.contexts.c10, MpersMetrics.SECONDS, 20,
                                 Comparison.LESS_OR_EQUAL_TO)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc1)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc2)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc3)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc4)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc5)
-        locationIsIdentifiedGoal.interp.addQualityConstraint(qc6)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc1)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc2)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc3)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc4)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc5)
+        self.goals.locationIsIdentifiedGoal.interp.addQualityConstraint(qc6)
 
         qc1 = QualityConstraint(None, MpersMetrics.SECONDS, 45,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc2 = QualityConstraint(c10, MpersMetrics.SECONDS, 30,
+        qc2 = QualityConstraint(self.contexts.c10, MpersMetrics.SECONDS, 30,
                                 Comparison.LESS_OR_EQUAL_TO)
-        infoIsPreparedGoal.interp.addQualityConstraint(qc1)
-        infoIsPreparedGoal.interp.addQualityConstraint(qc2)
+        self.goals.infoIsPreparedGoal.interp.addQualityConstraint(qc1)
+        self.goals.infoIsPreparedGoal.interp.addQualityConstraint(qc2)
 
         qc1 = QualityConstraint(None, MpersMetrics.NOISE, 10,
                                 Comparison.LESS_OR_EQUAL_TO)
-        qc2 = QualityConstraint(c1, MpersMetrics.NOISE, 3,
+        qc2 = QualityConstraint(self.contexts.c1, MpersMetrics.NOISE, 3,
                                 Comparison.LESS_OR_EQUAL_TO)
-        isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(qc1)
-        isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(qc2)
+        self.goals.isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(
+            qc1)
+        self.goals.isNotifiedAboutEmergencyGoal.interp.addQualityConstraint(
+            qc2)
 
         # Provided Task QoS
-        notifyCentralBySMSTask.setProvidedQuality(
+        self.tasks.notifyCentralBySMSTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 10)
 
-        notifyCentralByInternetTask.setProvidedQuality(
+        self.tasks.notifyCentralByInternetTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 5)
 
-        acceptEmergencyTask.setProvidedQuality(
+        self.tasks.acceptEmergencyTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 30)
 
-        confirmEmergencyByCallTask.setProvidedQuality(
+        self.tasks.confirmEmergencyByCallTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 5)
 
-        processDataFromSensorsTask.setProvidedQuality(
+        self.tasks.processDataFromSensorsTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 15)
 
-        collectDataFromSensorsTask.setProvidedQuality(
+        self.tasks.collectDataFromSensorsTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 120)
-        collectDataFromSensorsTask.setProvidedQuality(
-            c3, MpersMetrics.SECONDS, 60)
+        self.tasks.collectDataFromSensorsTask.setProvidedQuality(
+            self.contexts.c3, MpersMetrics.SECONDS, 60)
 
-        persistDataToDatabaseTask.setProvidedQuality(
+        self.tasks.persistDataToDatabaseTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 5)
 
-        identifySituationTask.setProvidedQuality(
+        self.tasks.identifySituationTask.setProvidedQuality(
             None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 20)
 
-        notifyByMobileVibrationTask.setProvidedQuality(
+        self.tasks.notifyByMobileVibrationTask.setProvidedQuality(
             None, MpersMetrics.NOISE, 2)
-        notifyBySoundAlertTask.setProvidedQuality(None, MpersMetrics.NOISE, 9)
-        notifyByLightAlertTask.setProvidedQuality(None, MpersMetrics.NOISE, 0)
-        centralCallTask.setProvidedQuality(None, MpersMetrics.NOISE, 7)
+        self.tasks.notifyBySoundAlertTask.setProvidedQuality(
+            None, MpersMetrics.NOISE, 9)
+        self.tasks.notifyByLightAlertTask.setProvidedQuality(
+            None, MpersMetrics.NOISE, 0)
+        self.tasks.centralCallTask.setProvidedQuality(
+            None, MpersMetrics.NOISE, 7)
 
-        sendInfoBySMSTask.setProvidedQuality(None, MpersMetrics.SECONDS, 65)
-        sendInfoBySMSTask.setProvidedQuality(c8, MpersMetrics.SECONDS, 45)
+        self.tasks.sendInfoBySMSTask.setProvidedQuality(
+            None, MpersMetrics.SECONDS, 65)
+        self.tasks.sendInfoBySMSTask.setProvidedQuality(
+            self.contexts.c8, MpersMetrics.SECONDS, 45)
 
-        sendInfoByInternetTask.setProvidedQuality(
+        self.tasks.sendInfoByInternetTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 40)
 
-        considerLastKnownLocationTask.setProvidedQuality(
+        self.tasks.considerLastKnownLocationTask.setProvidedQuality(
             None, MpersMetrics.DISTANCE_ERROR, 900)
-        considerLastKnownLocationTask.setProvidedQuality(
+        self.tasks.considerLastKnownLocationTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 15)
 
-        identifyLocationByVoiceCallTask.setProvidedQuality(
+        self.tasks.identifyLocationByVoiceCallTask.setProvidedQuality(
             None, MpersMetrics.DISTANCE_ERROR, 100)
-        identifyLocationByVoiceCallTask.setProvidedQuality(
-            c11, MpersMetrics.DISTANCE_ERROR, 300)
-        identifyLocationByVoiceCallTask.setProvidedQuality(
+        self.tasks.identifyLocationByVoiceCallTask.setProvidedQuality(
+            self.contexts.c11, MpersMetrics.DISTANCE_ERROR, 300)
+        self.tasks.identifyLocationByVoiceCallTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 45)
 
-        accessLocationFromTriangulationTask.setProvidedQuality(
+        self.tasks.accessLocationFromTriangulationTask.setProvidedQuality(
             None, MpersMetrics.DISTANCE_ERROR, 40)
-        accessLocationFromTriangulationTask.setProvidedQuality(
-            c11, MpersMetrics.DISTANCE_ERROR, 400)
-        accessLocationFromTriangulationTask.setProvidedQuality(
+        self.tasks.accessLocationFromTriangulationTask.setProvidedQuality(
+            self.contexts.c11, MpersMetrics.DISTANCE_ERROR, 400)
+        self.tasks.accessLocationFromTriangulationTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 30)
 
-        accessLocationFromGPSTask.setProvidedQuality(
+        self.tasks.accessLocationFromGPSTask.setProvidedQuality(
             None, MpersMetrics.DISTANCE_ERROR, 20)
-        accessLocationFromGPSTask.setProvidedQuality(
-            c11, MpersMetrics.DISTANCE_ERROR, 30)
-        accessLocationFromGPSTask.setProvidedQuality(
+        self.tasks.accessLocationFromGPSTask.setProvidedQuality(
+            self.contexts.c11, MpersMetrics.DISTANCE_ERROR, 30)
+        self.tasks.accessLocationFromGPSTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 50)
 
-        accessDataFromDatabaseTask.setProvidedQuality(
+        self.tasks.accessDataFromDatabaseTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 20)
 
-        getInfoFromResponsibleTask.setProvidedQuality(
+        self.tasks.getInfoFromResponsibleTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 25)
-        getInfoFromResponsibleTask.setProvidedQuality(
-            c11, MpersMetrics.SECONDS, 50)
+        self.tasks.getInfoFromResponsibleTask.setProvidedQuality(
+            self.contexts.c11, MpersMetrics.SECONDS, 50)
 
-        ambulanceDispatchDelegationTask.setProvidedQuality(
+        self.tasks.ambulanceDispatchDelegationTask.setProvidedQuality(
             None, MpersMetrics.SECONDS, 30)
 
         self.rootGoal = Goal(Decomposition.AND, "rootGoal")
-        self.rootGoal = respondToEmergencyGoal
+        self.rootGoal = self.goals.respondToEmergencyGoal
