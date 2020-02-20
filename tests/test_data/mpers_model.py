@@ -153,11 +153,11 @@ class MpersModel():
             self.tasks.persistDataToDatabaseTask)
 
         self.goals.isNotifiedAboutEmergencyGoal.addDependency(
+            self.tasks.notifyByLightAlertTask)
+        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
             self.tasks.notifyByMobileVibrationTask)
         self.goals.isNotifiedAboutEmergencyGoal.addDependency(
             self.tasks.notifyBySoundAlertTask)
-        self.goals.isNotifiedAboutEmergencyGoal.addDependency(
-            self.tasks.notifyByLightAlertTask)
         self.goals.isNotifiedAboutEmergencyGoal.addDependency(
             self.tasks.centralCallTask)
 

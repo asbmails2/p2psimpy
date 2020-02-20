@@ -72,9 +72,45 @@ def test_ContextSet1(mpers):
          mpers.tasks.sendInfoByInternetTask])
 
 
+def test_contextSet1_not_found(mpers):
+    fullContext = [mpers.contexts.c1,
+                   mpers.contexts.c2,
+                   mpers.contexts.c3,
+                   mpers.contexts.c4,
+                   mpers.contexts.c5,
+                   mpers.contexts.c6,
+                   mpers.contexts.c7,
+                   mpers.contexts.c8,
+                   mpers.contexts.c9,
+                   mpers.contexts.c10]
+
+    plan = mpers.rootGoal.isAchievable(fullContext, None)
+
+    assert plan is not None
+
+    for task in plan.getTasks():
+        found = 0
+        if task is mpers.tasks.acceptEmergencyTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyCentralBySMSTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyBySoundAlertTask:
+            found = 1
+        if task.identifier is mpers.tasks.identifyLocationByVoiceCallTask:
+            found = 1
+        if task.identifier is mpers.tasks.accessLocationFromTriangulationTask:
+            found = 1
+        if task.identifier is mpers.tasks.accessLocationFromGPSTask:
+            found = 1
+        if task.identifier is mpers.tasks.considerLastKnownLocationTask:
+            found = 1
+
+        assert found == 0
+
+
 def test_ContextSet2(mpers):
     fullContext = [mpers.contexts.c9,
-                   mpers.contexts.c10, 
+                   mpers.contexts.c10,
                    mpers.contexts.c11]
 
     plan = mpers.rootGoal.isAchievable(fullContext, None)
@@ -98,8 +134,35 @@ def test_ContextSet3(mpers):
          mpers.tasks.notifyCentralByInternetTask])
 
 
-def test_ContextSet4(mpers):
+def test_contextSet3_not_found(mpers):
+    fullContext = [mpers.contexts.c4, mpers.contexts.c8, mpers.contexts.c11]
 
+    plan = mpers.rootGoal.isAchievable(fullContext, None)
+
+    assert plan is not None
+
+    for task in plan.getTasks():
+        found = 0
+        # if task is mpers.tasks.acceptEmergencyTask:
+        #     found = 1
+        if task.identifier is mpers.tasks.confirmEmergencyByCallTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyCentralBySMSTask:
+            found = 1
+        if task.identifier is mpers.tasks.getInfoFromResponsibleTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyBySoundAlertTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyByLightAlertTask:
+            found = 1
+        if task.identifier is mpers.tasks.notifyByMobileVibrationTask:
+            found = 1
+        if task.identifier is mpers.tasks.sendInfoBySMSTask:
+            found = 1
+
+        assert found == 0
+
+def test_ContextSet4(mpers):
     fullContext = [mpers.contexts.c1,
                    mpers.contexts.c2,
                    mpers.contexts.c3,
@@ -118,23 +181,25 @@ def test_ContextSet4(mpers):
          mpers.tasks.ambulanceDispatchDelegationTask])
 
 
-def test_ContextMpers(mpers):
-    fullContext = [mpers.contexts.c4,
-                   mpers.contexts.c5,
+def test_contextSet4_not_found(mpers):
+    fullContext = [mpers.contexts.c1,
+                   mpers.contexts.c2,
+                   mpers.contexts.c3,
                    mpers.contexts.c6,
-                   mpers.contexts.c7,
-                   mpers.contexts.c10,
-                   mpers.contexts.c11]
+                   mpers.contexts.c7]
 
     plan = mpers.rootGoal.isAchievable(fullContext, None)
 
-    assert assertPlan(
-        plan,
-        [mpers.tasks.notifyCentralByInternetTask,
-         mpers.tasks.acceptEmergencyTask,
-         mpers.tasks.notifyByLightAlertTask,
-         mpers.tasks.accessLocationFromGPSTask,
-         mpers.tasks.accessDataFromDatabaseTask,
-         mpers.tasks.sendInfoByInternetTask,
-         mpers.tasks.ambulanceDispatchDelegationTask])
+    assert plan is not None
 
+    for task in plan.getTasks():
+        found = 0
+        
+        if task.identifier is mpers.tasks.acceptEmergencyTask:
+            found = 1
+        if task.identifier is mpers.tasks.centralCallTask:
+            found = 1
+        if task.identifier is mpers.tasks.accessLocationFromGPSTask:
+            found = 1
+
+        assert found == 0
