@@ -191,7 +191,7 @@ def test_shouldProvideSpecificContextMetric():
     task.setProvidedQuality(currentContext, MpersMetrics.METERS, 50)
     task.setProvidedQuality(baseline, MpersMetrics.METERS, 30)
 
-    assert 30 == task.myProvidedQuality(MpersMetrics.METERS, fullContext)
+    assert 50 == task.myProvidedQuality(MpersMetrics.METERS, fullContext)
 
 
 def test_abidesByInterpretation_passing_baseline(isNotifiedAboutEmergencyGoal):
@@ -269,7 +269,7 @@ def test_myQualityBaseline(locationIsIdentifiedGoal):
     context.append(c11)
     result = accessLocationFromTriangulationTask.myProvidedQuality(
         MpersMetrics.DISTANCE_ERROR, context)
-    assert result == 40
+    assert result == 300
 
 
 def test_myQualityStrict(locationIsIdentifiedGoal):
@@ -279,4 +279,4 @@ def test_myQualityStrict(locationIsIdentifiedGoal):
 
     context.append(c7)
     result = centralCallTask.myProvidedQuality(MpersMetrics.NOISE, context)
-    assert result == 1
+    assert result == 7

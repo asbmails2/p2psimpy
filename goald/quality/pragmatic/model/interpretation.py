@@ -21,7 +21,7 @@ class Interpretation():
     def getQualityConstraints(self, current):
         allQCs = []
         
-        if current:
+        if None not in current:
             for context in current:
                 if context in self.contextDependentInterpretation:
                     constrains = self.contextDependentInterpretation[context]

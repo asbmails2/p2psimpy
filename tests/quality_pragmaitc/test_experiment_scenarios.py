@@ -173,13 +173,14 @@ def test_ContextSet4(mpers):
 
     assert assertPlan(
         plan,
-        [mpers.tasks.notifyCentralBySMSTask,
+        [mpers.tasks.accessLocationFromTriangulationTask,
          mpers.tasks.notifyByLightAlertTask,
-         mpers.tasks.getInfoFromResponsibleTask,
-         mpers.tasks.sendInfoByInternetTask,
          mpers.tasks.confirmEmergencyByCallTask,
+         mpers.tasks.notifyCentralBySMSTask,
+         mpers.tasks.sendInfoByInternetTask,
+         mpers.tasks.accessDataFromDatabaseTask,
          mpers.tasks.ambulanceDispatchDelegationTask])
-
+         
 
 def test_contextSet4_not_found(mpers):
     fullContext = [mpers.contexts.c1,

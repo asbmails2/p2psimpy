@@ -183,7 +183,8 @@ def test_ContextSet4_centralReceivesInfoGoal(mpers):
 
     assert assertPlan(
         plan,
-        [mpers.tasks.getInfoFromResponsibleTask,
+        [mpers.tasks.accessLocationFromTriangulationTask,
+         mpers.tasks.accessDataFromDatabaseTask,
          mpers.tasks.sendInfoByInternetTask])
 
 
