@@ -182,13 +182,13 @@ class MpersModel():
             self.goals.situationDataIsRecoveredGoal)
 
         self.goals.locationIsIdentifiedGoal.addDependency(
+            self.tasks.accessLocationFromTriangulationTask)
+        self.goals.locationIsIdentifiedGoal.addDependency(
             self.tasks.considerLastKnownLocationTask)
         self.goals.locationIsIdentifiedGoal.addDependency(
             self.tasks.identifyLocationByVoiceCallTask)
         self.goals.locationIsIdentifiedGoal.addDependency(
             self.tasks.accessLocationFromGPSTask)
-        self.goals.locationIsIdentifiedGoal.addDependency(
-            self.tasks.accessLocationFromTriangulationTask)
 
         self.goals.situationDataIsRecoveredGoal.addDependency(
             self.tasks.accessDataFromDatabaseTask)

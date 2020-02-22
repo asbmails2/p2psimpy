@@ -130,18 +130,6 @@ def test_ContextSet3_centralReceivesInfoGoal(mpers):
          mpers.tasks.sendInfoByInternetTask])
 
 
-def test_ContextSet1_medicalCareReachesGoal(mpers):
-    fullContext = [mpers.contexts.c4,
-                   mpers.contexts.c8,
-                   mpers.contexts.c11]
-
-    plan = mpers.goals.medicalCareReachesGoal.isAchievable(fullContext, None)
-
-    assert assertPlan(
-        plan,
-        [mpers.tasks.ambulanceDispatchDelegationTask])
-
-
 def test_ContextSet4_emergencyIsDetectedGoal(mpers):
     fullContext = [mpers.contexts.c1,
                    mpers.contexts.c2,

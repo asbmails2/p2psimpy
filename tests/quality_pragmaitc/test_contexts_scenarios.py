@@ -535,66 +535,6 @@ def test_C10(mpers):
         assert found == 0
 
 
-def test_C11(mpers):
-    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c5,
-                   mpers.contexts.c10, mpers.contexts.c11, mpers.contexts.c12]
-    tasks = mpers.rootGoal.isAchievable(fullContext, None)
-
-    assert tasks is not None
-
-    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "notifyCentralBySMS":
-            found = 1
-        if task.getIdentifier() == "confirmEmergencyByCall":
-            found = 1
-        if task.getIdentifier() == "notifyByLightAlert":
-            found = 1
-        if task.getIdentifier() == "sendInfoBySMS":
-            found = 1
-
-        assert found == 0
-
-
-def test_C12(mpers):
-    print("=========== Test C12 ================")
-    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c5,
-                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
-    tasks = mpers.rootGoal.isAchievable(fullContext, None)
-
-    assert tasks is not None
-
-    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "notifyCentralBySMS":
-            found = 1
-        if task.getIdentifier() == "confirmEmergencyByCall":
-            found = 1
-        if task.getIdentifier() == "sendInfoBySMS":
-            found = 1
-
-        assert found == 0
-
-
-def test_All(mpers):
-    print("=========== Test ALL ================")
-    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c3, mpers.contexts.c4, mpers.contexts.c5, mpers.contexts.c6,
-                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c9, mpers.contexts.c10, mpers.contexts.c11, mpers.contexts.c12]
-    tasks = mpers.rootGoal.isAchievable(fullContext, None)
-
-    assert tasks
-
-    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "acceptEmergency":
-            found = 1
-
-        assert found == 0
-
-
 def test_None(mpers):
     print("=========== Test None ================")
     fullContext = []
