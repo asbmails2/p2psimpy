@@ -30,6 +30,7 @@ class Task(Refinement):
         if metric not in self.providedQualityLevels.keys():
             message = "Metric: {0} not found".format(metric.name)
             print(message)
+            # raise MetricNotFoundException
             return None
 
         metricQL = self.providedQualityLevels[metric]
@@ -60,14 +61,14 @@ class Task(Refinement):
             return True
 
         currentQcs = interp.getQualityConstraints(current)
-                
+
         for qc in currentQcs:
             try:
                 myQC = self.myProvidedQuality(qc.metric, current)
                 if myQC is not None:
                     if not qc.abidesByQC(myQC, qc.metric):
                         feasible = False
-            except:
+            except MetricNotFoundException:
                 pass
 
         if interp.getQualityConstraints([None]):
@@ -77,7 +78,7 @@ class Task(Refinement):
                     if myQC is not None:
                         if not qc.abidesByQC(myQC, qc.metric):
                             feasible = False
-                except:
+                except MetricNotFoundException:
                     pass
 
         return feasible

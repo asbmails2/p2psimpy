@@ -162,6 +162,7 @@ def test_contextSet3_not_found(mpers):
 
         assert found == 0
 
+
 def test_ContextSet4(mpers):
     fullContext = [mpers.contexts.c1,
                    mpers.contexts.c2,
@@ -180,7 +181,7 @@ def test_ContextSet4(mpers):
          mpers.tasks.sendInfoByInternetTask,
          mpers.tasks.accessDataFromDatabaseTask,
          mpers.tasks.ambulanceDispatchDelegationTask])
-         
+
 
 def test_contextSet4_not_found(mpers):
     fullContext = [mpers.contexts.c1,
@@ -195,7 +196,6 @@ def test_contextSet4_not_found(mpers):
 
     for task in plan.getTasks():
         found = 0
-        
         if task.identifier is mpers.tasks.acceptEmergencyTask:
             found = 1
         if task.identifier is mpers.tasks.centralCallTask:
