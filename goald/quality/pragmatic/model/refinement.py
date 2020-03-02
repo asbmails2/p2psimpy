@@ -52,14 +52,21 @@ class Refinement():
         return self.dependencies
 
     def getApplicableDependencies(self, current):
-        applicableDeps = set()
+        applicableDeps = []
+
         for dep in self.dependencies:
             if dep.applicableContext is None:
-                applicableDeps.add(dep)
+                applicableDeps.append(dep)
                 continue
             for context in current:
                 if context in dep.applicableContext:
-                    applicableDeps.add(dep)
+                    if(dep not in applicableDeps):
+                        applicableDeps.append(dep)
+
+        print("====== Applicable Dependencies ======")
+        for d in applicableDeps:
+            print(d.identifier)
+
         return applicableDeps
 
     def getIdentifier(self):

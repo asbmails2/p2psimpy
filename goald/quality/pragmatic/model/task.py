@@ -25,11 +25,12 @@ class Task(Refinement):
 
     def myProvidedQuality(self, metric, contextSet):
         myQuality = 0
-        set = False
+        initQuality = False
 
         if metric not in self.providedQualityLevels.keys():
             message = "Metric: {0} not found".format(metric.name)
             print(message)
+            # raise MetricNotFoundException
             return None
 
         metricQL = self.providedQualityLevels[metric]
@@ -37,14 +38,14 @@ class Task(Refinement):
         # getting baseline
         if None in metricQL:
             myQuality = metricQL[None]
-            set = True
+            initQuality = True
 
         for current in contextSet:
             if metricQL.get(current) is None:
                 continue
-            if not set:
+            if not initQuality:
                 myQuality = metricQL.get(current)
-                set = True
+                initQuality = True
             else:
                 if metric.getLessIsBetter():
                     if(myQuality > metricQL[current]):
@@ -62,23 +63,25 @@ class Task(Refinement):
         currentQcs = interp.getQualityConstraints(current)
 
         for qc in currentQcs:
-            feasible = self.checkQualityConstraint(qc, current)
+            try:
+                myQC = self.myProvidedQuality(qc.metric, current)
+                if myQC is not None:
+                    if not qc.abidesByQC(myQC, qc.metric):
+                        feasible = False
+            except MetricNotFoundException:
+                pass
 
         if interp.getQualityConstraints([None]):
             for qc in interp.getQualityConstraints([None]):
-                feasible = self.checkQualityConstraint(qc, current)
+                try:
+                    myQC = self.myProvidedQuality(qc.metric, current)
+                    if myQC is not None:
+                        if not qc.abidesByQC(myQC, qc.metric):
+                            feasible = False
+                except MetricNotFoundException:
+                    pass
 
         return feasible
-
-    def checkQualityConstraint(self, qc, current):
-        myQC = self.myProvidedQuality(qc.metric, current)
-        if myQC is None:
-            return True
-        if not qc.abidesByQC(myQC, qc.metric):
-            return False
-    
-        return True
-
 
     def isAchievable(self, current, interp):
         if not self.isApplicable(current):

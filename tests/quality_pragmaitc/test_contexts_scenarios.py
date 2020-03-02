@@ -10,16 +10,9 @@ from goald.quality.pragmatic.model.interpretation import Interpretation
 from goald.utils.context_generator import ContextGenerator
 from goald.utils.print import print_context
 from tests.utils.assert_util import assertPlan
+from tests.test_data.mpers_metric import MpersMetrics
+from tests.test_data.mpers_model import MpersModel
 import pytest
-
-
-class MpersMetrics:
-    FALSE_NEGATIVE_PERCENTAGE = Metric("False Negative", True)
-    NOISE = Metric('Noise', True)
-    TIME = Metric('Time', True)
-    ERROR = Metric('Error', True)
-    DISTANCE_ERROR = Metric('Distance', True)
-
 
 # Contexts
 c1 = Context("c1")
@@ -187,11 +180,11 @@ def rootGoal():
 
     # Goal Interpretations
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
                             180, Comparison.LESS_THAN)
     qc2 = QualityConstraint(
-        c10, MpersMetrics.TIME, 90, Comparison.LESS_THAN)
-    qc3 = QualityConstraint(c9, MpersMetrics.TIME,
+        c10, MpersMetrics.SECONDS, 90, Comparison.LESS_THAN)
+    qc3 = QualityConstraint(c9, MpersMetrics.SECONDS,
                             240, Comparison.LESS_THAN)
     respondToEmergencyGoal.interp.addQualityConstraint(qc1)
     respondToEmergencyGoal.interp.addQualityConstraint(qc2)
@@ -207,7 +200,8 @@ def rootGoal():
     emergencyIsDetectedGoal.interp.addQualityConstraint(qc2)
     emergencyIsDetectedGoal.interp.addQualityConstraint(qc3)
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME, 60, Comparison.LESS_THAN)
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
+                            60, Comparison.LESS_THAN)
     centralReceivesInfoGoal.interp.addQualityConstraint(qc1)
 
     qc4 = QualityConstraint(None, MpersMetrics.DISTANCE_ERROR,
@@ -216,10 +210,12 @@ def rootGoal():
         c5, MpersMetrics.DISTANCE_ERROR, 20, Comparison.LESS_THAN)
     qc5 = QualityConstraint(
         c10, MpersMetrics.DISTANCE_ERROR, 200, Comparison.LESS_THAN)
-    qc1 = QualityConstraint(None, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
                             120, Comparison.LESS_THAN)
-    qc3 = QualityConstraint(c9, MpersMetrics.TIME, 240, Comparison.LESS_THAN)
-    qc2 = QualityConstraint(c10, MpersMetrics.TIME, 20, Comparison.LESS_THAN)
+    qc3 = QualityConstraint(c9, MpersMetrics.SECONDS,
+                            240, Comparison.LESS_THAN)
+    qc2 = QualityConstraint(c10, MpersMetrics.SECONDS,
+                            20, Comparison.LESS_THAN)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc1)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc2)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc3)
@@ -227,8 +223,9 @@ def rootGoal():
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc5)
     locationIsIdentifiedGoal.interp.addQualityConstraint(qc6)
 
-    qc1 = QualityConstraint(None, MpersMetrics.TIME, 900, Comparison.LESS_THAN)
-    qc2 = QualityConstraint(c10, MpersMetrics.TIME,
+    qc1 = QualityConstraint(None, MpersMetrics.SECONDS,
+                            900, Comparison.LESS_THAN)
+    qc2 = QualityConstraint(c10, MpersMetrics.SECONDS,
                             600, Comparison.LESS_THAN)
     infoIsPreparedGoal.interp.addQualityConstraint(qc1)
     infoIsPreparedGoal.interp.addQualityConstraint(qc2)
@@ -256,12 +253,12 @@ def rootGoal():
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 15)
 
     collectDataFromSensorsTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 120)
+        None, MpersMetrics.SECONDS, 120)
     collectDataFromSensorsTask.setProvidedQuality(
-        c3, MpersMetrics.TIME, 60)
+        c3, MpersMetrics.SECONDS, 60)
 
     persistDataToDatabaseTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 5)
+        None, MpersMetrics.SECONDS, 5)
 
     identifySituationTask.setProvidedQuality(
         None, MpersMetrics.FALSE_NEGATIVE_PERCENTAGE, 20)
@@ -272,47 +269,47 @@ def rootGoal():
     notifyByLightAlertTask.setProvidedQuality(None, MpersMetrics.NOISE, 0)
     centralCallTask.setProvidedQuality(None, MpersMetrics.NOISE, 7)
 
-    sendInfoBySMSTask.setProvidedQuality(None, MpersMetrics.TIME, 65)
-    sendInfoBySMSTask.setProvidedQuality(c8, MpersMetrics.TIME, 45)
+    sendInfoBySMSTask.setProvidedQuality(None, MpersMetrics.SECONDS, 65)
+    sendInfoBySMSTask.setProvidedQuality(c8, MpersMetrics.SECONDS, 45)
 
-    sendInfoByInternetTask.setProvidedQuality(None, MpersMetrics.TIME, 40)
+    sendInfoByInternetTask.setProvidedQuality(None, MpersMetrics.SECONDS, 40)
 
     considerLastKnownLocationTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 900)
     considerLastKnownLocationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 15)
+        None, MpersMetrics.SECONDS, 15)
 
     identifyLocationByVoiceCallTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 100)
     identifyLocationByVoiceCallTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 300)
     identifyLocationByVoiceCallTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 45)
+        None, MpersMetrics.SECONDS, 45)
 
     accessLocationFromTriangulationTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 40)
     accessLocationFromTriangulationTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 400)
     accessLocationFromTriangulationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 30)
+        None, MpersMetrics.SECONDS, 30)
 
     accessLocationFromGPSTask.setProvidedQuality(
         None, MpersMetrics.DISTANCE_ERROR, 20)
     accessLocationFromGPSTask.setProvidedQuality(
         c11, MpersMetrics.DISTANCE_ERROR, 30)
     accessLocationFromGPSTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 50)
+        None, MpersMetrics.SECONDS, 50)
 
     accessDataFromDatabaseTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 20)
+        None, MpersMetrics.SECONDS, 20)
 
     getInfoFromResponsibleTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 25)
+        None, MpersMetrics.SECONDS, 25)
     getInfoFromResponsibleTask.setProvidedQuality(
-        c11, MpersMetrics.TIME, 50)
+        c11, MpersMetrics.SECONDS, 50)
 
     ambulanceDispatchDelegationTask.setProvidedQuality(
-        None, MpersMetrics.TIME, 30)
+        None, MpersMetrics.SECONDS, 30)
 
     rootGoal = Goal(Decomposition.AND, "rootGoal")
     rootGoal = respondToEmergencyGoal
@@ -320,24 +317,32 @@ def rootGoal():
     return rootGoal
 
 
-def test_C1(rootGoal):
-    fullContext = [c1, c2, c4, c5, c7, c8, c10, c12]
-    plan = rootGoal.isAchievable(fullContext, None)
+@pytest.fixture
+def mpers():
+    mpers = MpersModel()
+
+    return mpers
+
+
+def test_C1(mpers):
+    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c4, mpers.contexts.c5,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    plan = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert plan is not None
 
     assert False is assertPlan(
-        plan, [accessLocationFromGPSTask, centralCallTask])
+        plan, [mpers.tasks.accessLocationFromGPSTask, mpers.tasks.centralCallTask])
 
 
-
-def test_C2(rootGoal):
-    fullContext = [c1, c2, c4, c6, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+def test_C2(mpers):
+    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c4, mpers.contexts.c6,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "acceptEmergency":
@@ -346,16 +351,17 @@ def test_C2(rootGoal):
             found = 1
 
         assert found == 0
-    
 
-def test_C3(rootGoal):
-    fullContext = [c1, c2, c3, c4, c5, c6, c7, c8]
 
-    tasks = rootGoal.isAchievable(fullContext, None)
+def test_C3(mpers):
+    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c3, mpers.contexts.c4,
+                   mpers.contexts.c5, mpers.contexts.c6, mpers.contexts.c7, mpers.contexts.c8]
+
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "acceptEmergency":
@@ -364,14 +370,15 @@ def test_C3(rootGoal):
         assert found == 0
 
 
-def test_C4(rootGoal):
+def test_C4(mpers):
     print("=========== Test C4 ================")
-    fullContext = [c1, c4, c6, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c6,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyCentralBySMS":
@@ -390,14 +397,15 @@ def test_C4(rootGoal):
         assert found == 0
 
 
-def test_C5(rootGoal):
+def test_C5(mpers):
     print("=========== Test C5 ================")
-    fullContext = [c1, c4, c5, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c5,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyCentralBySMS":
@@ -412,14 +420,15 @@ def test_C5(rootGoal):
         assert found == 0
 
 
-def test_C6(rootGoal):
+def test_C6(mpers):
     print("=========== Test C6 ================")
-    fullContext = [c1, c4, c5, c6, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c5, mpers.contexts.c6,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyCentralBySMS":
@@ -432,14 +441,15 @@ def test_C6(rootGoal):
         assert found == 0
 
 
-def test_C7(rootGoal):
+def test_C7(mpers):
     print("=========== Test C7 ================")
-    fullContext = [c1, c4, c6, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c6,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyCentralBySMS":
@@ -460,14 +470,15 @@ def test_C7(rootGoal):
         assert found == 0
 
 
-def test_C8(rootGoal):
+def test_C8(mpers):
     print("=========== Test C8 ================")
-    fullContext = [c1, c4, c5, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c4, mpers.contexts.c5,
+                   mpers.contexts.c7, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyCentralBySMS":
@@ -486,14 +497,15 @@ def test_C8(rootGoal):
         assert found == 0
 
 
-def test_C9(rootGoal):
+def test_C9(mpers):
     print("=========== Test C9 ================")
-    fullContext = [c1, c2, c4, c5, c6, c9]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c4,
+                   mpers.contexts.c5, mpers.contexts.c6, mpers.contexts.c9]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyByLightAlert":
@@ -504,14 +516,15 @@ def test_C9(rootGoal):
         assert found == 0
 
 
-def test_C10(rootGoal):
+def test_C10(mpers):
     print("=========== Test C10 ================")
-    fullContext = [c1, c2, c3, c5, c6, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
+    fullContext = [mpers.contexts.c1, mpers.contexts.c2, mpers.contexts.c3, mpers.contexts.c5,
+                   mpers.contexts.c6, mpers.contexts.c8, mpers.contexts.c10, mpers.contexts.c12]
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is not None
 
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
+    for task in mpers.rootGoal.isAchievable(fullContext, None).getTasks():
         found = 0
 
         if task.getIdentifier() == "notifyByLightAlert":
@@ -522,66 +535,9 @@ def test_C10(rootGoal):
         assert found == 0
 
 
-def test_C11(rootGoal):
-    fullContext = [c1, c4, c5, c10, c11, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
-
-    assert tasks is not None
-
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "notifyCentralBySMS":
-            found = 1
-        if task.getIdentifier() == "confirmEmergencyByCall":
-            found = 1
-        if task.getIdentifier() == "notifyByLightAlert":
-            found = 1
-        if task.getIdentifier() == "sendInfoBySMS":
-            found = 1
-
-        assert found == 0
-
-
-def test_C12(rootGoal):
-    print("=========== Test C12 ================")
-    fullContext = [c1, c4, c5, c7, c8, c10, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
-
-    assert tasks is not None
-
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "notifyCentralBySMS":
-            found = 1
-        if task.getIdentifier() == "confirmEmergencyByCall":
-            found = 1
-        if task.getIdentifier() == "sendInfoBySMS":
-            found = 1
-
-        assert found == 0
-
-
-def test_All(rootGoal):
-    print("=========== Test ALL ================")
-    fullContext = [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12]
-    tasks = rootGoal.isAchievable(fullContext, None)
-
-    assert tasks
-
-    for task in rootGoal.isAchievable(fullContext, None).getTasks():
-        found = 0
-
-        if task.getIdentifier() == "acceptEmergency":
-            found = 1
-
-        assert found == 0
-
-
-def test_None(rootGoal):
+def test_None(mpers):
     print("=========== Test None ================")
     fullContext = []
-    tasks = rootGoal.isAchievable(fullContext, None)
+    tasks = mpers.rootGoal.isAchievable(fullContext, None)
 
     assert tasks is None
