@@ -13,6 +13,7 @@ class Driver:
         self.methods = {
             'on_message': [],
             'on_connect': [],
+            'on_advertise': [],
             'on_disconnect': []
             }
 
@@ -20,23 +21,26 @@ class Driver:
         if self.address is None:
             for z in self.connect():
                 yield z
-        
+                
         while True:
             event = yield self.async_events.get()
             for z in self.issue_event(event[0], event[1]):
                 if z:
                     yield z
+            for z in self.issue_event(event[0], 'on_advertise'):
+                if z:
+                    yield z
+            self.advertise("Hello World")
             
     def connect(self):
         for z in  self.network.register(self):
             yield z
         for z in self.issue_event('on_connect', self.address):
             yield z
-        # for z in self.issue_event('on_connect', self.address):
-        #     yield z
+        self.advertise("Cheguei")
 
     def advertise(self, msg):
-        self.network.send_broadcast(self.address, msg, self.network.list_addr)
+        return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
         print('{} received from {}: {}'.format(

@@ -18,6 +18,7 @@ class Peer:
         self.driver = driver
         self.driver.register_handler(self.on_message)
         self.driver.register_handler(self.on_connect, 'on_connect')
+        self.driver.register_handler(self.on_advertise, 'on_advertise')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
 
@@ -36,6 +37,10 @@ class Peer:
 
     def on_disconnect (self):
         self.driver.advertise("Bye World")
+    
+    def on_advertise (self, msg):
+        self.driver.advertise("Adv "+ msg)
+        yield None
 
 
 

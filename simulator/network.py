@@ -12,6 +12,7 @@ class Network:
         self.timeout = env.timeout
         self.latency = latency
         self.node_map = {}
+        self.addr_list = []
 
     def register(self, node_driver):
         with self.channel.request() as rec:
@@ -22,7 +23,9 @@ class Network:
 
             self.node_map[curr_address] = node_driver
             node_driver.address = curr_address
+            self.addr_list.append(curr_address)
             yield self.timeout(self.latency)
+
 
     def send_unicast(self, from_addr, to_addr, msg):
         print('network sending unicast {} => {}'.format(from_addr, to_addr))
@@ -38,29 +41,28 @@ class Network:
                 if node:
                     node.recieve(msg_envelope)
                     yield self.env.timeout(self.latency)
+                    print(msg_envelope)
                 else:
                     print('{} address not found (msg from {})'.format(
                         to_addr, from_addr))
 
-    def send_broadcast(self, from_addr, msg, list_addr):
-
-
-        print('broadcast')
+    def send_broadcast(self, from_addr, msg):
         
-        for to_addr in list_addr:
-            print('network sending unicast {} => {}'.format(from_addr, to_addr))
+        print('network sending broadcast from {}'.format(from_addr))
+        for to_addr in self.addr_list:
             if(to_addr <= 0):
                 print('{} address not found (msg from {})'.format(
                     to_addr, from_addr))
                 yield self.env.timeout(0)
             else: 
-                msg_envelope = [from_addr, to_addr, msg]
+                msg_envelope2 = [from_addr, to_addr, msg]
                 with self.channel.request() as rec:
                     yield rec
                     node = self.node_map[to_addr]
                     if node:
-                        node.recieve(msg_envelope)
+                        node.recieve(msg_envelope2)
                         yield self.env.timeout(self.latency)
+                        print('Broadcast:'+ msg_envelope2)
                     else:
                         print('{} address not found (msg from {})'.format(
                             to_addr, from_addr))
