@@ -47,8 +47,7 @@ class Network:
                         to_addr, from_addr))
 
     def send_broadcast(self, from_addr, msg):
-        
-        print('network sending broadcast from {}'.format(from_addr))
+        print('Message Broadcast from {} ->> {}'.format(from_addr,msg))
         for to_addr in self.addr_list:
             if(to_addr <= 0):
                 print('{} address not found (msg from {})'.format(

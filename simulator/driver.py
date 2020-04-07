@@ -57,7 +57,7 @@ class Driver:
 
     def issue_event (self, event, value=None):
         print('issuing ' + event)
-        for handle in  self.methods[event]:
+        for handle in self.methods[event]:
             yield self.env.timeout(1)
             for z in self.processor.process_message(handle, value):
                 yield z

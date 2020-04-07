@@ -30,16 +30,16 @@ class Peer:
         print('{} connected with address {}'.format(self.name, address))
         #self.driver.advertise("Hello World")
 
-        for z in self.driver.send(1, 'hello'):
-            yield z
-        for z in self.driver.send(address -1 , 'hello'):
-            yield z
+        #for z in self.driver.send(1, 'hello'):
+        #    yield z
+        #for z in self.driver.send(address -1 , 'hello'):
+        #    yield z
 
     def on_disconnect (self):
         self.driver.advertise("Bye World")
     
     def on_advertise (self, msg):
-        self.driver.advertise("Adv "+ msg)
+        self.driver.advertise("ADV-"+ msg)
         yield None
 
 
