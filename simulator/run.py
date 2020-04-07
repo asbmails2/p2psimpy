@@ -11,7 +11,7 @@ Controll of peers, duration and others details.
 """
 
 NUM_PEERS = 5
-SIM_DURATION = 100000
+SIM_DURATION = 1000
 
 
 # create env
@@ -24,7 +24,7 @@ net = network.Network(env,2)
 
 nodes = []
 
-teste = env.timeout(2)
+teste = env.timeout(200)
 
 for i in range (NUM_PEERS):
      proc = processor.Processor(env, i, 3)

@@ -30,7 +30,6 @@ class Driver:
             for z in self.issue_event(event[0], 'on_advertise'):
                 if z:
                     yield z
-            self.advertise("Hello World")
             
     def connect(self):
         for z in  self.network.register(self):
@@ -40,14 +39,19 @@ class Driver:
         self.advertise("Cheguei")
 
     def advertise(self, msg):
+        msg = 'ADV-'+str(msg)
         return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
         print('{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
-        event = ['on_message', msg_envelope]
-        self.async_events.put(event)
+        if ("ADV" in msg_envelope[2]):
+            event = ['on_advertise', msg_envelope]
+            self.async_events.put(event)
+        else:
+            event = ['on_message', msg_envelope]
+            self.async_events.put(event)
 
     def send (self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)

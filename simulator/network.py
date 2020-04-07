@@ -47,7 +47,7 @@ class Network:
                         to_addr, from_addr))
 
     def send_broadcast(self, from_addr, msg):
-        print('Message Broadcast from {} ->> {}'.format(from_addr,msg))
+        print('Message Broadcast from {} - {}'.format(from_addr,msg))
         for to_addr in self.addr_list:
             if(to_addr <= 0):
                 print('{} address not found (msg from {})'.format(
@@ -61,7 +61,7 @@ class Network:
                     if node:
                         node.recieve(msg_envelope2)
                         yield self.env.timeout(self.latency)
-                        print('Broadcast:'+ msg_envelope2)
+                        print('Broadcast:'+ str(msg_envelope2))
                     else:
                         print('{} address not found (msg from {})'.format(
                             to_addr, from_addr))

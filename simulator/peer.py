@@ -28,7 +28,8 @@ class Peer:
 
     def on_connect (self, address):
         print('{} connected with address {}'.format(self.name, address))
-        #self.driver.advertise("Hello World")
+        for z in self.driver.advertise('Connecting 1, 2, 3'):
+            yield z
 
         #for z in self.driver.send(1, 'hello'):
         #    yield z
@@ -39,8 +40,9 @@ class Peer:
         self.driver.advertise("Bye World")
     
     def on_advertise (self, msg):
-        self.driver.advertise("ADV-"+ msg)
-        yield None
+        for z in self.driver.advertise(msg):
+            yield z
+        
 
 
 
