@@ -22,12 +22,13 @@ class Peer:
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
 
+
     def on_message (self, msg):
         print ('{} received msg: {}'.format(self.name, msg))
         yield None
 
     def on_connect (self, address):
-        print('{} connected with address {}'.format(self.name, address))
+        print(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
         for z in self.driver.advertise('Connecting 1, 2, 3'):
             yield z
 

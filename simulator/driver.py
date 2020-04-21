@@ -16,14 +16,17 @@ class Driver:
             'on_advertise': [],
             'on_disconnect': []
             }
+        self.keep_alive_interval = 20
 
     def run(self):
         if self.address is None:
             for z in self.connect():
                 yield z
+                self.env.process(self.send_keepalive())  # A partir de agora, mandamos um sinal de vida constantemente
                 
         while True:
             event = yield self.async_events.get()
+            self.send_keepalive()
             for z in self.issue_event(event[0], event[1]):
                 if z:
                     yield z
@@ -43,7 +46,7 @@ class Driver:
         return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
-        print('{} received from {}: {}'.format(
+        print(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
         if ("ADV" in msg_envelope[2]):
@@ -60,8 +63,12 @@ class Driver:
         self.methods[event].append(method)
 
     def issue_event (self, event, value=None):
-        print('issuing ' + event)
+        print(str(self.env.now) + ' :: ' + 'issuing ' + event)
         for handle in self.methods[event]:
             yield self.env.timeout(1)
             for z in self.processor.process_message(handle, value):
                 yield z
+
+    def send_keepalive(self):
+        self.network.renew(self.address)
+        yield self.env.timeout(self.keep_alive_interval)
