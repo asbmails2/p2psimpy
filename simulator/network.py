@@ -18,7 +18,7 @@ class Network:
              'node': None,
              'lease': 0
         }
-        self.addr_list = [node_ptr] * self.max_hosts                        # O índice da lista serve como 'IP'
+        self.addr_list = [{'node':None, 'lease':0} for i in range(self.max_hosts)] # O índice da lista serve como 'IP'
         self.node_list = []                                                 # Usamos esta lista para fazer broadcasts e checar empréstimos
         self.env.process(self.dhcp())
 

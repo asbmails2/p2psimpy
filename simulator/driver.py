@@ -22,11 +22,10 @@ class Driver:
         if self.address is None:
             for z in self.connect():
                 yield z
-                self.env.process(self.send_keepalive())  # A partir de agora, mandamos um sinal de vida constantemente
+            self.env.process(self.send_keepalive())  # A partir de agora, mandamos um sinal de vida constantemente
                 
         while True:
             event = yield self.async_events.get()
-            self.send_keepalive()
             for z in self.issue_event(event[0], event[1]):
                 if z:
                     yield z
@@ -49,12 +48,8 @@ class Driver:
         print(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
-        if ("ADV" in msg_envelope[2]):
-            event = ['on_advertise', msg_envelope]
-            self.async_events.put(event)
-        else:
-            event = ['on_message', msg_envelope]
-            self.async_events.put(event)
+        event = ['on_message', msg_envelope]
+        self.async_events.put(event)
 
     def send (self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)

@@ -24,7 +24,7 @@ class Peer:
 
 
     def on_message (self, msg):
-        print ('{} received msg: {}'.format(self.name, msg))
+        print (str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
         yield None
 
     def on_connect (self, address):
