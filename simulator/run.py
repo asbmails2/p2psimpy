@@ -10,7 +10,7 @@ Controll of peers, duration and others details.
 
 """
 
-NUM_PEERS = 2
+NUM_PEERS = 5
 SIM_DURATION = 1000
 
 

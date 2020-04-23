@@ -87,7 +87,6 @@ class Network:
             print(str(self.env.now) + ' :: ' + 'Lease renewed for address {}'.format(address))
 
     def check_lease(self):
-        print("NEVER EVER LOL")
         with self.node_list_access.request(priority=0) as nl_access:
             yield nl_access
             nodes_to_delete = []
@@ -106,5 +105,7 @@ class Network:
 
     def dhcp(self):
         while True:
-            self.check_lease()            
+            #breakpoint()
+            for z in self.check_lease():
+                yield z
             yield self.env.timeout(1)
