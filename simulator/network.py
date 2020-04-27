@@ -15,10 +15,6 @@ class Network:
         self.full_capacity = False
         # DHCP Simples
         self.default_lease_time = 100
-        node_ptr = {
-             'node': None,
-             'lease': 0
-        }
         self.addr_list = [{'node':None, 'lease':0} for i in range(self.max_hosts)] # O índice da lista serve como 'IP'
         self.node_list = []                                                 # Usamos esta lista para fazer broadcasts e checar empréstimos
         self.env.process(self.dhcp())
@@ -40,9 +36,8 @@ class Network:
                     'time': self.env.now + self.default_lease_time
                 }
                 self.node_list.append(node_ptr)                                 # Novo empréstimo adicionado
-                self.find_next_available() 
+                self.find_next_available()
             yield self.timeout(self.latency)
-
 
     def send_unicast(self, from_addr, to_addr, msg):
         print('network sending unicast {} => {}'.format(from_addr, to_addr))
@@ -101,11 +96,11 @@ class Network:
         with self.node_list_access.request(priority=1) as nl_access:
             yield nl_access
             nodes_to_delete = []
-            for i in range(len(self.node_list)):
-                if self.node_list[i]['time'] <= self.env.now:
+            for i, node in enumerate(self.node_list):
+                if node['time'] <= self.env.now:
                     nodes_to_delete.append(i)
-            for i in range(len(nodes_to_delete)):
-                self.end_lease(nodes_to_delete[i] - i)
+            for i, node_number in enumerate(nodes_to_delete):
+                self.end_lease(node_number - i)
 
     def end_lease(self, index):
         address = self.node_list[index]['address']
