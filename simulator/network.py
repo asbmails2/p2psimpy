@@ -12,6 +12,7 @@ class Network:
         self.timeout = env.timeout
         self.latency = latency
         self.max_hosts = max_hosts
+        self.full_capacity = False
         # DHCP Simples
         self.default_lease_time = 100
         node_ptr = {
@@ -25,19 +26,21 @@ class Network:
     def register(self, node_driver):
         with self.channel.request() as rec:
             yield rec
-            curr_address = self.next_available_address
-            self.next_available_address += 1
-            self.find_next_available()                                      # WIP
-            print(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
-            self.addr_list[curr_address]['node'] = node_driver              # Cria ponteiro para o nodo
-            self.addr_list[curr_address]['lease'] = self.env.now + self.default_lease_time
-            node_driver.address = curr_address
-            node_ptr = {
-                'node': node_driver,
-                'address': curr_address,
-                'time': self.env.now + self.default_lease_time
-            }
-            self.node_list.append(node_ptr)                                 # Novo empréstimo adicionado
+            if self.full_capacity:
+                print(str(self.env.now) + ' :: ' + 'Could not register node: Network at full capacity')
+            else:
+                curr_address = self.next_available_address
+                print(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
+                self.addr_list[curr_address]['node'] = node_driver              # Cria ponteiro para o nodo
+                self.addr_list[curr_address]['lease'] = self.env.now + self.default_lease_time
+                node_driver.address = curr_address
+                node_ptr = {
+                    'node': node_driver,
+                    'address': curr_address,
+                    'time': self.env.now + self.default_lease_time
+                }
+                self.node_list.append(node_ptr)                                 # Novo empréstimo adicionado
+                self.find_next_available() 
             yield self.timeout(self.latency)
 
 
@@ -62,7 +65,7 @@ class Network:
 
     def send_broadcast(self, from_addr, msg):
         print(str(self.env.now) + ' :: ' + 'Message Broadcast from {} - {}'.format(from_addr,msg))
-        with self.node_list_access.request(priority=1) as nl_access:
+        with self.node_list_access.request(priority=0) as nl_access:
             yield nl_access
             for addr in range(len(self.node_list)):
                 to_addr = self.node_list[addr]['address']
@@ -79,7 +82,15 @@ class Network:
                             to_addr, from_addr))
 
     def find_next_available(self):
-        pass
+        addr = (self.next_available_address + 1) % self.max_hosts
+        for i in range(self.max_hosts - 1):
+            if self.addr_list[addr]['node'] == None:
+                self.next_available_address = addr
+                self.full_capacity = False
+                return
+            addr = (addr + 1) % self.max_hosts
+        self.next_available_address = 0            # Se chegarmos até aqui, então não há endereços disponíveis
+        self.full_capacity = True
 
     def renew(self, address):
         if self.addr_list[address]['node']:
@@ -87,7 +98,7 @@ class Network:
             print(str(self.env.now) + ' :: ' + 'Lease renewed for address {}'.format(address))
 
     def check_lease(self):
-        with self.node_list_access.request(priority=0) as nl_access:
+        with self.node_list_access.request(priority=1) as nl_access:
             yield nl_access
             nodes_to_delete = []
             for i in range(len(self.node_list)):
@@ -101,11 +112,12 @@ class Network:
         self.addr_list[address]['node'] = None
         self.addr_list[address]['lease'] = 0
         del self.node_list[index]
-        # Colocar mensagem de fim de empréstimo
+        self.next_available_address = address
+        self.full_capacity = False
+        print(str(self.env.now) + ' :: ' + 'Lease ended for address {}'.format(address))
 
     def dhcp(self):
         while True:
-            #breakpoint()
             for z in self.check_lease():
                 yield z
             yield self.env.timeout(1)
