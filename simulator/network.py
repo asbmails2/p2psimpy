@@ -78,7 +78,7 @@ class Network:
 
     def find_next_available(self):
         addr = (self.next_available_address + 1) % self.max_hosts
-        for i in range(self.max_hosts - 1):
+        for __ in range(self.max_hosts - 1):
             if self.addr_list[addr]['node'] == None:
                 self.next_available_address = addr
                 self.full_capacity = False
