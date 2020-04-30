@@ -38,7 +38,6 @@ class Driver:
             yield z
         for z in self.issue_event('on_connect', self.address):
             yield z
-        self.advertise("Cheguei")
 
     def advertise(self, msg):
         msg = 'ADV-'+str(msg)
@@ -65,5 +64,5 @@ class Driver:
                 yield z
 
     def send_keepalive(self):
-        self.network.renew(self.address)
-        yield self.env.timeout(self.keep_alive_interval)
+            yield self.env.timeout(self.keep_alive_interval)
+            self.network.renew(self.address)

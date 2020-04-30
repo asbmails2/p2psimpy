@@ -14,7 +14,7 @@ class Network:
         self.max_hosts = max_hosts
         self.full_capacity = False
         # DHCP Simples
-        self.default_lease_time = 100
+        self.default_lease_time = 40
         self.addr_list = [{'node':None, 'lease':0} for i in range(self.max_hosts)] # O índice da lista serve como 'IP'
         self.node_list = []                                                 # Usamos esta lista para fazer broadcasts e checar empréstimos
         self.env.process(self.dhcp())
@@ -91,6 +91,7 @@ class Network:
         if self.addr_list[address]['node']:
             self.addr_list[address]['lease'] = self.env.now + self.default_lease_time
             print(str(self.env.now) + ' :: ' + 'Lease renewed for address {}'.format(address))
+        # Adicionar else
 
     def check_lease(self):
         with self.node_list_access.request(priority=1) as nl_access:
