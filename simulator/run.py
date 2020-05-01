@@ -1,4 +1,5 @@
 import simpy
+import logging
 import peer
 import network
 import driver
@@ -6,9 +7,10 @@ import processor
 
 """
 Run app.
-Controll of peers, duration and others details.
+Peer control, duration and others details.
 
 """
+logging.basicConfig(level=logging.INFO)
 
 NUM_PEERS = 5
 SIM_DURATION = 1000

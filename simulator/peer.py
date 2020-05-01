@@ -1,3 +1,5 @@
+import logging
+
 """
 Class peer for create all the base stack for peer
 
@@ -21,21 +23,24 @@ class Peer:
         self.driver.register_handler(self.on_advertise, 'on_advertise')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
-
+        # Possivelmente colocar o próximo bloco de código em uma função separada, própria para a configuração do logger, para limpar um pouco
+        self.peer_logger = logging.getLogger(__name__)
+        self.peer_logger.propagate = False            # Evita que o root logger também receba os handlers, assim evitando registro duplo
+        if not self.peer_logger.handlers:             # Garantimos que não estamos readicionando handlers
+            self.console_handler = logging.StreamHandler()
+            self.console_handler.setLevel(logging.INFO)
+            self.log_format = logging.Formatter('[%(levelname)s] [%(name)10s] %(message)s')
+            self.console_handler.setFormatter(self.log_format)
+            self.peer_logger.addHandler(self.console_handler)
 
     def on_message (self, msg):
-        print (str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
+        self.peer_logger.info(str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
         yield None
 
     def on_connect (self, address):
-        print(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
+        self.peer_logger.info(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
         for z in self.driver.advertise('Connecting 1, 2, 3'):
             yield z
-
-        #for z in self.driver.send(1, 'hello'):
-        #    yield z
-        #for z in self.driver.send(address -1 , 'hello'):
-        #    yield z
 
     def on_disconnect (self):
         self.driver.advertise("Bye World")

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 import simpy
+import logging
 
 class Driver:
 
@@ -17,6 +18,15 @@ class Driver:
             'on_disconnect': []
             }
         self.keep_alive_interval = 20
+        # Possivelmente colocar o próximo bloco de código em uma função separada, própria para a configuração do logger, para limpar um pouco
+        self.driver_logger = logging.getLogger(__name__)
+        self.driver_logger.propagate = False            # Evita que o root logger também receba os handlers, assim evitando registro duplo
+        if not self.driver_logger.handlers:             # Garantimos que não estamos readicionando handlers
+            self.console_handler = logging.StreamHandler()
+            self.console_handler.setLevel(logging.INFO)
+            self.log_format = logging.Formatter('[%(levelname)s] [%(name)10s] %(message)s')
+            self.console_handler.setFormatter(self.log_format)
+            self.driver_logger.addHandler(self.console_handler)
 
     def run(self):
         if self.address is None:
@@ -44,8 +54,8 @@ class Driver:
         return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
-        print(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
-            msg_envelope[1], msg_envelope[0], msg_envelope[2]))
+        self.driver_logger.info(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
+            msg_envelope[1], msg_envelope[0], msg_envelope[2]))       
 
         event = ['on_message', msg_envelope]
         self.async_events.put(event)
@@ -57,7 +67,7 @@ class Driver:
         self.methods[event].append(method)
 
     def issue_event (self, event, value=None):
-        print(str(self.env.now) + ' :: ' + 'issuing ' + event)
+        self.driver_logger.info(str(self.env.now) + ' :: ' + 'issuing ' + event)
         for handle in self.methods[event]:
             yield self.env.timeout(1)
             for z in self.processor.process_message(handle, value):
