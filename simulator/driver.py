@@ -13,18 +13,24 @@ class Driver:
         self.methods = {
             'on_message': [],
             'on_connect': [],
+            'on_advertise': [],
             'on_disconnect': []
             }
+        self.keep_alive_interval = 20
 
     def run(self):
         if self.address is None:
             for z in self.connect():
                 yield z
-        
+            self.env.process(self.send_keepalive())  # A partir de agora, mandamos um sinal de vida constantemente
+                
         while True:
             event = yield self.async_events.get()
             for z in self.issue_event(event[0], event[1]):
-                if z is not None:
+                if z:
+                    yield z
+            for z in self.issue_event(event[0], 'on_advertise'):
+                if z:
                     yield z
             
     def connect(self):
@@ -32,14 +38,13 @@ class Driver:
             yield z
         for z in self.issue_event('on_connect', self.address):
             yield z
-        # for z in self.issue_event('on_connect', self.address):
-        #     yield z
 
     def advertise(self, msg):
-        self.network.send_broadcast(self.address, msg, self.network.list_addr)
+        msg = 'ADV-'+str(msg)
+        return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
-        print('{} received from {}: {}'.format(
+        print(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
         event = ['on_message', msg_envelope]
@@ -52,8 +57,12 @@ class Driver:
         self.methods[event].append(method)
 
     def issue_event (self, event, value=None):
-        print('issuing ' + event)
-        for handle in  self.methods[event]:
+        print(str(self.env.now) + ' :: ' + 'issuing ' + event)
+        for handle in self.methods[event]:
             yield self.env.timeout(1)
             for z in self.processor.process_message(handle, value):
                 yield z
+
+    def send_keepalive(self):
+            yield self.env.timeout(self.keep_alive_interval)
+            self.network.renew(self.address)

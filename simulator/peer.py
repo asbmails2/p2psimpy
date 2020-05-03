@@ -18,24 +18,32 @@ class Peer:
         self.driver = driver
         self.driver.register_handler(self.on_message)
         self.driver.register_handler(self.on_connect, 'on_connect')
+        self.driver.register_handler(self.on_advertise, 'on_advertise')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
 
+
     def on_message (self, msg):
-        print ('{} received msg: {}'.format(self.name, msg))
+        print (str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
         yield None
 
     def on_connect (self, address):
-        print('{} connected with address {}'.format(self.name, address))
-        #self.driver.advertise("Hello World")
+        print(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
+        for z in self.driver.advertise('Connecting 1, 2, 3'):
+            yield z
 
-        for z in self.driver.send(1, 'hello'):
-            yield z
-        for z in self.driver.send(address -1 , 'hello'):
-            yield z
+        #for z in self.driver.send(1, 'hello'):
+        #    yield z
+        #for z in self.driver.send(address -1 , 'hello'):
+        #    yield z
 
     def on_disconnect (self):
         self.driver.advertise("Bye World")
+    
+    def on_advertise (self, msg):
+        for z in self.driver.advertise(msg):
+            yield z
+        
 
 
 

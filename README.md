@@ -1,14 +1,18 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b9b2abf80de34584a596147b099f4473)](https://app.codacy.com/gh/lesunb/p2psimpy?utm_source=github.com&utm_medium=referral&utm_content=lesunb/p2psimpy&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.org/lesunb/p2psimpy.svg?branch=master)](https://travis-ci.org/lesunb/p2psimpy)
 [![codecov](https://codecov.io/gh/lesunb/p2psimpy/branch/master/graph/badge.svg)](https://codecov.io/gh/lesunb/p2psimpy)
 
-Env Depencies
+GoalD P2P Sim
 =============
+
+Env Depencies
+-------------
 python 3, pip
 
 Used IDE: vscode, plugin python
 
 Instal pipenv
-============= 
+------------- 
 
 pipenv easy the process of managing python dependencies
 
@@ -22,35 +26,36 @@ Alternatively, macOS brew
 $ brew install pipenv 
 ```
 
-
 Install dependencies
-====================
+--------------------
+
+Inside the project folder (after clone)
 
 ```console
-$ pyenv install 
+$ pyenv install 3.8.0
+$ pip install pipenv
 $ pipenv install
 $ pipenv shell
-# (p2psimpy env) % pipenv install flake8 pytest pytest-cov
 (p2psimpy env) % pipenv install --dev
 ```
 
 Run
-===
+---
 
-Select the exec shel 
+Select the exec shell
 
 ```console
 $ pipenv shell
 ```
 
-Execute Simulation
+Then, Execute Simulation
 
 ```console
-$ python run.py
+$ python ./simulator/run.py
 ```
 
 Test
-====
+----
 
 Tests should be put on /tests folder and are executed with the following command.
 
@@ -59,25 +64,31 @@ Tests should be put on /tests folder and are executed with the following command
 ```
 
 Linter
-======
+------
 
 ```console
  $ flake8 --statistics
 ```
 
 Dependency
-==========
+----------
 
 Add New Dependency
 ------------------
+
+To add new dependencies use the following command.
 
 ```console
 $ pipenv install [name]
 ```
 
+This command will add the dependency to the Pipfile and Pipfile.lock assuring that the execution can be reproduced in another environment (after dependencies are updated with `pipenv install` command )
+
 Add New Dev Dependency
 ----------------------
+Same as previous dependencies, but for development libraries such as the ones used for test.
 
 ```console
 $ pipenv install [name] --dev
 ```
+Note that other systems after pulling updates will need a reexecution of `pipenv install --dev`

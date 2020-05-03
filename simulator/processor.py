@@ -8,9 +8,10 @@ class Processor:
         self.processor = simpy.Resource(env)
         self.latency = latency
         self.name = 'proc_{}'.format(id)
+        self.env = env
 
     def process_message(self, method, value):
-        print(self.name + ': scheduling process of message')
+        print(str(self.env.now) + ' :: ' + self.name + ': scheduling process of message')
         with self.processor.request() as rec:
             yield rec
             yield self.timeout(self.latency)
