@@ -18,24 +18,15 @@ class Network:
         self.addr_list = [{'node':None, 'lease':0} for i in range(self.max_hosts)] # O índice da lista serve como 'IP'
         self.node_list = []                                                 # Usamos esta lista para fazer broadcasts e checar empréstimos
         self.env.process(self.dhcp())
-        # Possivelmente colocar o próximo bloco de código em uma função separada, própria para a configuração do logger, para limpar um pouco
-        self.network_logger = logging.getLogger(__name__)
-        self.network_logger.propagate = False            # Evita que o root logger também receba os handlers, assim evitando registro duplo
-        if not self.network_logger.handlers:             # Garantimos que não estamos readicionando handlers
-            self.console_handler = logging.StreamHandler()
-            self.console_handler.setLevel(logging.INFO)
-            self.log_format = logging.Formatter('[%(levelname)s] [%(name)10s] %(message)s')
-            self.console_handler.setFormatter(self.log_format)
-            self.network_logger.addHandler(self.console_handler)
 
     def register(self, node_driver):
         with self.channel.request() as rec:
             yield rec
             if self.full_capacity:
-                self.network_logger.warning(str(self.env.now) + ' :: ' + 'Could not register node: Network at full capacity')
+                logging.warning(str(self.env.now) + ' :: ' + 'Could not register node: Network at full capacity')
             else:
                 curr_address = self.next_available_address
-                self.network_logger.info(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
+                logging.info(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
                 self.addr_list[curr_address]['node'] = node_driver              # Cria ponteiro para o nodo
                 self.addr_list[curr_address]['lease'] = self.env.now + self.default_lease_time
                 node_driver.address = curr_address
@@ -49,7 +40,7 @@ class Network:
             yield self.timeout(self.latency)
 
     def send_unicast(self, from_addr, to_addr, msg):
-        self.network_logger.info(str(self.env.now) + ' :: ' + 'network sending unicast {} => {}'.format(from_addr, to_addr))
+        logging.info(str(self.env.now) + ' :: ' + 'network sending unicast {} => {}'.format(from_addr, to_addr))
         if(to_addr <= 0):
             print('{} address not found (msg from {})'.format(
                 to_addr, from_addr))
@@ -68,7 +59,7 @@ class Network:
                         to_addr, from_addr))
 
     def send_broadcast(self, from_addr, msg):
-        self.network_logger.info(str(self.env.now) + ' :: ' + 'Message Broadcast from {} - {}'.format(from_addr,msg))
+        logging.info(str(self.env.now) + ' :: ' + 'Message Broadcast from {} - {}'.format(from_addr,msg))
         with self.node_list_access.request(priority=0) as nl_access:
             yield nl_access
             for addr in range(len(self.node_list)):
@@ -80,9 +71,9 @@ class Network:
                     if node:                # Checando se o nodo ainda faz parte da rede
                         node.recieve(msg_envelope2)
                         yield self.env.timeout(self.latency)
-                        self.network_logger.info(str(self.env.now) + ' :: ' + 'Broadcast:'+ str(msg_envelope2))
+                        logging.info(str(self.env.now) + ' :: ' + 'Broadcast:'+ str(msg_envelope2))
                     else:
-                        self.network_logger.info(str(self.env.now) + ' :: ' + '{} address not found (msg from {})'.format(
+                        logging.info(str(self.env.now) + ' :: ' + '{} address not found (msg from {})'.format(
                             to_addr, from_addr))
 
     def find_next_available(self):
@@ -99,7 +90,7 @@ class Network:
     def renew(self, address):
         if self.addr_list[address]['node']:
             self.addr_list[address]['lease'] = self.env.now + self.default_lease_time
-            self.network_logger.info(str(self.env.now) + ' :: ' + 'Lease renewed for address {}'.format(address))
+            logging.info(str(self.env.now) + ' :: ' + 'Lease renewed for address {}'.format(address))
         # Adicionar else
 
     def check_lease(self):
@@ -119,7 +110,7 @@ class Network:
         del self.node_list[index]
         self.next_available_address = address
         self.full_capacity = False
-        self.network_logger.info(str(self.env.now) + ' :: ' + 'Lease ended for address {}'.format(address))
+        logging.info(str(self.env.now) + ' :: ' + 'Lease ended for address {}'.format(address))
 
     def dhcp(self):
         while True:

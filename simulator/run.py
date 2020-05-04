@@ -10,9 +10,16 @@ Run app.
 Peer control, duration and others details.
 
 """
-logging.basicConfig(level=logging.INFO)
+# Configuração do root logger
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+handlers = [console_handler]
+logging.basicConfig(level = logging.INFO,
+                    format = '[%(levelname)s] [%(module)10s] %(message)s',
+                    handlers = handlers
+)
 
-NUM_PEERS = 5
+NUM_PEERS = 2
 SIM_DURATION = 1000
 
 
