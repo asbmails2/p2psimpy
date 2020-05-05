@@ -38,6 +38,6 @@ def test_timeout_keep_alive():
     
     env.process(dri.disconnect())
     
-    env.run(until=10)
+    env.run(until=50)
     
     assert dri.address == None
