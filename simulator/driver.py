@@ -46,7 +46,7 @@ class Driver:
 
     def recieve (self, msg_envelope):
         logging.info(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
-            msg_envelope[1], msg_envelope[0], msg_envelope[2]))      
+            msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
         event = ['on_message', msg_envelope]
         self.async_events.put(event)
