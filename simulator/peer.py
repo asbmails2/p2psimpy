@@ -1,3 +1,5 @@
+import logging
+
 """
 Class peer for create all the base stack for peer
 
@@ -22,20 +24,14 @@ class Peer:
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
 
-
     def on_message (self, msg):
-        print (str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
+        logging.info(str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
         yield None
 
     def on_connect (self, address):
-        print(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
+        logging.info(str(self.driver.env.now) + ' :: ' + '{} connected with address {}'.format(self.name, address))
         for z in self.driver.advertise('Connecting 1, 2, 3'):
             yield z
-
-        #for z in self.driver.send(1, 'hello'):
-        #    yield z
-        #for z in self.driver.send(address -1 , 'hello'):
-        #    yield z
 
     def on_disconnect (self):
         self.driver.advertise("Bye World")

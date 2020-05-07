@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import random
 import simpy
+import logging
 
 class Driver:
 
@@ -44,7 +45,7 @@ class Driver:
         return self.network.send_broadcast(self.address, msg)
 
     def recieve (self, msg_envelope):
-        print(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
+        logging.info(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
         event = ['on_message', msg_envelope]
@@ -57,7 +58,7 @@ class Driver:
         self.methods[event].append(method)
 
     def issue_event (self, event, value=None):
-        print(str(self.env.now) + ' :: ' + 'issuing ' + event)
+        logging.info(str(self.env.now) + ' :: ' + 'issuing ' + event)
         for handle in self.methods[event]:
             yield self.env.timeout(1)
             for z in self.processor.process_message(handle, value):
