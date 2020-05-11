@@ -35,9 +35,9 @@ def test_timeout_keep_alive():
     proc = Processor(env, 0, 3)
     dri = Driver(net, proc)
     new_peer = Peer(dri, 0)
+
+    #env.process(dri.disconnect())
     
-    env.process(dri.disconnect())
-    
-    env.run(until=10)
-    
+    env.run(until=50)
+
     assert dri.address == None
