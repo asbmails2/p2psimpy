@@ -2,6 +2,8 @@
 import simpy
 import logging
 
+import custom_error
+
 class Network:
 
     def __init__(self, env, latency, max_hosts = 100):
@@ -17,13 +19,13 @@ class Network:
         self.default_lease_time = 40
         self.addr_list = [{'node':None, 'lease':0} for i in range(self.max_hosts)] # O índice da lista serve como 'IP'
         self.node_list = []                                                 # Usamos esta lista para fazer broadcasts e checar empréstimos
-        self.env.process(self.dhcp())
 
     def register(self, node_driver):
         with self.channel.request() as rec:
             yield rec
             if self.full_capacity:
                 logging.warning(str(self.env.now) + ' :: ' + 'Could not register node: Network at full capacity')
+                raise RegistrationError("Network at full capacity")
             else:
                 curr_address = self.next_available_address
                 logging.info(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
@@ -39,42 +41,42 @@ class Network:
                 self.find_next_available()
             yield self.timeout(self.latency)
 
+    def confirm_peer(self, address):
+        if address < 0 or address >= self.max_hosts:
+            raise RuntimeError("Invalid address")
+        elif self.addr_list[address]['node'] is None:
+            raise RuntimeError("Address not registered")
+        # Substituir por um erro personalizado depois?
+        # Talvez expandir verificação para que veja se o endereço realmente corresponde..
+        # .. ao driver que enviou mensagem
+        # Talvez adicionar mensagem de debug?
+
+    # Adicionar try.. except nas funções de unicast e broadcast, para lidar com erros
     def send_unicast(self, from_addr, to_addr, msg):
+        self.confirm_peer(from_addr)
+        self.confirm_peer(to_addr)
         logging.info(str(self.env.now) + ' :: ' + 'network sending unicast {} => {}'.format(from_addr, to_addr))
-        if(to_addr <= 0):
-            print('{} address not found (msg from {})'.format(
-                to_addr, from_addr))
-            yield self.env.timeout(0)
-        else: 
+        with self.channel.request() as rec:
+            yield rec
             msg_envelope = [from_addr, to_addr, msg]
-            with self.channel.request() as rec:
-                yield rec
-                node = self.addr_list[to_addr]['node']
-                if node:
-                    node.recieve(msg_envelope)
-                    yield self.env.timeout(self.latency)
-                    print(msg_envelope)
-                else:
-                    print('{} address not found (msg from {})'.format(
-                        to_addr, from_addr))
+            node = self.addr_list[to_addr]['node']
+            node.receive(msg_envelope)
+            yield self.env.timeout(self.latency)
 
     def send_broadcast(self, from_addr, msg):
+        self.confirm_peer(from_addr)
         logging.info(str(self.env.now) + ' :: ' + 'Message Broadcast from {} - {}'.format(from_addr,msg))
         with self.node_list_access.request(priority=0) as nl_access:
             yield nl_access
             for addr in range(len(self.node_list)):
                 to_addr = self.node_list[addr]['address']
-                msg_envelope2 = [from_addr, to_addr, msg]
+                msg_envelope = [from_addr, to_addr, msg]
                 with self.channel.request() as rec:
                     yield rec
                     node = self.node_list[addr]['node']
-                    if node:                # Checando se o nodo ainda faz parte da rede
-                        node.recieve(msg_envelope2)
-                        yield self.env.timeout(self.latency)
-                        logging.info(str(self.env.now) + ' :: ' + 'Broadcast:'+ str(msg_envelope2))
-                    else:
-                        logging.info(str(self.env.now) + ' :: ' + '{} address not found (msg from {})'.format(
-                            to_addr, from_addr))
+                    node.receive(msg_envelope)
+                    yield self.env.timeout(self.latency)
+                    logging.info(str(self.env.now) + ' :: ' + 'Broadcast:'+ str(msg_envelope))
 
     def find_next_available(self):
         addr = (self.next_available_address + 1) % self.max_hosts
@@ -112,6 +114,13 @@ class Network:
         self.full_capacity = False
         logging.info(str(self.env.now) + ' :: ' + 'Lease ended for address {}'.format(address))
 
+    def send_addresses(self, driver):
+        addr_list = []
+        for peer in self.node_list:
+            if peer['address'] is not driver.address:
+                addr_list.append(peer['address'])
+        return addr_list
+    
     def dhcp(self):
         while True:
             for z in self.check_lease():

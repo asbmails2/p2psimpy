@@ -19,9 +19,8 @@ logging.basicConfig(level = logging.INFO,
                     handlers = handlers
 )
 
-NUM_PEERS = 2
-SIM_DURATION = 1000
-
+NUM_PEERS = 1
+SIM_DURATION = 300
 
 # create env
 env = simpy.Environment()

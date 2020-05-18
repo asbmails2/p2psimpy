@@ -39,12 +39,3 @@ class Peer:
     def on_advertise (self, msg):
         for z in self.driver.advertise(msg):
             yield z
-        
-
-
-
-
-
-
-
-
