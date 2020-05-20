@@ -20,22 +20,19 @@ class Driver:
             'on_disconnect': []
             }
         self.keep_alive_interval = 20
-        self.peer_list = []
-        self.message_buffer = []
 
     def run(self):
         for z in self.connect():
             yield z
-        self.fetch_peer_list()
 
-        # while True:
-        #     event = yield self.async_events.get()
-        #     for z in self.issue_event(event[0], event[1]):
-        #         if z:
-        #             yield z
-        #     for z in self.issue_event(event[0], 'on_advertise'):
-        #         if z:
-        #             yield z
+        while True:
+            event = yield self.async_events.get()
+            for z in self.issue_event(event[0], event[1]):
+                if z:
+                    yield z
+            # for z in self.issue_event(event[0], 'on_advertise'):
+            #     if z:
+            #         yield z
             
     def connect(self):
         while True:       # Tenta conectar-se repetidamente
@@ -44,13 +41,13 @@ class Driver:
                     yield z
                 for z in self.issue_event('on_connect', self.address):
                     yield z
-                break
+                break     # Se chegarmos aqui, código completado com sucesso, saímos do loop
             except RegistrationError as err:
                 print(err.message)
                 yield self.env.timeout(1)
 
     def fetch_peer_list(self):
-        self.peer_list = self.network.send_addresses(self)
+        return self.network.send_addresses(self)
 
     def disconnect(self):
         former_address = self.address
@@ -84,3 +81,6 @@ class Driver:
         while True:
             yield self.env.timeout(self.keep_alive_interval)
             self.network.renew(self.address)
+
+    def get_time(self):
+        return self.env.now

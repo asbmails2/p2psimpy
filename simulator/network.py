@@ -43,9 +43,9 @@ class Network:
 
     def confirm_peer(self, address):
         if address < 0 or address >= self.max_hosts:
-            raise RuntimeError("Invalid address")
+            raise RuntimeError(f"Invalid address: {address}")
         elif self.addr_list[address]['node'] is None:
-            raise RuntimeError("Address not registered")
+            raise RuntimeError(f"Address not registered: {address}")
         # Substituir por um erro personalizado depois?
         # Talvez expandir verificação para que veja se o endereço realmente corresponde..
         # .. ao driver que enviou mensagem

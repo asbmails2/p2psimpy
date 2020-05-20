@@ -1,11 +1,14 @@
 import logging
 
+import simple_dds
+
 """
-Class peer for create all the base stack for peer
+Simulates the behavior of a peer in a network.
+Uses driver object to interface with the network.
 
 Definir as caracteristicas do nodo basicas - ID , Recursos - Qualidade
 
-riar um canal broadcast onde o peer precisa se conectar
+Criar um canal broadcast onde o peer precisa se conectar
 E criar os links de comunicacao unicast
 
 agente tem (ref de um canal broad)
@@ -39,3 +42,8 @@ class Peer:
     def on_advertise (self, msg):
         for z in self.driver.advertise(msg):
             yield z
+
+    def dds_test (self):
+        handle_controller = UniqueHandleController()                # Criamos o gerador de identificadores. Se já existe, pegamos só uma referência
+        the_service = DDS_Service(self.driver, handle_controller)   # Iniciamos o serviço DDS
+        
