@@ -1,7 +1,7 @@
 import logging
 from threading import Lock
 
-import singleton
+from singleton import Singleton
 
 # Possíveis problemas de uso mútuo nesta classe? Veremos quando testarmos.
 class UniqueHandleController(metaclass=Singleton):
@@ -10,12 +10,12 @@ class UniqueHandleController(metaclass=Singleton):
         self.next_available_handle = 1
         self.lock = threading.Lock()
     
-    def generate_handle(self)
-    handle = None
-    with self.lock:
-        handle = self.next_available_handle
-        self.next_available_handle += 1
-    return handle
+    def generate_handle(self):
+        handle = None
+        with self.lock:
+            handle = self.next_available_handle
+            self.next_available_handle += 1
+        return handle
 
 # Classe criada para impedir conflito entre leitura e escrita.
 # Poderia fazer a lógica usando um Resource do simpy, mas prefiro evitar o uso..
@@ -35,19 +35,22 @@ class Data_Buffer:
             container = copy(self.data_buffer)
             self.data_buffer = []
 
+    def is_empty(self):
+        return len(self.data_buffer) == 0
+
 class Entity:
 
     def __init__(self):
         self.instance_handle = 0
     
-    def set_instance_handle(self, handle)
-        if self.instance_handle is not 0:
+    def set_instance_handle(self, handle):
+        if self.instance_handle != 0:
             raise RuntimeError("DDS Instance already has a handle.")
-        else
+        else:
             self.instance_handle = handle
 
     def get_instance_handle(self):
-        if self.instance_handle is 0:
+        if self.instance_handle == 0:
             raise RuntimeError("DDS Instance has not been assigned a handle")
         return self.instance_handle
 
@@ -101,7 +104,7 @@ class DDS_Service(Entity):
     def topic_exists(self, topic_name):
         return topic_name in self.topics
 
-    def get_topic(self, topic_name)
+    def get_topic(self, topic_name):
         if self.topic_exists(topic_name):
             return self.topics[topic_name]
         else: # Como lidar com isto?
@@ -144,7 +147,7 @@ class DDS_Service(Entity):
         # .. uma string descrevendo o pedido, o segundo elemento os dados em si
         if data[1] not in self.message_handlers:
             logging.warning(str(self.driver.get_time() + ' :: ' + f'DDS Service (Handle {self.instance_handle}): Invalid request: {data[1]}'))
-        else
+        else:
             self.message_handlers[data[1]](data[2])
     
     def process_received_messages(self):
@@ -154,10 +157,13 @@ class DDS_Service(Entity):
             self.interpret_data(message)
 
     def propagate_local_changes(self):
-        changes_to_send = []
-        self.local_changes.write_to(changes_to_send)
-        message = ('UPDATE', changes_to_send)
-        # Aqui, usaríamos o método advertise do driver, mas ele só lida com msgs tipo string. E agora?
+        if not self.local_changes.is_empty():
+            changes_to_send = []
+            self.local_changes.write_to(changes_to_send)
+            message = ('UPDATE', changes_to_send)
+            # Aqui, usaríamos o método advertise do driver, mas ele só lida com msgs tipo string. E agora?
+            # Como lidar com casos de problemas de conexão e falha de envio? Talvez ..
+            # .. mantê-las e tentar de novo, mas como implementar isso no simulador?
 
     def setup(self):
         self.add_message_handler_methods()
@@ -185,7 +191,7 @@ class Domain_Participant(Entity):
     def create_topic(self, topic_name):
         if self.service.topic_exists(topic_name):
             logging.warning(f'{topic_name} already exists.')
-        else
+        else:
             new_topic = Topic(topic_name, self)
             self.service.add_topic(new_topic)
             self.topics.append(new_topic)
@@ -217,6 +223,7 @@ class Domain_Participant(Entity):
         pass
 
     def get_discovered_participants(self):
+        pass
         # Usar o service
 
 class Topic(Entity):
@@ -228,6 +235,7 @@ class Topic(Entity):
         self.subscribers = []
 
     def get_name(self):
+        pass
 
 class Publisher(Entity):
 
