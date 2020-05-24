@@ -44,6 +44,5 @@ class Peer:
             yield z
 
     def dds_test (self):
-        handle_controller = UniqueHandleController()                # Criamos o gerador de identificadores. Se já existe, pegamos só uma referência
         the_service = DDS_Service(self.driver, handle_controller)   # Iniciamos o serviço DDS
         

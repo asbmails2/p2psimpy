@@ -57,18 +57,22 @@ class Entity:
 # Talvez seja necessário fazer dictionaries personalizados, que evitem problemas de acesso mútuo.
 class DDS_Service(Entity):
 
-    def __init__(self, driver, handle_controller):
-        self.handle_controller = handle_controller
+    def __init__(self, driver):
+        self.handle_controller = UniqueHandleController()
         self.instance_handle = self.handle_controller.generate_handle()
         self.driver = driver
         self.peer_list = []
-        self.data_buffer = Data_Buffer()
-        self.local_changes = Data_Buffer()
         self.handles = {} # Handle: Entity
         self.participants = {} # Handle: Participant
+        self.local_participants = {}
         self.topics = {}  # Topic name: Topic
         self.data_objects = {} # Handle: Data object
         self.message_handlers = {}
+
+        self.add_message_handler_methods()
+        self.attach_msg_reception_handler_to_driver()
+        self.discover_peers()
+        self.request_full_domain_data()
 
     def set_instance_handle(self, handle):
         raise RuntimeError("DDS Service's handle cannot be changed.")
@@ -76,12 +80,12 @@ class DDS_Service(Entity):
     def get_instance_handle(self):
         return self.instance_handle
 
-    # TODO: Notificar na rede quando houver atualização, para todos os métodos 'add'
+    def send_to_all_peers(self, msg):
+        self.driver.advertise(msg)
 
-    # Enfileiramos todas as mudanças locais, para mandá-las na rede de uma vez só.
-    def queue_local_modification(self, type_name, data):
+    def send_local_modification(self, type_name, data):
         change = (type_name, data)
-        self.local_changes.write_to(change)
+        self.send_to_all_peers(change)
 
     # Fazer verificação de handle duplicada
     def assign_handle(self, entity):
@@ -93,13 +97,14 @@ class DDS_Service(Entity):
         self.assign_handle(participant)
         handle = participant.get_instance_handle()
         self.participants[handle] = participant
-        self.queue_local_modification(('NEW_PARTICIPANT', participant))
+        self.local_participants[handle] = participant
+        self.send_local_modification(('NEW_PARTICIPANT', participant))
 
     def add_topic(self, topic):
         self.assign_handle(topic)
         topic_key = topic.get_name()
         self.topics[topic_key] = topic
-        self.queue_local_modification(('NEW_TOPIC', topic))
+        self.send_local_modification(('NEW_TOPIC', topic))
 
     def topic_exists(self, topic_name):
         return topic_name in self.topics
@@ -109,13 +114,24 @@ class DDS_Service(Entity):
             return self.topics[topic_name]
         else: # Como lidar com isto?
             pass
+    
+    def erase_topic_from_domain(self, topic):
+        # Deleta tópico e todos os dados associados a ele.
+        pass
 
     def discover_peers(self):
         self.peer_list = self.driver.fetch_peer_list()
     
     def receive_incoming_data(self, msg):
-        self.data_buffer.write_to(msg)
         logging.info(str(self.driver.get_time() + ' :: ' + f'Data received by DDS Service, handle {self.instance_handle}'))
+        self.interpret_data(msg)
+
+    def add_message_handler_methods(self):
+        self.message_handlers['NEW_PARTICIPANT'] = self.append_remote_participant
+        self.message_handlers['NEW_TOPIC'] = self.append_remote_topic
+        self.message_handlers['NEW_DATA'] = self.update_data_object
+        self.message_handlers['SEND_ALL_DATA'] = self.send_full_domain_data
+        self.message_handlers['ALL_DATA'] = self.receive_full_domain_data
 
     def append_remote_participant(self, r_participant):
         handle = r_participant.get_instance_handle()
@@ -123,7 +139,7 @@ class DDS_Service(Entity):
             self.handles[handle] = r_participant
             self.participants[handle] = r_participant
 
-    def append_remote_topics(self, r_topic):
+    def append_remote_topic(self, r_topic):
         topic_name = r_topic.get_name()
         if not self.topic_exists(topic_name):
             handle = r_topic.get_instance_handle()
@@ -132,52 +148,59 @@ class DDS_Service(Entity):
         else:
             self.resolve_topic_conflict(r_topic)
 
-    def update_data_objects(self, r_data):
+    def update_data_object(self, r_data):
         handle = r_data.get_instance_handle()
         self.data_objects[handle] = r_data
         if handle not in self.handles:
             self.handles[handle] = r_data
+        self.send_data_object_to_all_participants(r_data)
+
+    def send_data_object_to_all_participants(self, data_object):
+        for participant in self.local_participants.values():
+            participant.update_all_subscribers(data_object)
+
+    def send_full_domain_data(self, to_address):
+        local_data = []
+        for key, value in self.participants.items():
+            packet = ('NEW_PARTICIPANT', value)
+            local_data.append(packet)
+        for key, value in self.topics.items():
+            packet = ('NEW_TOPIC', value)
+            local_data.append(packet)
+        for key, value in self.data_objects.items():
+            packet = ('NEW_DATA', value)
+            local_data.append(packet)
+        msg = ('ALL_DATA', local_data)
+        self.driver.send(to_address, msg)
+    
+    def receive_full_domain_data(self, r_data):
+        for element in r_data:
+            self.interpret_data(element)
 
     def attach_msg_reception_handler_to_driver(self):
         self.driver.register_handler(self.receive_incoming_data, 'on_message')
 
-    # Não gosto muito deste nome.
     def interpret_data(self, data):
         # Presumimos que os dados estejam em uma 2-tupla, sendo o primeiro elemento..
         # .. uma string descrevendo o pedido, o segundo elemento os dados em si
-        if data[1] not in self.message_handlers:
+        if data[0] not in self.message_handlers:
             logging.warning(str(self.driver.get_time() + ' :: ' + f'DDS Service (Handle {self.instance_handle}): Invalid request: {data[1]}'))
         else:
-            self.message_handlers[data[1]](data[2])
-    
-    def process_received_messages(self):
-        message_queue = []
-        self.data_buffer.read_from(message_queue)
-        for message in message_queue:
-            self.interpret_data(message)
+            self.message_handlers[data[0]](data[1])
 
-    def propagate_local_changes(self):
-        if not self.local_changes.is_empty():
-            changes_to_send = []
-            self.local_changes.write_to(changes_to_send)
-            message = ('UPDATE', changes_to_send)
-            # Aqui, usaríamos o método advertise do driver, mas ele só lida com msgs tipo string. E agora?
-            # Como lidar com casos de problemas de conexão e falha de envio? Talvez ..
-            # .. mantê-las e tentar de novo, mas como implementar isso no simulador?
+    def request_full_domain_data(self):
+        request_msg = ('SEND_ALL_DATA', self.driver.address)
+        self.send_to_all_peers(request_msg)
 
-    def setup(self):
-        self.add_message_handler_methods()
-        self.attach_msg_reception_handler_to_driver()
-        self.discover_peers()
+    def retrieve_all_data_objects(self):
+        return self.data_objects.values()
 
-    def run(self):
-        # Através do driver, queremos:
-        # - Achar participantes
-        # - Atualizar instâncias de dados
-        # - Enviar dados relevantes aos subscribers
-        # - Processar dados recebidos
-        self.setup()
-
+    def retrieve_filtered_data_objects(self, topic_name):
+        data = []
+        for element in self.data_objects.values():
+            if element.get_topic_name() == topic_name:
+                data.append(element)
+        return data
 
 class Domain_Participant(Entity):
 
@@ -201,11 +224,11 @@ class Domain_Participant(Entity):
         pass
 
     def find_topic(self, topic_name):
-        # Deve retornar um objeto do tipo Topic
-        pass
+        return self.service.get_topic(topic_name):
 
     def create_publisher(self, topic):
-        new_publisher = Publisher(self, topic)
+        data = self.service.retrieve_filtered_data_objects(topic.get_name())
+        new_publisher = Publisher(self, topic, data)
         self.service.assign_handle(new_publisher)
         handle = new_publisher.get_instance_handle()
         self.publishers[handle] = new_publisher
@@ -226,26 +249,49 @@ class Domain_Participant(Entity):
         pass
         # Usar o service
 
+    def update_subscriber(self, subscriber, data_object):
+        subscriber.receive_data(data_object)
+
+    def update_all_subscribers(self, data_object):
+        for subscriber in self.subscribers.values():
+            subscriber.receive_data(data_object)
+
 class Topic(Entity):
 
     def __init__(self, topic_name, participant):
         self.name = topic_name
-        self.parent = participant
+        self.participant = participant
         self.publishers = []
         self.subscribers = []
 
     def get_name(self):
-        pass
+        return self.name
 
 class Publisher(Entity):
 
     def __init__(self, participant, topic):
-        self.parent = participant
+        self.participant = participant
         self.topic = topic
-        self.data_buffer = []
 
     def write(self, message):
         pass
 
 class Subscriber(Entity):
-    pass
+    
+    def __init__(self, participant, topic, data_objects):
+        self.participant = participant
+        self.topic = topic
+        self.available_data = data_objects
+
+    def get_topic_name(self):
+        return self.topic.get_name()
+
+class Data_Object(Entity):
+    
+    def __init__(self, publisher_handle, topic, data):
+        self.publisher_handle = publisher_handle
+        self.topic = topic
+        self.content = data
+
+    def get_topic_name(self):
+        return self.topic.get_name()

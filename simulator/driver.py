@@ -8,7 +8,7 @@ import custom_error
 class Driver:
 
     def __init__(self, network, processor):
-        self.async_events = simpy.Store(network.env)
+        self.processing_queue = simpy.Store(network.env)
         self.network = network
         self.env = network.env
         self.processor = processor
@@ -26,7 +26,7 @@ class Driver:
             yield z
 
         while True:
-            event = yield self.async_events.get()
+            event = yield self.processing_queue.get()
             for z in self.issue_event(event[0], event[1]):
                 if z:
                     yield z
@@ -62,7 +62,7 @@ class Driver:
             msg_envelope[1], msg_envelope[0], msg_envelope[2]))
 
         event = ['on_message', msg_envelope]
-        self.async_events.put(event)
+        self.processing_queue.put(event)
 
     def send (self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)
