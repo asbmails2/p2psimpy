@@ -1,5 +1,6 @@
 import logging
 from threading import Lock
+from queue import *
 
 from singleton import Singleton
 
@@ -8,7 +9,7 @@ class UniqueHandleController(metaclass=Singleton):
 
     def __init__(self):
         self.next_available_handle = 1
-        self.lock = threading.Lock()
+        self.lock = Lock()
     
     def generate_handle(self):
         handle = None
@@ -24,7 +25,7 @@ class Data_Buffer:
 
     def __init__(self):
         self.data_buffer = []
-        self.lock = threading.Lock()
+        self.lock = Lock()
 
     def write_to(self, data):
         with self.lock:
@@ -81,7 +82,7 @@ class DDS_Service(Entity):
         return self.instance_handle
 
     def send_to_all_peers(self, msg):
-        self.driver.advertise(msg)
+        self.driver.async_function_call(['advertise', msg])
 
     def send_local_modification(self, type_name, data):
         change = (type_name, data)
@@ -98,13 +99,20 @@ class DDS_Service(Entity):
         handle = participant.get_instance_handle()
         self.participants[handle] = participant
         self.local_participants[handle] = participant
-        self.send_local_modification(('NEW_PARTICIPANT', participant))
+        self.send_local_modification('NEW_PARTICIPANT', participant)
 
     def add_topic(self, topic):
         self.assign_handle(topic)
         topic_key = topic.get_name()
         self.topics[topic_key] = topic
-        self.send_local_modification(('NEW_TOPIC', topic))
+        self.send_local_modification('NEW_TOPIC', topic)
+
+    def add_data_object(self, data_object):
+        self.assign_handle(data_object)
+        handle = data_object.get_instance_handle()
+        self.data_objects[handle] = data_object
+        self.attach_data_object_to_topic(data_object)
+        self.send_local_modification('NEW_DATA', data_object)
 
     def topic_exists(self, topic_name):
         return topic_name in self.topics
@@ -123,13 +131,14 @@ class DDS_Service(Entity):
         self.peer_list = self.driver.fetch_peer_list()
     
     def receive_incoming_data(self, msg):
-        logging.info(str(self.driver.get_time() + ' :: ' + f'Data received by DDS Service, handle {self.instance_handle}'))
-        self.interpret_data(msg)
+        logging.info(str(self.driver.get_time()) + ' :: ' + f'Data received by DDS Service, handle {str(self.instance_handle)}')
+        for z in self.interpret_data(msg):
+            yield z
 
     def add_message_handler_methods(self):
         self.message_handlers['NEW_PARTICIPANT'] = self.append_remote_participant
         self.message_handlers['NEW_TOPIC'] = self.append_remote_topic
-        self.message_handlers['NEW_DATA'] = self.update_data_object
+        self.message_handlers['NEW_DATA'] = self.append_data_object
         self.message_handlers['SEND_ALL_DATA'] = self.send_full_domain_data
         self.message_handlers['ALL_DATA'] = self.receive_full_domain_data
 
@@ -148,16 +157,28 @@ class DDS_Service(Entity):
         else:
             self.resolve_topic_conflict(r_topic)
 
-    def update_data_object(self, r_data):
-        handle = r_data.get_instance_handle()
-        self.data_objects[handle] = r_data
+    def resolve_topic_conflict(self, topic):
+        # TODO: Completar este método.
+        # O tópico com a instance handle menor tem prioridade.
+        # Caso o serviço local tenha prioridade, é necessário informar os outros nodos.
+        pass
+
+    def append_data_object(self, new_data):
+        handle = new_data.get_instance_handle()
+        self.data_objects[handle] = new_data
         if handle not in self.handles:
-            self.handles[handle] = r_data
-        self.send_data_object_to_all_participants(r_data)
+            self.handles[handle] = new_data
+        self.send_data_object_to_all_participants(new_data)
+        self.attach_data_object_to_topic(new_data)
 
     def send_data_object_to_all_participants(self, data_object):
         for participant in self.local_participants.values():
             participant.update_all_subscribers(data_object)
+
+    def attach_data_object_to_topic(self, data_object):
+        topic_name = data_object.get_topic_name()
+        if self.topic_exists(topic_name):
+            self.topics[topic_name].attach_data_object(data_object)
 
     def send_full_domain_data(self, to_address):
         local_data = []
@@ -171,22 +192,29 @@ class DDS_Service(Entity):
             packet = ('NEW_DATA', value)
             local_data.append(packet)
         msg = ('ALL_DATA', local_data)
-        self.driver.send(to_address, msg)
+        self.driver.async_function_call(['send', to_address, msg])
     
     def receive_full_domain_data(self, r_data):
+        # TODO: Remove this hack.
+        # HACK ALERT I JUST WANT THIS TO WORK
         for element in r_data:
-            self.interpret_data(element)
+            envelope = [0,0, element]
+            for z in self.interpret_data(envelope):
+                z
 
-    def attach_msg_reception_handler_to_driver(self):
-        self.driver.register_handler(self.receive_incoming_data, 'on_message')
-
-    def interpret_data(self, data):
+    def interpret_data(self, msg):
+        #breakpoint()
+        data = msg[2]
         # Presumimos que os dados estejam em uma 2-tupla, sendo o primeiro elemento..
         # .. uma string descrevendo o pedido, o segundo elemento os dados em si
         if data[0] not in self.message_handlers:
-            logging.warning(str(self.driver.get_time() + ' :: ' + f'DDS Service (Handle {self.instance_handle}): Invalid request: {data[1]}'))
+            logging.warning(str(self.driver.get_time()) + ' :: ' + f'DDS Service (Handle {str(self.instance_handle)}): Invalid request: {str(data[1])}')
         else:
             self.message_handlers[data[0]](data[1])
+        yield self.driver.env.timeout(0)
+
+    def attach_msg_reception_handler_to_driver(self):
+        self.driver.register_handler(self.receive_incoming_data, 'on_message')
 
     def request_full_domain_data(self):
         request_msg = ('SEND_ALL_DATA', self.driver.address)
@@ -205,42 +233,47 @@ class DDS_Service(Entity):
 class Domain_Participant(Entity):
 
     def __init__(self, dds_service):
+        super(Domain_Participant, self).__init__()
         self.service = dds_service
         self.publishers = {}
         self.subscribers = {}
         self.topics = {}
-        self.dds_service.add_participant(self)
+        self.service.add_participant(self)
 
     def create_topic(self, topic_name):
         if self.service.topic_exists(topic_name):
             logging.warning(f'{topic_name} already exists.')
+            return None
         else:
             new_topic = Topic(topic_name, self)
             self.service.add_topic(new_topic)
-            self.topics.append(new_topic)
+            self.topics[topic_name] = new_topic
+            return new_topic
 
     def delete_topic(self, topic):
         # Pré-condição: tópico deve ter sido criado por este participante
         pass
 
     def find_topic(self, topic_name):
-        return self.service.get_topic(topic_name):
+        return self.service.get_topic(topic_name)
 
     def create_publisher(self, topic):
-        data = self.service.retrieve_filtered_data_objects(topic.get_name())
-        new_publisher = Publisher(self, topic, data)
+        new_publisher = Publisher(self, topic)
         self.service.assign_handle(new_publisher)
         handle = new_publisher.get_instance_handle()
         self.publishers[handle] = new_publisher
+        return new_publisher
 
     def delete_publisher(self, publisher):
         pass
 
     def create_subscriber(self, topic):
-        new_subscriber = Subscriber(self, topic)
+        data = self.service.retrieve_filtered_data_objects(topic.get_name())
+        new_subscriber = Subscriber(self, topic, data)
         self.service.assign_handle(new_subscriber)
         handle = new_subscriber.get_instance_handle()
         self.subscribers[handle] = new_subscriber
+        return new_subscriber
 
     def delete_subscriber(self, subscriber):
         pass
@@ -259,39 +292,67 @@ class Domain_Participant(Entity):
 class Topic(Entity):
 
     def __init__(self, topic_name, participant):
+        super(Topic, self).__init__()
         self.name = topic_name
         self.participant = participant
         self.publishers = []
         self.subscribers = []
+        self.data_objects = {}
 
     def get_name(self):
         return self.name
 
+    def attach_data_object(self, data_object):
+        if data_object.get_topic_name() == self.name:
+            handle = data_object.get_instance_handle()
+            self.data_objects[handle] = data_object
+
 class Publisher(Entity):
 
     def __init__(self, participant, topic):
+        super(Publisher, self).__init__()
         self.participant = participant
         self.topic = topic
 
-    def write(self, message):
-        pass
+    def write(self, data):
+        pub_handle = self.get_instance_handle()
+        new_data = Data_Object(pub_handle, self.topic, data)
+        self.participant.service.add_data_object(new_data)
 
 class Subscriber(Entity):
     
     def __init__(self, participant, topic, data_objects):
+        super(Subscriber, self).__init__()
         self.participant = participant
         self.topic = topic
-        self.available_data = data_objects
+        self.available_data = Queue()
+        for element in data_objects:
+            self.available_data.put(element)
 
     def get_topic_name(self):
         return self.topic.get_name()
 
+    def receive_data(self, data_object):
+        self.available_data.put(data_object)
+
+    def read(self):
+        try:
+            data_object = self.available_data.get(block=False)
+            return data_object
+        except Empty:
+            logging.debug('No data objects available')
+            return None
+
 class Data_Object(Entity):
     
     def __init__(self, publisher_handle, topic, data):
+        super(Data_Object, self).__init__()
         self.publisher_handle = publisher_handle
         self.topic = topic
         self.content = data
+
+    def __str__(self):
+        return self.content
 
     def get_topic_name(self):
         return self.topic.get_name()

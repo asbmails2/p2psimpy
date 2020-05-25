@@ -1,6 +1,6 @@
 import logging
 
-import simple_dds
+from simple_dds import *
 
 """
 Simulates the behavior of a peer in a network.
@@ -43,6 +43,28 @@ class Peer:
         for z in self.driver.advertise(msg):
             yield z
 
-    def dds_test (self):
-        the_service = DDS_Service(self.driver, handle_controller)   # Iniciamos o serviço DDS
+    def dds_write_test (self):
+        yield self.driver.env.timeout(100)
+        print("write test")
+        the_service = DDS_Service(self.driver)
+        participant = Domain_Participant(the_service)
+        topic = participant.create_topic("TEST")
+        pub = participant.create_publisher(topic)
+        pub.write("Hello World!")
+        yield self.driver.env.timeout(300)
+    
+    def dds_read_test (self):
+        yield self.driver.env.timeout(150)
+        print("read test")
+        yield self.driver.env.timeout(10)
+        the_service = DDS_Service(self.driver)
+        participant = Domain_Participant(the_service)
+        n_topic = participant.create_topic("TEST")
+        sub = participant.create_subscriber(n_topic)
+        yield self.driver.env.timeout(17)
+        stuff = sub.read()
+        print(str(self.driver.env.now) + ':: ' + str(stuff))
+        yield self.driver.env.timeout(300)
+        
+
         

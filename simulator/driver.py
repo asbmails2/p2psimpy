@@ -20,10 +20,12 @@ class Driver:
             'on_disconnect': []
             }
         self.keep_alive_interval = 20
+        self.async_calls = simpy.Store(network.env)
 
     def run(self):
         for z in self.connect():
             yield z
+        self.env.process(self.execute_stored_calls())
 
         while True:
             event = yield self.processing_queue.get()
@@ -35,7 +37,7 @@ class Driver:
             #         yield z
             
     def connect(self):
-        while True:       # Tenta conectar-se repetidamente
+        while True:
             try:
                 for z in self.network.register(self):
                     yield z
@@ -54,17 +56,18 @@ class Driver:
         self.address = None
 
     def advertise(self, msg):
-        msg = '(ADV) '+str(msg)
-        return self.network.send_broadcast(self.address, msg)
+        # msg = '(ADV) '+str(msg)
+        for z in self.network.send_broadcast(self.address, msg):
+            yield z
 
-    def receive (self, msg_envelope):
+    def receive(self, msg_envelope):
         logging.info(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
-            msg_envelope[1], msg_envelope[0], msg_envelope[2]))
+            msg_envelope[1], msg_envelope[0], str(msg_envelope[2])))
 
         event = ['on_message', msg_envelope]
         self.processing_queue.put(event)
 
-    def send (self, to_addr , msg):
+    def send(self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)
 
     def register_handler (self, method, event='on_message'):
@@ -84,3 +87,22 @@ class Driver:
 
     def get_time(self):
         return self.env.now
+
+    def async_function_call(self, call_info):
+        self.async_calls.put(call_info)
+
+    def execute_stored_calls(self):
+        # TODO: Colocar bloco em função separada.
+        while True:
+            function_call = yield self.async_calls.get()
+            function_name = function_call[0]
+            # TODO: Mudar implementação para dictionary depois.
+            if function_name == 'send':
+                to_addr = function_call[1]
+                msg = function_call[2]
+                for z in self.send(to_addr, msg):
+                    yield z
+            elif function_name == 'advertise':
+                msg = function_call[1]
+                for z in self.advertise(msg):
+                    yield z
