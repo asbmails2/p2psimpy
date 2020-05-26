@@ -4,7 +4,6 @@ import peer
 import network
 import driver
 import processor
-import simple_dds
 
 """
 Run app.

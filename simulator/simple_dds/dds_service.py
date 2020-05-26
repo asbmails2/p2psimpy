@@ -1,8 +1,7 @@
 import logging
 from threading import Lock
-from queue import *
-
 from singleton import Singleton
+from simple_dds import entity
 
 # Possíveis problemas de uso mútuo nesta classe? Veremos quando testarmos.
 class UniqueHandleController(metaclass=Singleton):
@@ -39,24 +38,8 @@ class Data_Buffer:
     def is_empty(self):
         return len(self.data_buffer) == 0
 
-class Entity:
-
-    def __init__(self):
-        self.instance_handle = 0
-    
-    def set_instance_handle(self, handle):
-        if self.instance_handle != 0:
-            raise RuntimeError("DDS Instance already has a handle.")
-        else:
-            self.instance_handle = handle
-
-    def get_instance_handle(self):
-        if self.instance_handle == 0:
-            raise RuntimeError("DDS Instance has not been assigned a handle")
-        return self.instance_handle
-
 # Talvez seja necessário fazer dictionaries personalizados, que evitem problemas de acesso mútuo.
-class DDS_Service(Entity):
+class DDS_Service(entity.Entity):
 
     def __init__(self, driver):
         self.handle_controller = UniqueHandleController()
@@ -229,130 +212,3 @@ class DDS_Service(Entity):
             if element.get_topic_name() == topic_name:
                 data.append(element)
         return data
-
-class Domain_Participant(Entity):
-
-    def __init__(self, dds_service):
-        super(Domain_Participant, self).__init__()
-        self.service = dds_service
-        self.publishers = {}
-        self.subscribers = {}
-        self.topics = {}
-        self.service.add_participant(self)
-
-    def create_topic(self, topic_name):
-        if self.service.topic_exists(topic_name):
-            logging.warning(f'{topic_name} already exists.')
-            return None
-        else:
-            new_topic = Topic(topic_name, self)
-            self.service.add_topic(new_topic)
-            self.topics[topic_name] = new_topic
-            return new_topic
-
-    def delete_topic(self, topic):
-        # Pré-condição: tópico deve ter sido criado por este participante
-        pass
-
-    def find_topic(self, topic_name):
-        return self.service.get_topic(topic_name)
-
-    def create_publisher(self, topic):
-        new_publisher = Publisher(self, topic)
-        self.service.assign_handle(new_publisher)
-        handle = new_publisher.get_instance_handle()
-        self.publishers[handle] = new_publisher
-        return new_publisher
-
-    def delete_publisher(self, publisher):
-        pass
-
-    def create_subscriber(self, topic):
-        data = self.service.retrieve_filtered_data_objects(topic.get_name())
-        new_subscriber = Subscriber(self, topic, data)
-        self.service.assign_handle(new_subscriber)
-        handle = new_subscriber.get_instance_handle()
-        self.subscribers[handle] = new_subscriber
-        return new_subscriber
-
-    def delete_subscriber(self, subscriber):
-        pass
-
-    def get_discovered_participants(self):
-        pass
-        # Usar o service
-
-    def update_subscriber(self, subscriber, data_object):
-        subscriber.receive_data(data_object)
-
-    def update_all_subscribers(self, data_object):
-        for subscriber in self.subscribers.values():
-            subscriber.receive_data(data_object)
-
-class Topic(Entity):
-
-    def __init__(self, topic_name, participant):
-        super(Topic, self).__init__()
-        self.name = topic_name
-        self.participant = participant
-        self.publishers = []
-        self.subscribers = []
-        self.data_objects = {}
-
-    def get_name(self):
-        return self.name
-
-    def attach_data_object(self, data_object):
-        if data_object.get_topic_name() == self.name:
-            handle = data_object.get_instance_handle()
-            self.data_objects[handle] = data_object
-
-class Publisher(Entity):
-
-    def __init__(self, participant, topic):
-        super(Publisher, self).__init__()
-        self.participant = participant
-        self.topic = topic
-
-    def write(self, data):
-        pub_handle = self.get_instance_handle()
-        new_data = Data_Object(pub_handle, self.topic, data)
-        self.participant.service.add_data_object(new_data)
-
-class Subscriber(Entity):
-    
-    def __init__(self, participant, topic, data_objects):
-        super(Subscriber, self).__init__()
-        self.participant = participant
-        self.topic = topic
-        self.available_data = Queue()
-        for element in data_objects:
-            self.available_data.put(element)
-
-    def get_topic_name(self):
-        return self.topic.get_name()
-
-    def receive_data(self, data_object):
-        self.available_data.put(data_object)
-
-    def read(self):
-        try:
-            data_object = self.available_data.get(block=False)
-            return data_object
-        except Empty:
-            logging.debug('No data objects available')
-            return None
-
-class Data_Object(Entity):
-    
-    def __init__(self, publisher_handle, topic, data):
-        super(Data_Object, self).__init__()
-        self.publisher_handle = publisher_handle
-        self.topic = topic
-        self.content = data
-
-    def __str__(self):
-        return self.content
-
-    def get_topic_name(self):
-        return self.topic.get_name()

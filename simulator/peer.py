@@ -1,5 +1,4 @@
 import logging
-
 from simple_dds import *
 
 """
@@ -46,8 +45,8 @@ class Peer:
     def dds_write_test (self):
         yield self.driver.env.timeout(100)
         print("write test")
-        the_service = DDS_Service(self.driver)
-        participant = Domain_Participant(the_service)
+        the_service = dds_service.DDS_Service(self.driver)
+        participant = domain_participant.Domain_Participant(the_service)
         topic = participant.create_topic("TEST")
         pub = participant.create_publisher(topic)
         pub.write("Hello World!")
@@ -56,9 +55,8 @@ class Peer:
     def dds_read_test (self):
         yield self.driver.env.timeout(150)
         print("read test")
-        yield self.driver.env.timeout(10)
-        the_service = DDS_Service(self.driver)
-        participant = Domain_Participant(the_service)
+        the_service = dds_service.DDS_Service(self.driver)
+        participant = domain_participant.Domain_Participant(the_service)
         n_topic = participant.create_topic("TEST")
         sub = participant.create_subscriber(n_topic)
         yield self.driver.env.timeout(17)
