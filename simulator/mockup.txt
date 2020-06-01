@@ -1,5 +1,4 @@
 import simpy
-import logging
 
 import customdds
 

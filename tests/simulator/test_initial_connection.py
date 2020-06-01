@@ -1,10 +1,14 @@
 import pytest
 import simpy
+import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../../simulator/')
+pprint.pprint(sys.path)
 
-from simulator.network import Network
-from simulator.processor import Processor
-from simulator.driver import Driver
-from simulator.peer import Peer     
+from network import Network
+from processor import Processor
+from driver import Driver
+from peer import Peer    
 
 
 def test_connection():

@@ -2,8 +2,6 @@
 import simpy
 import logging
 
-import custom_error
-
 class Network:
 
     def __init__(self, env, latency, max_hosts = 100):
@@ -25,7 +23,7 @@ class Network:
             yield rec
             if self.full_capacity:
                 logging.warning(str(self.env.now) + ' :: ' + 'Could not register node: Network at full capacity')
-                raise RegistrationError("Network at full capacity")
+                raise ConnectionError("Network at full capacity")
             else:
                 curr_address = self.next_available_address
                 logging.info(str(self.env.now) + ' :: ' + 'connecting {}'.format(curr_address))
@@ -122,7 +120,7 @@ class Network:
             if peer['address'] is not driver.address:
                 addr_list.append(peer['address'])
         return addr_list
-    
+
     def dhcp(self):
         while True:
             for z in self.check_lease():

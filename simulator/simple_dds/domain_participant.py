@@ -40,9 +40,9 @@ class Domain_Participant(entity.Entity):
     def delete_publisher(self, publisher):
         pass
 
-    def create_subscriber(self, topic):
+    def create_subscriber(self, topic, listener=None):
         data = self.service.retrieve_filtered_data_objects(topic.get_name())
-        new_subscriber = subscriber.Subscriber(self, topic, data)
+        new_subscriber = subscriber.Subscriber(self, topic, data, listener)
         self.service.assign_handle(new_subscriber)
         handle = new_subscriber.get_instance_handle()
         self.subscribers[handle] = new_subscriber
@@ -54,9 +54,6 @@ class Domain_Participant(entity.Entity):
     def get_discovered_participants(self):
         pass
         # Usar o service
-
-    def update_subscriber(self, subscriber, data_object):
-        subscriber.receive_data(data_object)
 
     def update_all_subscribers(self, data_object):
         for subscriber in self.subscribers.values():

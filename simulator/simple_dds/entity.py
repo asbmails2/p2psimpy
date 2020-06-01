@@ -2,7 +2,7 @@ class Entity:
 
     def __init__(self):
         self.instance_handle = 0
-    
+
     def set_instance_handle(self, handle):
         if self.instance_handle != 0:
             raise RuntimeError("DDS Instance already has a handle.")

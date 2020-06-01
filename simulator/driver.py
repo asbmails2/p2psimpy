@@ -3,8 +3,6 @@ import random
 import simpy
 import logging
 
-import custom_error
-
 class Driver:
 
     def __init__(self, network, processor):
@@ -44,7 +42,7 @@ class Driver:
                 for z in self.issue_event('on_connect', self.address):
                     yield z
                 break     # Se chegarmos aqui, código completado com sucesso, saímos do loop
-            except RegistrationError as err:
+            except ConnectionError as err:
                 print(err.message)
                 yield self.env.timeout(1)
 
@@ -52,11 +50,9 @@ class Driver:
         return self.network.send_addresses(self)
 
     def disconnect(self):
-        former_address = self.address
         self.address = None
 
     def advertise(self, msg):
-        # msg = '(ADV) '+str(msg)
         for z in self.network.send_broadcast(self.address, msg):
             yield z
 
