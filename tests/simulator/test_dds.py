@@ -1,9 +1,7 @@
 import pytest
-import pprint
 import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../../simulator/')
-pprint.pprint(sys.path)
 
 import simpy
 import random
@@ -16,7 +14,7 @@ from simple_dds import *
 @pytest.fixture
 def environment_and_network():
     network_latency = 2
-    max_peers = 100
+    max_peers = 300
     env = simpy.Environment()
     net = Network(env, network_latency, max_peers)
     return (env, net)
@@ -24,7 +22,7 @@ def environment_and_network():
 @pytest.fixture
 def subscriber_number():
     # Set Number:
-    return 5
+    return 150
 
 def test_simple_publication_two_peers(environment_and_network):
     env, net = environment_and_network
@@ -34,7 +32,7 @@ def test_simple_publication_two_peers(environment_and_network):
     topic_name = random.randrange(1000)
     wait_before_publication = 100
     wait_before_reading = 150
-    simulation_time = 400
+    simulation_time = 300
     container = None
 
     publishing_peer = initialize_peer(env, net, 0, 0, proc_latency)
@@ -51,11 +49,11 @@ def test_simple_publication_to_multiple_peers(environment_and_network, subscribe
     env, net = environment_and_network
     proc_latency = 3
     random.seed()
-    message = random.randrange(1000)
-    topic_name = random.randrange(1000)
+    message = 'test message'
+    topic_name = 'test topic'
     wait_before_publication = 100
-    wait_before_reading = 150
-    simulation_time = 1000
+    wait_before_reading = 1000
+    simulation_time = 900000
     subscriber_id = 1
     subscribers = []
     received_msg = None
@@ -70,7 +68,8 @@ def test_simple_publication_to_multiple_peers(environment_and_network, subscribe
         subscribers.append(subscriber)
 
     env.run(until=simulation_time)
-    for subscriber in subscribers:
+    for i, subscriber in enumerate(subscribers):
+        print(i)
         received_msg = str(subscriber.latest_read_msg)
         assert received_msg == str(message)
 

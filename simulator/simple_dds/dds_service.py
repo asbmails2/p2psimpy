@@ -187,7 +187,8 @@ class DDS_Service(entity.Entity):
         # Presumimos que os dados estejam em uma 2-tupla, sendo o primeiro elemento..
         # .. uma string descrevendo o pedido, o segundo elemento os dados em si
         if data[0] not in self.message_handlers:
-            logging.warning(str(self.driver.get_time()) + ' :: ' + f'DDS Service (Handle {str(self.instance_handle)}): Invalid request: {str(data[1])}')
+            pass
+            #logging.warning(str(self.driver.get_time()) + ' :: ' + f'DDS Service (Handle {str(self.instance_handle)}): Invalid request: {str(data[1])}')
         else:
             self.message_handlers[data[0]](data[1])
 

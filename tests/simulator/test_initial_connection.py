@@ -3,7 +3,6 @@ import simpy
 import sys, os
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../../simulator/')
-pprint.pprint(sys.path)
 
 from network import Network
 from processor import Processor
