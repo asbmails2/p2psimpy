@@ -6,7 +6,7 @@ import logging
 class Driver:
 
     def __init__(self, network, processor):
-        self.async_events = simpy.Store(network.env)
+        self.processing_queue = simpy.Store(network.env)
         self.network = network
         self.env = network.env
         self.processor = processor
@@ -18,40 +18,52 @@ class Driver:
             'on_disconnect': []
             }
         self.keep_alive_interval = 20
+        self.async_calls = simpy.Store(network.env)
 
     def run(self):
-        if self.address is None:
-            for z in self.connect():
-                yield z
-            self.env.process(self.send_keepalive())  # A partir de agora, mandamos um sinal de vida constantemente
-                
+        for z in self.connect():
+            yield z
+        self.env.process(self.execute_stored_calls())
+
         while True:
-            event = yield self.async_events.get()
+            event = yield self.processing_queue.get()
             for z in self.issue_event(event[0], event[1]):
                 if z:
                     yield z
-            for z in self.issue_event(event[0], 'on_advertise'):
-                if z:
-                    yield z
+            # for z in self.issue_event(event[0], 'on_advertise'):
+            #     if z:
+            #         yield z
             
     def connect(self):
-        for z in  self.network.register(self):
-            yield z
-        for z in self.issue_event('on_connect', self.address):
-            yield z
+        while True:
+            try:
+                for z in self.network.register(self):
+                    yield z
+                for z in self.issue_event('on_connect', self.address):
+                    yield z
+                break     # Se chegarmos aqui, código completado com sucesso, saímos do loop
+            except ConnectionError as err:
+                print(err.message)
+                yield self.env.timeout(1)
+
+    def fetch_peer_list(self):
+        return self.network.send_addresses(self)
+
+    def disconnect(self):
+        self.address = None
 
     def advertise(self, msg):
-        msg = 'ADV-'+str(msg)
-        return self.network.send_broadcast(self.address, msg)
+        for z in self.network.send_broadcast(self.address, msg):
+            yield z
 
-    def recieve (self, msg_envelope):
+    def receive(self, msg_envelope):
         logging.info(str(self.env.now) + ' :: ' + '{} received from {}: {}'.format(
-            msg_envelope[1], msg_envelope[0], msg_envelope[2]))
+            msg_envelope[1], msg_envelope[0], str(msg_envelope[2])))
 
         event = ['on_message', msg_envelope]
-        self.async_events.put(event)
+        self.processing_queue.put(event)
 
-    def send (self, to_addr , msg):
+    def send(self, to_addr , msg):
         return self.network.send_unicast(self.address, to_addr, msg)
 
     def register_handler (self, method, event='on_message'):
@@ -65,5 +77,30 @@ class Driver:
                 yield z
 
     def send_keepalive(self):
+        while True:
             yield self.env.timeout(self.keep_alive_interval)
             self.network.renew(self.address)
+
+    def get_time(self):
+        return self.env.now
+
+    # Coloca uma função na lista de processamento, que será executada
+    # em ordem.
+    def async_function_call(self, call_info):
+        self.async_calls.put(call_info)
+
+    def execute_stored_calls(self):
+        # TODO: Colocar bloco em função separada.
+        while True:
+            function_call = yield self.async_calls.get()
+            function_name = function_call[0]
+            # TODO: Mudar implementação para dictionary depois.
+            if function_name == 'send':
+                to_addr = function_call[1]
+                msg = function_call[2]
+                for z in self.send(to_addr, msg):
+                    yield z
+            elif function_name == 'advertise':
+                msg = function_call[1]
+                for z in self.advertise(msg):
+                    yield z

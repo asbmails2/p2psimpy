@@ -1,0 +1,50 @@
+import simpy
+
+import customdds
+
+# Neste exemplo, o único tipo de dado que será usado é string, mas a especificação DDS permite a definição de tipos personalizados.
+# De fato, a definição e registro de um tipo de dado são ações necessárias numa implementação real.
+# Aqui, tentei escrever como um cliente faria uso desse API. Ainda é necessário implementar de fato. Mesmo assim, fica claro que...
+# ... o uso do API simplifica bastante o trabalho do usuário, que não precisa se preocupar com o funcionamento da rede e detalhes de transmissão.
+# Só pra enfatizar, isto é uma simplificação EXTREMA do DDS, mais precisamente, da implementação OpenDDS. Eu tentei capturar o que eu compreendi sobre ele.
+
+class ApplicationMockup:
+
+    def __init__(self, domainID):
+        domainParticipantFactory = customdds.DomainParticipantFactoryImpl.get_instance()         # Singleton
+        # Criamos participante escolhendo uma ID para o domínio
+        self.participant = domainParticipantFactory.create_participant(domainID)
+    
+    def run(self):
+        # Criamos um tópico
+        topic_name = "Test"
+        topic = self.participant.create_topic(topic_name)
+        # Criamos um publisher
+        # Dentro de um publisher, é necessário haver uma referência ao DomainParticipant que o criou
+        publisher = self.participant.create_publisher()
+        # Criamos um DataWriter com o tópico
+        writer = publisher.create_datawriter(topic)
+
+        # Podemos esperar que haja pelo menos um subscriber antes de enviar a mensagem..
+        # <Código de espera aqui>
+        # Prosseguindo para a escrita
+
+        message_content = "This is a test message"
+        # Digamos que previamente tenhamos criado um tipo 'Message', de forma que possamos encapsular o conteúdo da mensagem em si...
+        # ... assim como outras metainformações.
+        # Dados existem em uma instância, a qual é uma entidade, tendo, assim, um identificador único no domínio.
+        msg_id = 63
+        new_msg =  (msg_id, message_content)
+        # O resultado do método a seguir deve ser o envio da mensagem para todos os subscribers do tópico
+        writer.write(new_msg)
+
+        # Para o estabelecimento de um subscriber, o código seria bem parecido, exceto que usaríamos um DataReader para ler as mensagens com métodos 'read()' e 'take()'.
+
+
+
+# Algumas notas adicionais:
+# - No OpenDDS, pelo que entendi, existe um singleton denominado 'TheServiceParticipant' responsável pelo controle das entidades, etc. Esse 'Service' permite que...
+# ... haja acesso aos domínios, tópicos, participantes, publishers, subscribers, instâncias de dados, ... ou seja, todas as entidades.
+# - O uso de políticas QoS servem para configurar o API, de certa forma impondo exigências no funcionamento do serviço. Uma lista dessas políticas está presente na especificação.
+# ... Decidi omitir o uso de QoS policies para simplificar, mas, numa implementação real, elas são indispensáveis.
+# - Além do DDS, parece-me ser necessário mais uma camada de abstração. No OpenDDS, eles usam um API chamado TAO.
