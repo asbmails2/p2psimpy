@@ -22,7 +22,7 @@ def environment_and_network():
 @pytest.fixture
 def subscriber_number():
     # Set Number:
-    return 150
+    return 15
 
 def test_simple_publication_two_peers(environment_and_network):
     env, net = environment_and_network
@@ -37,10 +37,10 @@ def test_simple_publication_two_peers(environment_and_network):
 
     publishing_peer = initialize_peer(env, net, 0, 0, proc_latency)
     subscribing_peer = initialize_peer(env, net, 1, 1, proc_latency)
-    publication = publishing_peer.wait_then_publish_message
-    reading = subscribing_peer.wait_then_read_message
-    add_process_to_simulation(env, publication(topic_name, message, wait_before_publication))
-    add_process_to_simulation(env, reading(topic_name, message, wait_before_reading))
+    publication = wait_then_publish_message(publishing_peer, topic_name, message, wait_before_publication)
+    reading = wait_then_read_message(subscribing_peer, topic_name, message, wait_before_reading)
+    add_process_to_simulation(env, publication)
+    add_process_to_simulation(env, reading)
     env.run(until=simulation_time)
     container = str(subscribing_peer.latest_read_msg)
     assert container == str(message)
@@ -59,7 +59,7 @@ def test_simple_publication_to_multiple_peers(environment_and_network, subscribe
     received_msg = None
 
     publishing_peer = initialize_peer(env, net, 0, 0, proc_latency)
-    publication = publishing_peer.wait_then_publish_message(topic_name, message, wait_before_publication)
+    publication = wait_then_publish_message(publishing_peer, topic_name, message, wait_before_publication)
     add_process_to_simulation(env, publication)
     for i in range(subscriber_number):
         subscriber = initialize_peer(env, net, 0, i, proc_latency)
@@ -88,4 +88,25 @@ def set_up_subscription(peer, topic_name, message, wait_time=100):
     the_service = dds_service.DDS_Service(peer.driver)
     participant = domain_participant.Domain_Participant(the_service)
     topic = participant.create_topic(topic_name)
+    # read_new_message é o método 'listener'
     sub = participant.create_subscriber(topic, peer.read_new_message)
+
+# TODO: O nome não é adequado: faz mais do que publicar mensagem, antes cria objetos..
+# .. necessários. É preciso mudar depois.
+def wait_then_publish_message(peer, topic_name, message, wait_time=100):
+    yield peer.driver.env.timeout(wait_time)
+    the_service = dds_service.DDS_Service(peer.driver)
+    participant = domain_participant.Domain_Participant(the_service)
+    topic = participant.create_topic(topic_name)
+    pub = participant.create_publisher(topic)
+    pub.write(message)
+
+def wait_then_read_message(peer, topic_name, message, wait_time=100):
+    yield peer.driver.env.timeout(wait_time)
+    the_service = dds_service.DDS_Service(peer.driver)
+    participant = domain_participant.Domain_Participant(the_service)
+    topic = participant.create_topic(topic_name)
+    sub = participant.create_subscriber(topic)
+    # Atenção à linha a seguir. Talvez seja necessário alterar o valor mais tarde.
+    yield peer.driver.env.timeout(17)  # Tempo para recebimento de mensagens de outros peers contendo dados do domínio.
+    peer.latest_read_msg = sub.read()
