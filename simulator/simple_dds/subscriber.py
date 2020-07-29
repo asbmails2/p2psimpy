@@ -3,7 +3,6 @@ from queue import *
 
 from simple_dds import entity
 
-# TODO: Adicionar suporte para chamada de listener (callback).
 class Subscriber(entity.Entity):
 
     def __init__(self, participant, topic, data_objects, listener_method=None):
@@ -15,8 +14,8 @@ class Subscriber(entity.Entity):
             self.available_data.put(element)
         self.listener = listener_method
 
-    def get_topic_name(self):
-        return self.topic.get_name()
+    def get_topic(self):
+        return self.topic
 
     def receive_data(self, data_object):
         if data_object.get_topic_name() == self.topic.get_name():

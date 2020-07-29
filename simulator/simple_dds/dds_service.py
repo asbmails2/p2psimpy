@@ -1,9 +1,12 @@
+# TODO
+# - Não pedir todos os objetos-dado na criação do DDS Service; Fazer isso na..
+#   .. criação de subscriber, e somente dados do tópico específico.
+
 import logging
 from threading import Lock
 from singleton import Singleton
 from simple_dds import entity
 
-# Possíveis problemas de uso mútuo nesta classe? Veremos quando testarmos.
 class UniqueHandleController(metaclass=Singleton):
 
     def __init__(self):
@@ -17,28 +20,6 @@ class UniqueHandleController(metaclass=Singleton):
             self.next_available_handle += 1
         return handle
 
-# Classe criada para impedir conflito entre leitura e escrita.
-# Poderia fazer a lógica usando um Resource do simpy, mas prefiro evitar o uso..
-# ... do simpy na lógica do DDS.
-class Data_Buffer:
-
-    def __init__(self):
-        self.data_buffer = []
-        self.lock = Lock()
-
-    def write_to(self, data):
-        with self.lock:
-            self.data_buffer.append(data)
-
-    def read_from(self, container):
-        with self.lock:
-            container = copy(self.data_buffer)
-            self.data_buffer = []
-
-    def is_empty(self):
-        return len(self.data_buffer) == 0
-
-# Talvez seja necessário fazer dictionaries personalizados, que evitem problemas de acesso mútuo.
 class DDS_Service(entity.Entity):
 
     def __init__(self, driver):
@@ -64,14 +45,13 @@ class DDS_Service(entity.Entity):
     def get_instance_handle(self):
         return self.instance_handle
 
-    def _send_to_all_peers(self, msg):
-        self.driver.async_function_call(['advertise', msg])
-
     def _send_local_modification(self, type_name, data):
         change = (type_name, data)
         self._send_to_all_peers(change)
+    
+    def _send_to_all_peers(self, msg):
+        self.driver.async_function_call(['advertise', msg])
 
-    # Fazer verificação de handle duplicada
     def assign_handle(self, entity):
         handle = self.handle_controller.generate_handle()
         entity.set_instance_handle(handle)
@@ -96,6 +76,9 @@ class DDS_Service(entity.Entity):
         self.data_objects[handle] = data_object
         self._attach_data_object_to_topic(data_object)
         self._send_local_modification('NEW_DATA', data_object)
+
+    def announce_new_publisher(self, new_publisher):
+        self._send_local_modification('NEW_PUBLISHER', new_publisher)
 
     def topic_exists(self, topic_name):
         return topic_name in self.topics
@@ -148,6 +131,12 @@ class DDS_Service(entity.Entity):
             self.handles[handle] = new_data
         self._send_data_object_to_all_participants(new_data)
         self._attach_data_object_to_topic(new_data)
+
+    # TODO: Ainda falta completar.
+    def _notify_subscribers_of_new_publisher(self, new_publisher):
+        for subscriber in self.participants.subscribers.values():
+            topic_name = new_publisher.get_topic().get_name()
+        pass
 
     def _send_data_object_to_all_participants(self, data_object):
         for participant in self.local_participants.values():

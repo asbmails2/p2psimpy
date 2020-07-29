@@ -84,6 +84,8 @@ class Driver:
     def get_time(self):
         return self.env.now
 
+    # Coloca uma função na lista de processamento, que será executada
+    # em ordem.
     def async_function_call(self, call_info):
         self.async_calls.put(call_info)
 
