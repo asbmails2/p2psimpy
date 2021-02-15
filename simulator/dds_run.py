@@ -15,12 +15,12 @@ console_handler = logging.StreamHandler()
 console_handler.setLevel(logging.INFO)
 handlers = [console_handler]
 logging.basicConfig(level = logging.INFO,
-                    format = '[%(levelname)s] [%(module)10s] %(message)s',
+                    format = '[%(levelname)10s] [%(module)12s] %(message)s',
                     handlers = handlers
 )
 
-NUM_PEERS = 2
-SIM_DURATION = 300
+NUM_PEERS = 1
+SIM_DURATION = 1000
 
 # create env
 env = simpy.Environment()
@@ -34,12 +34,18 @@ nodes = []
 
 teste = env.timeout(200)
 
-for i in range (NUM_PEERS):
-     proc = processor.Processor(env, i, 3)
-     dri = driver.Driver(net, proc)
-     new_peer = peer.Peer(dri, i)
-     nodes.append(new_peer)
-     env.process(dri.run())
+
+proc_0 = processor.Processor(env, 0, 3)
+dri_0 = driver.Driver(net, proc_0)
+peer_0 = peer.Peer(dri_0, 0)
+env.process(dri_0.run())
+env.process(peer_0.wait_then_publish_message('TEST', 'Hello World!', 100))
+
+proc_1 = processor.Processor(env, 1, 3)
+dri_1 = driver.Driver(net, proc_1)
+peer_1 = peer.Peer(dri_1, 1)
+env.process(dri_1.run())
+env.process(peer_1.dds_read_test())
 
 
 env.run(until=SIM_DURATION)

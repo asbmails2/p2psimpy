@@ -1,11 +1,13 @@
 import logging
+from simple_dds import *
 
 """
-Class peer for create all the base stack for peer
+Simulates the behavior of a peer in a network.
+Uses driver object to interface with the network.
 
 Definir as caracteristicas do nodo basicas - ID , Recursos - Qualidade
 
-riar um canal broadcast onde o peer precisa se conectar
+Criar um canal broadcast onde o peer precisa se conectar
 E criar os links de comunicacao unicast
 
 agente tem (ref de um canal broad)
@@ -23,6 +25,7 @@ class Peer:
         self.driver.register_handler(self.on_advertise, 'on_advertise')
         self.driver.register_handler(self.on_disconnect, 'on_disconnect')
         self.name = 'peer_{}'.format(id)
+        self.latest_read_msg = 0
 
     def on_message (self, msg):
         logging.info(str(self.driver.env.now) + ' :: ' + '{} received msg: {}'.format(self.name, msg))
@@ -39,12 +42,9 @@ class Peer:
     def on_advertise (self, msg):
         for z in self.driver.advertise(msg):
             yield z
+
+    def read_new_message(self, subscriber):
+        self.latest_read_msg = subscriber.read()
         
 
-
-
-
-
-
-
-
+        

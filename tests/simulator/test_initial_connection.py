@@ -1,10 +1,13 @@
 import pytest
 import simpy
+import sys, os
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../../simulator/')
 
-from simulator.network import Network
-from simulator.processor import Processor
-from simulator.driver import Driver
-from simulator.peer import Peer     
+from network import Network
+from processor import Processor
+from driver import Driver
+from peer import Peer    
 
 
 def test_connection():
@@ -35,9 +38,9 @@ def test_timeout_keep_alive():
     proc = Processor(env, 0, 3)
     dri = Driver(net, proc)
     new_peer = Peer(dri, 0)
-    
+
     #env.process(dri.disconnect())
     
     env.run(until=50)
-    
+
     assert dri.address == None
